@@ -1,4 +1,7 @@
 require('dotenv').config();
+console.log("DEBUG: CWD:", process.cwd());
+console.log("DEBUG: Loading Config. CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
 
 
 module.exports = {
@@ -10,7 +13,7 @@ module.exports = {
 	api_key: process.env.CLOUDINARY_API_KEY || "cloudy and a chance of meatballs",
 	api_secret: process.env.CLOUDINARY_API_SECRET || "jimmy",
 	PORT: 5000
-	
+
 }
 
 // heloooooo im under the water plesase help meeeeee pleaseeeeee

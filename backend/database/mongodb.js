@@ -6,6 +6,7 @@ const DATABASE_NAME = "softyield";
 
 // Changed to 'let' to allow fallback replacement
 let client = new MongoClient(dbUrl, {
+    serverSelectionTimeoutMS: 1000, // Fail fast (1 second) to switch to In-Memory
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
