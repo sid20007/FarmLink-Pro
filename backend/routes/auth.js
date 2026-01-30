@@ -21,7 +21,8 @@ router.post('/register', async (req, res) => {
             email,
             password: hashedPassword,
             role,
-            location
+            location,
+            lastLogin: Date.now() // Set initial login date
         });
 
         await user.save();
@@ -29,11 +30,11 @@ router.post('/register', async (req, res) => {
         const payload = { user: { id: user.id, role: user.role } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+            res.json({ token, user: { id: user.id, name: user.name, role: user.role, lastLogin: user.lastLogin } });
         });
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({ msg: err.message });
     }
 });
 
