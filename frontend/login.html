@@ -262,7 +262,7 @@
 
             <!-- Bottom Credits -->
             <p class="text-center text-white/80 text-xs mt-8 font-medium tracking-wide">
-                &copy; 2024 AgriConnect Inc.
+                &copy; 2026 AgriConnect Inc(demo).
             </p>
 
         </div>
@@ -270,8 +270,8 @@
         <script>
             // State
             let isLogin = true;
-            // Use ABSOLUTE URL to avoid local file issues
-            const apiBase = 'http://localhost:5000/api/auth'; // Ensure this matches backend port
+            // Use RELATIVE URL to match the backend port automatically
+            const apiBase = '/api/auth';
 
             // Google Auth Callback
             async function handleCredentialResponse(response) {
