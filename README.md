@@ -1,28 +1,24 @@
-AgriDirect
-Project Overview
-AgriDirect is a real-time market intelligence platform designed to provide farmers with direct access to markets, cutting out unnecessary middlemen and empowering them with data-driven economic insights.
-
-Problem Statement
-Theme: Agriculture & Economic Empowerment
-
+Project Name: AgriLink
 Problem Statement ID: CS03AE
+Team Name: Kenbriselleris
+College Name: St. Aloysius (deemed to be university)
 
-Challenge: Creating a system for real-time market intelligence and direct market access for farmers.
+Problem statement: Creating a system for real-time market intelligence and direct market access for farmers.
 
-Key Features (Planned)
-Real-time Pricing: Live updates on crop prices from various regional markets.
 
-Direct Marketplace: A platform for farmers to list produce and connect directly with buyers.
+Proposed Solution:A platform where farmers sell directly to buyers and check live market prices to maximize their profit 
 
-Analytics Dashboard: Visual representation of market trends to help farmers decide when to sell.
 
-Notification System: Alerts for price surges or high demand in specific areas.
+Innovation And Creativity:We don't buy the crop; we give the farmer the data and the connection to sell it themselves, maximizing their freedom and profi
 
-Tech Stack
-Frontend: (e.g., HTML/CSS/JS or React)
 
-Backend: Python (Flask/Django) or Node.js
+Technical Complexity and stack:node js, astro, react, mongoDB, API
 
-Database: (e.g., PostgreSQL or MongoDB)
 
-APIs: Real-time market data APIs
+Usability and Impact:
+
+
+Setup Instruction:
+
+
+Presentation/ demo link 
