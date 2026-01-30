@@ -45,10 +45,14 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
 
+        // Update last login
+        user.lastLogin = Date.now();
+        await user.save();
+
         const payload = { user: { id: user.id, role: user.role } };
         jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
             if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+            res.json({ token, user: { id: user.id, name: user.name, role: user.role, lastLogin: user.lastLogin } });
         });
     } catch (err) {
         console.error(err.message);
