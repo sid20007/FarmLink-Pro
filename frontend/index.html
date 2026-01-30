@@ -158,33 +158,57 @@
                 </div>
                 <div>
                     <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">AgriConnect</h1>
-                    <span class="text-[10px] font-bold text-brand-700 uppercase tracking-[0.2em]">Farmer Suite</span>
+                    <span class="text-[10px] font-bold text-brand-700 uppercase tracking-[0.2em]" data-translate="app_subtitle">Farmer Suite</span>
                 </div>
             </div>
 
             <!-- Desktop Nav -->
             <nav class="hidden md:flex bg-earth-100/50 p-1.5 rounded-2xl border border-earth-200/60 backdrop-blur-sm">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800 nav-active">
-                    <i class="fa-solid fa-grid-2 mr-2 opacity-70"></i>Dashboard
+                    <i class="fa-solid fa-grid-2 mr-2 opacity-70"></i><span data-translate="nav_dashboard">Dashboard</span>
                 </button>
                 <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-                    <i class="fa-solid fa-shop mr-2 opacity-70"></i>Market
+                    <i class="fa-solid fa-shop mr-2 opacity-70"></i><span data-translate="nav_market">Market</span>
                 </button>
                 <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-                    <i class="fa-solid fa-chart-pie mr-2 opacity-70"></i>Insights
+                    <i class="fa-solid fa-clipboard-list mr-2 opacity-70"></i><span data-translate="nav_orders">Orders</span>
                 </button>
                 <button onclick="switchTab('profile')" id="nav-profile" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-                    <i class="fa-solid fa-user-circle mr-2 opacity-70"></i>Farm Profile
+                    <i class="fa-solid fa-user-circle mr-2 opacity-70"></i><span data-translate="nav_profile">Farm Profile</span>
                 </button>
             </nav>
 
             <!-- User Actions -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Language Selector (Mobile Friendly) -->
+                <div class="relative">
+                    <button onclick="toggleLangMenu(event)" id="lang-btn" class="flex items-center gap-1 md:gap-2 bg-white border border-earth-200 text-slate-600 px-2 md:px-3 py-2 rounded-xl text-xs font-bold hover:bg-earth-50 transition-colors focus:outline-none active:bg-earth-100">
+                        <i class="fa-solid fa-language text-brand-600 text-base"></i>
+                        <span id="current-lang-label" class="hidden md:inline">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="lang-arrow"></i>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="lang-menu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-earth-100 overflow-hidden hidden z-[100] transform origin-top-right transition-all">
+                        <button onclick="changeLanguage('en')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
+                            English <i class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100" id="check-en"></i>
+                        </button>
+                        <button onclick="changeLanguage('hi')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
+                            हिंदी (Hindi) <i class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100" id="check-hi"></i>
+                        </button>
+                        <button onclick="changeLanguage('mr')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
+                            मराठी (Marathi) <i class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100" id="check-mr"></i>
+                        </button>
+                        <button onclick="changeLanguage('kn')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors flex justify-between items-center group">
+                            ಕನ್ನಡ (Kannada) <i class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100" id="check-kn"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="hidden lg:flex flex-col items-end mr-2">
                     <span class="text-xs font-bold text-slate-900">Pune, IN</span>
                     <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 rounded flex items-center gap-1"><i class="fa-solid fa-cloud-sun"></i> 28°C</span>
                 </div>
-                <div onclick="switchTab('profile')" class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-100 to-earth-100 border-2 border-white p-0.5 cursor-pointer shadow-md hover:shadow-lg transition-all group">
+                <div onclick="switchTab('profile')" class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-tr from-brand-100 to-earth-100 border-2 border-white p-0.5 cursor-pointer shadow-md hover:shadow-lg transition-all group shrink-0">
                     <img id="header-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh" class="w-full h-full rounded-[9px] group-hover:scale-95 transition-transform" alt="Profile">
                 </div>
             </div>
@@ -195,27 +219,27 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-28">
 
         <!-- ================= DASHBOARD VIEW ================= -->
-        <section id="dashboard" class="view-section active space-y-8">
+        <section id="dashboard" class="view-section active space-y-6 md:space-y-8">
             
             <!-- Hero Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Welcome Card -->
-                <div class="lg:col-span-8 bg-gradient-to-br from-brand-900 to-brand-800 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-depth group">
+                <div class="lg:col-span-8 bg-gradient-to-br from-brand-900 to-brand-800 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-depth group min-h-[380px] md:min-h-[420px] flex flex-col justify-between">
                     <!-- Abstract Overlay -->
                     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700"></div>
-                    <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-accent-600 rounded-full mix-blend-overlay filter blur-[80px] opacity-10"></div>
+                    <div class="absolute top-0 right-0 w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-brand-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700"></div>
+                    <div class="absolute bottom-0 left-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-accent-600 rounded-full mix-blend-overlay filter blur-[80px] opacity-10"></div>
                     
-                    <div class="relative z-10 h-full flex flex-col justify-between min-h-[280px]">
+                    <div class="relative z-10">
                         <div class="flex justify-between items-start">
                             <div>
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-bold text-brand-100 mb-4 shadow-sm">
                                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                                    <span>Mandi Live</span>
+                                    <span data-translate="mandi_live">Mandi Live</span>
                                 </div>
-                                <h2 class="font-display font-bold text-3xl md:text-5xl mb-3 tracking-tight">Good Afternoon, <br><span class="text-brand-300 user-name-display">Farmer</span>!</h2>
-                                <p class="text-brand-100/90 max-w-md text-sm md:text-base leading-relaxed">
+                                <h2 class="font-display font-bold text-3xl md:text-5xl mb-3 tracking-tight leading-tight"><span data-translate="good_afternoon">Good Afternoon</span>, <br><span class="text-brand-300 user-name-display">Farmer</span>!</h2>
+                                <p class="text-brand-100/90 max-w-md text-sm md:text-base leading-relaxed" data-translate="market_insight_text">
                                     The market for <span class="font-bold text-white">Hybrid Tomatoes</span> is trending up by 12% today. Perfect time to list your stock.
                                 </p>
                             </div>
@@ -223,26 +247,26 @@
                             <div class="hidden md:block bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-2xl text-center min-w-[100px]">
                                 <i class="fa-solid fa-sun text-3xl text-yellow-400 mb-2 drop-shadow-lg"></i>
                                 <div class="text-2xl font-bold font-display">28°</div>
-                                <div class="text-[10px] uppercase font-bold text-brand-200 tracking-wider">Sunny</div>
+                                <div class="text-[10px] uppercase font-bold text-brand-200 tracking-wider" data-translate="sunny">Sunny</div>
                             </div>
                         </div>
+                    </div>
                         
-                        <div class="mt-8 flex flex-wrap gap-4">
-                            <button onclick="openModal()" class="bg-white text-brand-900 px-7 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-black/10 hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center gap-2 group-btn">
-                                <span class="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 group-hover:bg-brand-600 group-hover:text-white transition-colors"><i class="fa-solid fa-plus text-xs"></i></span>
-                                Create Listing
-                            </button>
-                            <button onclick="switchTab('marketplace')" class="bg-brand-950/30 hover:bg-brand-950/50 border border-white/20 text-white px-7 py-3.5 rounded-2xl font-bold text-sm backdrop-blur-md transition-all">
-                                View Orders (4)
-                            </button>
-                        </div>
+                    <div class="relative z-10 mt-8 flex flex-wrap gap-3 md:gap-4">
+                        <button onclick="openModal()" class="bg-white text-brand-900 px-6 md:px-7 py-3 md:py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-black/10 hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center gap-2 group-btn w-full md:w-auto justify-center">
+                            <span class="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 group-hover:bg-brand-600 group-hover:text-white transition-colors"><i class="fa-solid fa-plus text-xs"></i></span>
+                            <span data-translate="create_listing">Create Listing</span>
+                        </button>
+                        <button onclick="switchTab('analytics')" class="bg-brand-950/30 hover:bg-brand-950/50 border border-white/20 text-white px-6 md:px-7 py-3 md:py-3.5 rounded-2xl font-bold text-sm backdrop-blur-md transition-all w-full md:w-auto">
+                            <span data-translate="view_orders_btn">View Orders (4)</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Right Column: Stats & Tasks -->
+                <!-- Right Column: Revenue & Market Price Ticker -->
                 <div class="lg:col-span-4 flex flex-col gap-6">
                     <!-- Revenue Card -->
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-earth-100 shadow-card flex-1 flex flex-col justify-center hover:translate-y-[-4px] transition-transform duration-300 relative overflow-hidden">
+                    <div class="bg-white p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex flex-col justify-center hover:translate-y-[-4px] transition-transform duration-300 relative overflow-hidden h-[160px] shrink-0">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50"></div>
                         <div class="flex items-center justify-between mb-4 relative z-10">
                             <div class="w-12 h-12 bg-earth-50 rounded-2xl flex items-center justify-center text-brand-700 text-xl shadow-sm border border-earth-100">
@@ -252,25 +276,18 @@
                                 <i class="fa-solid fa-arrow-trend-up"></i> +18%
                             </span>
                         </div>
-                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1">Total Revenue</p>
+                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1" data-translate="total_revenue">Total Revenue</p>
                         <h3 class="text-4xl font-display font-bold text-slate-900 tracking-tight">₹48,200</h3>
                     </div>
 
-                    <!-- Daily Tasks (New Feature) -->
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-earth-100 shadow-card flex-1 flex flex-col relative z-0">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="font-bold text-slate-900 text-sm">Farm Tasks</h4>
-                            <button class="text-[10px] font-bold bg-brand-50 text-brand-700 px-2 py-1 rounded-lg hover:bg-brand-100 transition-colors">Add New</button>
+                    <!-- Market Ticker (Moved Here) -->
+                    <div class="bg-white p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex-1 flex flex-col relative overflow-hidden h-full min-h-[300px]">
+                         <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-line text-brand-500"></i> <span data-translate="live_rates">Live Rates</span></h4>
+                            <button onclick="switchTab('analytics')" class="text-[10px] font-bold bg-brand-50 text-brand-700 px-2 py-1 rounded-lg hover:bg-brand-100 transition-colors" data-translate="see_orders">See Orders</button>
                         </div>
-                        <div class="space-y-3">
-                            <label class="flex items-center gap-3 p-2 hover:bg-earth-50 rounded-xl cursor-pointer transition-colors group">
-                                <input type="checkbox" class="w-5 h-5 rounded-md border-slate-300 text-brand-600 focus:ring-brand-500 rounded border-2">
-                                <span class="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Fertilize Tomato Field</span>
-                            </label>
-                            <label class="flex items-center gap-3 p-2 hover:bg-earth-50 rounded-xl cursor-pointer transition-colors group">
-                                <input type="checkbox" class="w-5 h-5 rounded-md border-slate-300 text-brand-600 focus:ring-brand-500 rounded border-2">
-                                <span class="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Check Irrigation Pump</span>
-                            </label>
+                        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3" id="hero-price-ticker">
+                            <!-- Injected by JS -->
                         </div>
                     </div>
                 </div>
@@ -279,11 +296,11 @@
             <!-- REQUESTS & NEGOTIATIONS -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Buyer Requests Feed -->
-                <div class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-earth-100 shadow-card">
+                <div class="lg:col-span-2 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card">
                     <div class="flex items-center justify-between mb-8">
                         <div>
-                            <h3 class="font-display font-bold text-slate-900 text-xl">Direct Buyer Requests</h3>
-                            <p class="text-xs text-slate-500 font-medium mt-1">Verified businesses looking for your crops</p>
+                            <h3 class="font-display font-bold text-slate-900 text-xl" data-translate="direct_requests">Direct Buyer Requests</h3>
+                            <p class="text-xs text-slate-500 font-medium mt-1" data-translate="verified_msg">Verified businesses looking for your crops</p>
                         </div>
                         <span class="flex h-3 w-3 relative">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
@@ -304,8 +321,8 @@
                                 <p class="text-sm text-slate-600 leading-snug">Requires <span class="font-bold text-slate-900">2 Tons Tomatoes (Hybrid)</span> delivered to Pune Warehouse.</p>
                             </div>
                             <div class="flex sm:flex-col gap-2 shrink-0">
-                                <button onclick="handleRequest('req-1', 'accepted')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95">Accept</button>
-                                <button onclick="handleRequest('req-1', 'declined')" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95">Decline</button>
+                                <button onclick="handleRequest('req-1', 'accepted')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95" data-translate="accept">Accept</button>
+                                <button onclick="handleRequest('req-1', 'declined')" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95" data-translate="decline">Decline</button>
                             </div>
                         </div>
                         
@@ -322,24 +339,24 @@
                                 <p class="text-sm text-slate-600 leading-snug">Requires <span class="font-bold text-slate-900">500 Kg Red Onions</span> delivered to Shivajinagar.</p>
                             </div>
                             <div class="flex sm:flex-col gap-2 shrink-0">
-                                <button onclick="handleRequest('req-2', 'accepted')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95">Accept</button>
-                                <button onclick="handleRequest('req-2', 'declined')" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95">Decline</button>
+                                <button onclick="handleRequest('req-2', 'accepted')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95" data-translate="accept">Accept</button>
+                                <button onclick="handleRequest('req-2', 'declined')" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95" data-translate="decline">Decline</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Active Negotiations -->
-                <div class="bg-white p-8 rounded-[2.5rem] border border-earth-100 shadow-card flex flex-col">
+                <div class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex flex-col">
                     <div class="flex items-center justify-between mb-8">
-                        <h3 class="font-display font-bold text-slate-900 text-xl">Negotiations</h3>
+                        <h3 class="font-display font-bold text-slate-900 text-xl" data-translate="negotiations">Negotiations</h3>
                         <span class="text-xs font-bold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-100">2 Active</span>
                     </div>
                     <div class="space-y-4 flex-1 overflow-y-auto max-h-[400px] pr-1 custom-scrollbar">
                         <div class="p-4 rounded-2xl bg-earth-50 border border-transparent hover:border-brand-200 transition-all cursor-pointer group hover:bg-white hover:shadow-md">
                             <div class="flex justify-between items-start mb-2">
                                 <p class="text-sm font-bold text-slate-800">Deal #4029 - Wheat</p>
-                                <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">Counter Offer</span>
+                                <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100" data-translate="counter_offer">Counter Offer</span>
                             </div>
                             <div class="flex justify-between text-xs text-slate-500 mb-3">
                                 <span>Bid: ₹2,400</span>
@@ -351,29 +368,15 @@
                         <div class="p-4 rounded-2xl bg-earth-50 border border-transparent hover:border-brand-200 transition-all cursor-pointer group hover:bg-white hover:shadow-md">
                             <div class="flex justify-between items-start mb-2">
                                 <p class="text-sm font-bold text-slate-800">Deal #4035 - Corn</p>
-                                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">Waiting</span>
+                                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100" data-translate="waiting">Waiting</span>
                             </div>
-                            <p class="text-xs text-slate-500 mb-3">Proposal sent to buyer.</p>
+                            <p class="text-xs text-slate-500 mb-3" data-translate="proposal_sent">Proposal sent to buyer.</p>
                             <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-blue-500 h-full rounded-full w-[30%]"></div></div>
                         </div>
                     </div>
                     <button class="w-full mt-6 py-4 text-xs font-bold text-slate-600 border border-slate-200 rounded-xl hover:bg-earth-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
-                        View History
+                        <span data-translate="view_history">View History</span>
                     </button>
-                </div>
-            </div>
-
-            <!-- Market Ticker -->
-            <div class="pt-4">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-xl font-display font-bold text-slate-900">Mandi Market Prices</h3>
-                        <p class="text-xs text-slate-500">Real-time updates from Pune APMC</p>
-                    </div>
-                    <a href="#" onclick="switchTab('analytics')" class="text-xs font-bold text-white bg-slate-900 px-4 py-2 rounded-full hover:bg-slate-800 flex items-center gap-2 transition-colors">Full Report <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="price-ticker">
-                    <!-- JS Injected Cards -->
                 </div>
             </div>
         </section>
@@ -385,13 +388,13 @@
                 <div class="flex flex-col md:flex-row gap-5">
                     <div class="relative flex-1 group">
                         <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
-                        <input type="text" id="market-search" placeholder="Search crops, buyers, or locations..." class="w-full bg-earth-50 border-2 border-transparent hover:border-earth-200 focus:border-brand-500 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400" onkeyup="filterMarketplace()">
+                        <input type="text" id="market-search" placeholder="Search crops, buyers, or locations..." class="w-full bg-earth-50 border-2 border-transparent hover:border-earth-200 focus:border-brand-500 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400" onkeyup="filterMarketplace()" data-translate-placeholder="search_market_placeholder">
                     </div>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 md:pb-0">
-                        <button onclick="filterCategory('all')" class="market-filter active px-6 py-3.5 bg-brand-900 text-white rounded-2xl text-xs font-bold whitespace-nowrap shadow-lg shadow-brand-900/20 transition-all hover:bg-brand-800">All Stock</button>
-                        <button onclick="filterCategory('vegetable')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all">Vegetables</button>
-                        <button onclick="filterCategory('grain')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all">Grains</button>
-                        <button onclick="filterCategory('fruit')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all">Fruits</button>
+                        <button onclick="filterCategory('all')" class="market-filter active px-6 py-3.5 bg-brand-900 text-white rounded-2xl text-xs font-bold whitespace-nowrap shadow-lg shadow-brand-900/20 transition-all hover:bg-brand-800" data-translate="all_stock">All Stock</button>
+                        <button onclick="filterCategory('vegetable')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all" data-translate="vegetables">Vegetables</button>
+                        <button onclick="filterCategory('grain')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all" data-translate="grains">Grains</button>
+                        <button onclick="filterCategory('fruit')" class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all" data-translate="fruits">Fruits</button>
                     </div>
                 </div>
             </div>
@@ -406,92 +409,99 @@
                 <div class="w-24 h-24 bg-earth-100 rounded-full flex items-center justify-center text-slate-300 text-4xl mb-6">
                     <i class="fa-solid fa-leaf"></i>
                 </div>
-                <h3 class="text-xl font-bold text-slate-800">No listings found</h3>
+                <h3 class="text-xl font-bold text-slate-800" data-translate="no_listings">No listings found</h3>
                 <p class="text-sm text-slate-500 mt-2">Try adjusting your filters or search terms.</p>
             </div>
         </section>
 
-        <!-- ================= ANALYTICS VIEW ================= -->
+        <!-- ================= ORDERS VIEW (Formerly Analytics) ================= -->
         <section id="analytics" class="view-section space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="font-display font-bold text-3xl text-slate-900">Market Intelligence</h2>
-                    <p class="text-slate-500 text-sm font-medium mt-1">Data-driven insights for better pricing.</p>
+                    <h2 class="font-display font-bold text-3xl text-slate-900" data-translate="order_mgmt">Order Management</h2>
+                    <p class="text-slate-500 text-sm font-medium mt-1" data-translate="track_sales">Track and manage your sales efficiently.</p>
                 </div>
-                <button class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> Download Report
-                </button>
+                <div class="flex gap-2">
+                    <button class="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20 flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> <span data-translate="export_report">Export Report</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl border border-green-100">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-translate="total_revenue">Total Revenue</p>
+                        <h3 class="text-2xl font-display font-bold text-slate-900">₹41,700</h3>
+                        <span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">+12% vs last month</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl border border-blue-100">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-translate="total_orders">Total Orders</p>
+                        <h3 class="text-2xl font-display font-bold text-slate-900">142</h3>
+                        <p class="text-xs text-slate-500 font-bold" data-translate="lifetime_sales">Lifetime Sales</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-translate="pending">Pending</p>
+                        <h3 class="text-2xl font-display font-bold text-slate-900">3</h3>
+                        <p class="text-xs text-slate-500 font-bold" data-translate="requires_action">Requires Action</p>
+                    </div>
+                </div>
             </div>
         
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Demand Analysis Card -->
-                <div class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-earth-100 shadow-card">
-                     <div class="flex justify-between items-center mb-8">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-lg">Regional Demand</h3>
-                            <p class="text-xs text-slate-400">Buyer search volume (Last 24h)</p>
-                        </div>
-                        <span class="text-[10px] font-bold bg-brand-50 text-brand-700 px-3 py-1 rounded-full border border-brand-100 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span> Live
-                        </span>
-                     </div>
-                     <div class="space-y-6">
-                        <div class="group">
-                            <div class="flex justify-between text-xs font-bold mb-2">
-                                <span class="text-slate-600">Mumbai</span>
-                                <span class="text-slate-900">Very High</span>
-                            </div>
-                            <div class="h-4 bg-earth-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full w-[85%] group-hover:scale-x-105 transition-transform origin-left"></div>
-                            </div>
-                        </div>
-                        <div class="group">
-                            <div class="flex justify-between text-xs font-bold mb-2">
-                                <span class="text-slate-600">Pune</span>
-                                <span class="text-slate-900">High</span>
-                            </div>
-                            <div class="h-4 bg-earth-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-brand-300 to-brand-500 rounded-full w-[65%] group-hover:scale-x-105 transition-transform origin-left"></div>
-                            </div>
-                        </div>
-                        <div class="group">
-                            <div class="flex justify-between text-xs font-bold mb-2">
-                                <span class="text-slate-600">Nashik</span>
-                                <span class="text-slate-900">Moderate</span>
-                            </div>
-                            <div class="h-4 bg-earth-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-brand-200 to-brand-400 rounded-full w-[40%] group-hover:scale-x-105 transition-transform origin-left"></div>
-                            </div>
-                        </div>
-                     </div>
+            <!-- Orders Container -->
+            <div class="bg-white rounded-[2.5rem] border border-earth-100 shadow-card overflow-hidden">
+                <!-- Filters/Tabs -->
+                <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-slate-50/50">
+                    <div class="flex p-1 bg-white border border-slate-200 rounded-xl w-full md:w-auto overflow-x-auto">
+                        <button onclick="filterOrders('All')" class="order-tab active px-5 py-2 rounded-lg text-xs font-bold transition-all bg-slate-900 text-white shadow-md whitespace-nowrap" id="tab-All" data-translate="tab_all">All</button>
+                        <button onclick="filterOrders('Pending')" class="order-tab px-5 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap" id="tab-Pending" data-translate="tab_pending">Pending</button>
+                        <button onclick="filterOrders('Completed')" class="order-tab px-5 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap" id="tab-Completed" data-translate="tab_completed">Completed</button>
+                    </div>
+                    <div class="relative w-full md:w-64 group">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-slate-400 group-focus-within:text-brand-500 transition-colors text-xs"></i>
+                        <input type="text" id="order-search" placeholder="Search Order ID or Buyer..." class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs font-bold outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" onkeyup="searchOrders()" data-translate-placeholder="search_placeholder">
+                    </div>
                 </div>
-        
-                <!-- Logistics/Weather Card -->
-                <div class="bg-gradient-to-b from-slate-800 to-slate-900 p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
-                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500 rounded-full blur-[80px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                     <div class="relative z-10">
-                         <div class="flex justify-between items-center mb-8">
-                             <h3 class="font-bold text-slate-100 text-lg">Logistics</h3>
-                             <i class="fa-solid fa-truck-fast text-slate-400"></i>
-                         </div>
-                         <div class="space-y-5">
-                             <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                                <span class="text-xs font-bold text-slate-300">Highways</span>
-                                <span class="text-[10px] font-bold bg-green-500/20 text-green-300 px-2 py-1 rounded">Clear</span>
-                             </div>
-                             <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                                <span class="text-xs font-bold text-slate-300">Weather</span>
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-solid fa-cloud-sun text-yellow-400"></i>
-                                    <span class="text-[10px] text-slate-200">Good Visibility</span>
-                                </div>
-                             </div>
-                             <div class="mt-6">
-                                 <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-2">Recommendation</p>
-                                 <p class="text-xs text-white leading-relaxed font-medium">Dispatch Pune shipments tomorrow at <span class="text-brand-300">05:00 AM</span> to avoid congestion at toll plaza.</p>
-                             </div>
-                         </div>
-                     </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead class="bg-slate-50 text-slate-500">
+                            <tr class="text-xs uppercase tracking-wider">
+                                <th class="py-4 pl-6 font-bold w-32" data-translate="th_id">Order ID</th>
+                                <th class="py-4 font-bold" data-translate="th_product">Product & Buyer</th>
+                                <th class="py-4 font-bold" data-translate="th_date">Date</th>
+                                <th class="py-4 font-bold" data-translate="th_amount">Amount</th>
+                                <th class="py-4 font-bold" data-translate="th_status">Status</th>
+                                <th class="py-4 pr-6 font-bold text-right" data-translate="th_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-order-table-body" class="text-sm font-medium text-slate-700 divide-y divide-slate-100">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination (Visual Only) -->
+                <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-white">
+                    <span class="text-xs text-slate-400 font-bold ml-2">Showing 1-4 of 4 orders</span>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 flex items-center justify-center hover:bg-slate-50 cursor-not-allowed opacity-50"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button class="w-8 h-8 rounded-lg border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-50 hover:text-brand-600"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -501,43 +511,51 @@
             <!-- Profile Header -->
             <div class="relative bg-white rounded-[2.5rem] shadow-card overflow-hidden border border-earth-100">
                 <!-- Cover Image -->
-                <div class="h-48 bg-slate-800 relative overflow-hidden">
+                <div class="h-40 md:h-48 bg-slate-800 relative overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover opacity-60">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <button class="absolute top-4 right-4 bg-black/30 backdrop-blur text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-black/50 transition-colors border border-white/20">
-                        <i class="fa-solid fa-camera mr-1"></i> Edit Cover
+                        <i class="fa-solid fa-camera mr-1"></i> <span data-translate="edit_cover">Edit Cover</span>
                     </button>
                 </div>
                 
-                <div class="px-8 pb-8 relative">
-                    <div class="flex flex-col md:flex-row items-center md:items-end -mt-16 mb-6 gap-6">
-                        <div class="w-32 h-32 rounded-[2rem] bg-white p-1.5 shadow-xl relative group z-10">
+                <div class="px-6 md:px-8 pb-8 relative">
+                    <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 md:-mt-16 mb-6 gap-4 md:gap-6">
+                        <div class="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-white p-1.5 shadow-xl relative group z-10">
                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh" class="w-full h-full rounded-[1.5rem] bg-slate-50 object-cover" alt="Profile">
-                            <div class="absolute bottom-1 right-1 w-8 h-8 bg-brand-500 rounded-full border-4 border-white flex items-center justify-center text-white text-xs shadow-sm">
+                            <div class="absolute bottom-1 right-1 w-6 h-6 md:w-8 md:h-8 bg-brand-500 rounded-full border-4 border-white flex items-center justify-center text-white text-[10px] md:text-xs shadow-sm">
                                 <i class="fa-solid fa-check"></i>
                             </div>
                         </div>
                         <div class="flex-1 text-center md:text-left mb-2">
-                            <h2 class="text-3xl font-display font-bold text-slate-900 user-name-display mb-1">Rajesh Kumar</h2>
-                            <p class="text-sm text-slate-500 font-bold user-farm-display flex items-center justify-center md:justify-start gap-2">
+                            <h2 class="text-2xl md:text-3xl font-display font-bold text-slate-900 user-name-display mb-1">Rajesh Kumar</h2>
+                            <p class="text-xs md:text-sm text-slate-500 font-bold user-farm-display flex items-center justify-center md:justify-start gap-2">
                                 <i class="fa-solid fa-tractor text-brand-500"></i> Green Valley Farms • Pune, MH
                             </p>
                         </div>
                         <button onclick="toggleEditProfile()" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-800 shadow-lg shadow-slate-900/20">
-                            Edit Profile
+                            <span data-translate="edit_profile">Edit Profile</span>
                         </button>
                     </div>
 
-                    <!-- My Crops Tags (New) -->
-                    <div class="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
-                        <span class="px-3 py-1 bg-earth-100 text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🍅 Tomatoes</span>
-                        <span class="px-3 py-1 bg-earth-100 text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🌾 Wheat</span>
-                        <span class="px-3 py-1 bg-earth-100 text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🧅 Onions</span>
-                        <button class="px-3 py-1 border border-dashed border-slate-300 text-slate-400 rounded-lg text-xs font-bold hover:border-brand-500 hover:text-brand-600 transition-colors">+ Add Crop</button>
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-3 gap-4 border-t border-earth-100 pt-6">
+                        <div class="text-center md:text-left">
+                            <span class="block text-xl md:text-2xl font-display font-bold text-slate-900" id="profile-listings-count">0</span>
+                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider" data-translate="active_listings">Active Listings</span>
+                        </div>
+                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
+                            <span class="block text-xl md:text-2xl font-display font-bold text-slate-900 flex items-center justify-center md:justify-start gap-1">4.8 <i class="fa-solid fa-star text-sm text-yellow-400"></i></span>
+                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider" data-translate="buyer_rating">Buyer Rating</span>
+                        </div>
+                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
+                            <span class="block text-xl md:text-2xl font-display font-bold text-slate-900">3 <span class="text-sm text-slate-400 font-normal">Yrs</span></span>
+                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider" data-translate="membership">Membership</span>
+                        </div>
                     </div>
 
                     <!-- Edit Form -->
-                    <div id="edit-profile-form" class="hidden mt-6 mb-6 p-6 bg-earth-50 rounded-2xl border border-earth-100">
+                    <div id="edit-profile-form" class="hidden mt-6 p-6 bg-earth-50 rounded-2xl border border-earth-100">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full Name</label>
@@ -561,20 +579,41 @@
                             <button onclick="saveProfile()" class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/20 hover:bg-brand-700">Save Changes</button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Stats Row -->
-                    <div class="grid grid-cols-3 gap-4 border-t border-earth-100 pt-6">
-                        <div class="text-center md:text-left">
-                            <span class="block text-2xl font-display font-bold text-slate-900" id="profile-listings-count">0</span>
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Listings</span>
+            <!-- Profile Info Grid -->
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Personal Details -->
+                <div class="bg-white p-6 rounded-[2.5rem] border border-earth-100 shadow-card">
+                    <h3 class="font-display font-bold text-slate-900 text-lg mb-4" data-translate="personal_info">Personal Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
+                                <p class="font-bold text-slate-800 text-sm user-email-display">farmer@agriconnect.com</p>
+                            </div>
                         </div>
-                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
-                            <span class="block text-2xl font-display font-bold text-slate-900 flex items-center justify-center md:justify-start gap-1">4.8 <i class="fa-solid fa-star text-sm text-yellow-400"></i></span>
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Buyer Rating</span>
+                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Phone</p>
+                                <p class="font-bold text-slate-800 text-sm user-phone-display">+91 98765 43210</p>
+                            </div>
                         </div>
-                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
-                            <span class="block text-2xl font-display font-bold text-slate-900">3 <span class="text-sm text-slate-400 font-normal">Yrs</span></span>
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Membership</span>
+                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Address</p>
+                                <p class="font-bold text-slate-800 text-sm user-address-display">Plot 45, Indrayani Nagar, Pune</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -582,7 +621,15 @@
 
             <!-- My History -->
             <div class="px-2">
-                <h3 class="font-display font-bold text-xl text-slate-900 mb-4">Inventory History</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-display font-bold text-xl text-slate-900" data-translate="my_inventory">My Products / Inventory</h3>
+                    <!-- My Crops Tags -->
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🍅 Tomatoes</span>
+                        <span class="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🌾 Wheat</span>
+                        <button class="px-3 py-1 border border-dashed border-slate-300 text-slate-400 rounded-lg text-xs font-bold hover:border-brand-500 hover:text-brand-600 transition-colors">+ Add</button>
+                    </div>
+                </div>
                 <div id="profile-history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Populated by JS -->
                 </div>
@@ -598,13 +645,13 @@
                 <div class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
                     <i class="fa-solid fa-grid-2 text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold">Home</span>
+                <span class="text-[10px] font-bold" data-translate="nav_dashboard">Home</span>
             </button>
             <button onclick="switchTab('marketplace')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group" id="mob-marketplace">
                 <div class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
                     <i class="fa-solid fa-shop text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold">Market</span>
+                <span class="text-[10px] font-bold" data-translate="nav_market">Market</span>
             </button>
             
             <!-- Floating FAB -->
@@ -616,15 +663,15 @@
 
             <button onclick="switchTab('analytics')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group" id="mob-analytics">
                 <div class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
-                    <i class="fa-solid fa-chart-pie text-lg"></i>
+                    <i class="fa-solid fa-clipboard-list text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold">Trends</span>
+                <span class="text-[10px] font-bold" data-translate="nav_orders">Orders</span>
             </button>
             <button onclick="switchTab('profile')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group" id="mob-profile">
                 <div class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
                     <i class="fa-solid fa-user-circle text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold">Farm</span>
+                <span class="text-[10px] font-bold" data-translate="nav_profile">Farm</span>
             </button>
         </div>
     </nav>
@@ -639,7 +686,7 @@
             
             <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-earth-50/50 rounded-t-[2.5rem]">
                 <div>
-                    <h3 class="text-xl font-display font-bold text-slate-900">New Listing</h3>
+                    <h3 class="text-xl font-display font-bold text-slate-900" data-translate="new_listing">New Listing</h3>
                     <p class="text-xs text-slate-500 font-medium mt-1">Connect with 500+ verified buyers</p>
                 </div>
                 <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors">
@@ -700,7 +747,7 @@
             </div>
 
             <div class="p-6 border-t border-slate-100 bg-white md:rounded-b-[2.5rem]">
-                <button onclick="submitListing()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/20 active:scale-95 transition-all text-sm tracking-wide">
+                <button onclick="submitListing()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/20 active:scale-95 transition-all text-sm tracking-wide" data-translate="publish">
                     Publish Listing
                 </button>
             </div>
@@ -710,11 +757,14 @@
     <script>
         // --- State Management ---
         const state = {
+            currentLang: 'en',
             user: {
                 name: 'Rajesh Kumar',
                 farmName: 'Green Valley Farms',
                 location: 'Pune, Maharashtra',
                 phone: '+91 98765 43210',
+                email: 'rajesh.kumar@agriconnect.com',
+                address: 'Plot No. 45, Indrayani Nagar, Talegaon Dabhade, Pune - 410507',
                 avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh',
                 joined: '3 yrs'
             },
@@ -723,6 +773,14 @@
                 { id: 2, name: 'Onion (Red)', price: 1850, trend: 'up', change: 5.1 },
                 { id: 3, name: 'Soybean', price: 4100, trend: 'down', change: 1.2 },
                 { id: 4, name: 'Tomato (Hybrid)', price: 1200, trend: 'stable', change: 0.0 },
+                { id: 5, name: 'Potato (Indore)', price: 1500, trend: 'up', change: 1.8 },
+                { id: 6, name: 'Cotton', price: 6200, trend: 'down', change: 0.5 },
+            ],
+            orders: [
+                { id: 'ORD-7782', buyer: 'Reliance Fresh', item: 'Organic Tomatoes', category: 'vegetable', qty: '500 kg', date: '28 Jan', amount: 11000, status: 'Completed' },
+                { id: 'ORD-7783', buyer: 'Grand Maratha Hotel', item: 'Onions (Red)', category: 'vegetable', qty: '150 kg', date: '26 Jan', amount: 4500, status: 'Pending' },
+                { id: 'ORD-7784', buyer: 'BigBasket', item: 'Wheat (Grade A)', category: 'grain', qty: '1 Ton', date: '20 Jan', amount: 25000, status: 'Completed' },
+                { id: 'ORD-7785', buyer: 'Local Market Vendor', item: 'Spinach Bunch', category: 'vegetable', qty: '200 units', date: '15 Jan', amount: 1200, status: 'Completed' },
             ],
             listings: [
                 { id: 1, name: 'Fresh Organic Tomatoes', category: 'vegetable', price: 22, qty: '500 kg', farmer: 'Rajesh Kumar', loc: 'Pune, MH', time: '2h ago', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=600', verified: true, isMine: true },
@@ -732,12 +790,398 @@
             ]
         };
 
+        // --- Translation Dictionary ---
+        const product_names = {
+            'Wheat': { hi: 'गेहूँ', mr: 'गहू', kn: 'ಗೋಧಿ' },
+            'Onion': { hi: 'प्याज़', mr: 'कांदा', kn: 'ಈರುಳ್ಳಿ' },
+            'Soybean': { hi: 'सोयाबीन', mr: 'सोयाबीन', kn: 'ಸೋಯಾಬೀನ್' },
+            'Tomato': { hi: 'टमाटर', mr: 'टोमॅटो', kn: 'ಟೊಮೆಟೊ' },
+            'Tomatoes': { hi: 'टमाटर', mr: 'टोमॅटो', kn: 'ಟೊಮೆಟೊ' },
+            'Potato': { hi: 'आलू', mr: 'बटाटा', kn: 'ಆಲೂಗಡ್ಡೆ' },
+            'Cotton': { hi: 'कपास', mr: 'कापूस', kn: 'ಹತ್ತಿ' },
+            'Rice': { hi: 'चावल', mr: 'तांदूळ', kn: 'ಅಕ್ಕಿ' },
+            'Corn': { hi: 'मक्का', mr: 'मका', kn: 'ಜೋಳ' },
+            'Maize': { hi: 'मक्का', mr: 'मका', kn: 'ಜೋಳ' },
+            'Orange': { hi: 'संतरा', mr: 'संत्री', kn: 'ಕಿತ್ತಳೆ' },
+            'Oranges': { hi: 'संतरा', mr: 'संत्री', kn: 'ಕಿತ್ತಳೆ' },
+            'Spinach': { hi: 'पालक', mr: 'पालक', kn: 'ಪಾಲಕ್' },
+            'Organic': { hi: 'जैविक', mr: 'सेंद्रिय', kn: 'ಸಾವಯವ' },
+            'Fresh': { hi: 'ताज़ा', mr: 'ताजे', kn: 'ತಾಜಾ' },
+            'Yellow': { hi: 'पीला', mr: 'पिवळा', kn: 'ಹಳದಿ' },
+            'Red': { hi: 'लाल', mr: 'लाल', kn: 'ಕೆಂಪು' },
+            'Premium': { hi: 'प्रीमियम', mr: 'प्रीमियम', kn: 'ಪ್ರೀಮಿಯಂ' }
+        };
+
+        const translations = {
+            en: {
+                app_subtitle: "Farmer Suite",
+                nav_dashboard: "Dashboard",
+                nav_market: "Market",
+                nav_orders: "Orders",
+                nav_profile: "Farm Profile",
+                mandi_live: "Mandi Live",
+                good_afternoon: "Good Afternoon",
+                market_insight_text: "The market for <span class='font-bold text-white'>Hybrid Tomatoes</span> is trending up by 12% today.",
+                sunny: "Sunny",
+                create_listing: "Create Listing",
+                view_orders_btn: "View Orders",
+                total_revenue: "Total Revenue",
+                live_rates: "Live Rates",
+                see_orders: "See Orders",
+                direct_requests: "Direct Buyer Requests",
+                verified_msg: "Verified businesses looking for your crops",
+                accept: "Accept",
+                decline: "Decline",
+                negotiations: "Negotiations",
+                waiting: "Waiting",
+                view_history: "View History",
+                all_stock: "All Stock",
+                vegetables: "Vegetables",
+                grains: "Grains",
+                fruits: "Fruits",
+                no_listings: "No listings found",
+                order_mgmt: "Order Management",
+                track_sales: "Track and manage your sales efficiently.",
+                export_report: "Export Report",
+                total_orders: "Total Orders",
+                lifetime_sales: "Lifetime Sales",
+                pending: "Pending",
+                requires_action: "Requires Action",
+                tab_all: "All",
+                tab_pending: "Pending",
+                tab_completed: "Completed",
+                th_id: "Order ID",
+                th_product: "Product & Buyer",
+                th_date: "Date",
+                th_amount: "Amount",
+                th_status: "Status",
+                th_actions: "Actions",
+                edit_cover: "Edit Cover",
+                edit_profile: "Edit Profile",
+                active_listings: "Active Listings",
+                buyer_rating: "Buyer Rating",
+                membership: "Membership",
+                personal_info: "Personal Information",
+                recent_sales: "Recent Orders (Sales)",
+                view_all_orders: "View All Orders",
+                my_inventory: "My Products / Inventory",
+                new_listing: "New Listing",
+                publish: "Publish Listing",
+                avg_quintal: "Avg / Quintal",
+                verified: "VERIFIED",
+                my_stock: "MY STOCK",
+                view_details: "View Details",
+                no_orders: "No orders found.",
+                counter_offer: "Counter Offer",
+                proposal_sent: "Proposal sent to buyer.",
+                search_placeholder: "Search Order ID or Buyer...",
+                search_market_placeholder: "Search crops, buyers...",
+                completed: "Completed",
+                cancelled: "Cancelled"
+            },
+            hi: {
+                app_subtitle: "किसान सुइट",
+                nav_dashboard: "डैशबोर्ड",
+                nav_market: "बाज़ार",
+                nav_orders: "ऑर्डर्स",
+                nav_profile: "प्रोफ़ाइल",
+                mandi_live: "मंडी लाइव",
+                good_afternoon: "शुभ दोपहर",
+                market_insight_text: "आज <span class='font-bold text-white'>हाइब्रिड टमाटर</span> का बाज़ार 12% ऊपर है। बेचने का सही समय।",
+                sunny: "धूप",
+                create_listing: "नई लिस्टिंग",
+                view_orders_btn: "ऑर्डर देखें",
+                total_revenue: "कुल कमाई",
+                live_rates: "ताज़ा भाव",
+                see_orders: "ऑर्डर देखें",
+                direct_requests: "सीधे खरीदार अनुरोध",
+                verified_msg: "आपकी फसल के लिए सत्यापित खरीदार",
+                accept: "स्वीकार करें",
+                decline: "अस्वीकार करें",
+                negotiations: "बातचीत",
+                waiting: "प्रतीक्षा",
+                view_history: "इतिहास देखें",
+                all_stock: "सभी स्टॉक",
+                vegetables: "सब्जियां",
+                grains: "अनाज",
+                fruits: "फल",
+                no_listings: "कोई लिस्टिंग नहीं मिली",
+                order_mgmt: "ऑर्डर प्रबंधन",
+                track_sales: "अपनी बिक्री को कुशलतापूर्वक ट्रैक करें।",
+                export_report: "रिपोर्ट डाउनलोड",
+                total_orders: "कुल ऑर्डर",
+                lifetime_sales: "जीवनकाल बिक्री",
+                pending: "लंबित",
+                requires_action: "कार्रवाई आवश्यक",
+                tab_all: "सभी",
+                tab_pending: "लंबित",
+                tab_completed: "पूर्ण",
+                th_id: "ऑर्डर आईडी",
+                th_product: "उत्पाद और खरीदार",
+                th_date: "दिनांक",
+                th_amount: "राशि",
+                th_status: "स्थिति",
+                th_actions: "कार्रवाई",
+                edit_cover: "कवर बदलें",
+                edit_profile: "प्रोफ़ाइल बदलें",
+                active_listings: "सक्रिय लिस्टिंग",
+                buyer_rating: "खरीदार रेटिंग",
+                membership: "सदस्यता",
+                personal_info: "व्यक्तिगत जानकारी",
+                recent_sales: "हाल के ऑर्डर (बिक्री)",
+                view_all_orders: "सभी ऑर्डर देखें",
+                my_inventory: "मेरे उत्पाद / इन्वेंटरी",
+                new_listing: "नई लिस्टिंग",
+                publish: "लिस्टिंग प्रकाशित करें",
+                avg_quintal: "औसत / क्विंटल",
+                verified: "सत्यापित",
+                my_stock: "मेरा स्टॉक",
+                view_details: "विवरण देखें",
+                no_orders: "कोई ऑर्डर नहीं मिला।",
+                counter_offer: "जवाबी पेशकश",
+                proposal_sent: "प्रस्ताव भेजा गया।",
+                search_placeholder: "ऑर्डर आईडी या खरीदार खोजें...",
+                search_market_placeholder: "फसल या खरीदार खोजें...",
+                completed: "पूर्ण",
+                cancelled: "रद्द"
+            },
+            mr: {
+                app_subtitle: "शेतकरी सुइट",
+                nav_dashboard: "डॅशबोर्ड",
+                nav_market: "बाजार",
+                nav_orders: "ऑर्डर्स",
+                nav_profile: "प्रोफाइल",
+                mandi_live: "मंडी लाइव",
+                good_afternoon: "शुभ दुपार",
+                market_insight_text: "आज <span class='font-bold text-white'>हायब्रिड टोमॅटो</span> मार्केट 12% वर आहे. विक्रीची योग्य वेळ.",
+                sunny: "सूर्यप्रकाश",
+                create_listing: "नवीन लिस्टिंग",
+                view_orders_btn: "ऑर्डर पहा",
+                total_revenue: "एकूण महसूल",
+                live_rates: "बाजार भाव",
+                see_orders: "ऑर्डर पहा",
+                direct_requests: "थेट खरेदीदार विनंत्या",
+                verified_msg: "आपल्या पिकासाठी सत्यापित खरेदीदार",
+                accept: "स्वीकारा",
+                decline: "नकारा",
+                negotiations: "वाटाघाटी",
+                waiting: "प्रतीक्षा",
+                view_history: "इतिहास पहा",
+                all_stock: "सर्व साठा",
+                vegetables: "भाज्या",
+                grains: "धान्य",
+                fruits: "फळे",
+                no_listings: "कोणतीही लिस्टिंग सापडली नाही",
+                order_mgmt: "ऑर्डर व्यवस्थापन",
+                track_sales: "तुमच्या विक्रीचा मागोवा घ्या.",
+                export_report: "अहवाल डाउनलोड",
+                total_orders: "एकूण ऑर्डर",
+                lifetime_sales: "एकूण विक्री",
+                pending: "प्रलंबित",
+                requires_action: "कृती आवश्यक",
+                tab_all: "सर्व",
+                tab_pending: "प्रलंबित",
+                tab_completed: "पूर्ण",
+                th_id: "ऑर्डर आयडी",
+                th_product: "उत्पादन आणि खरेदीदार",
+                th_date: "तारीख",
+                th_amount: "रक्कम",
+                th_status: "स्थिती",
+                th_actions: "कृती",
+                edit_cover: "कव्हर बदला",
+                edit_profile: "प्रोफाइल संपादित करा",
+                active_listings: "सक्रिय लिस्टिंग",
+                buyer_rating: "खरेदीदार रेटिंग",
+                membership: "सदस्यत्व",
+                personal_info: "वैयक्तिक माहिती",
+                recent_sales: "अलीकडील ऑर्डर (विक्री)",
+                view_all_orders: "सर्व ऑर्डर पहा",
+                my_inventory: "माझे उत्पादन / साठा",
+                new_listing: "नवीन लिस्टिंग",
+                publish: "लिस्टिंग प्रकाशित करा",
+                avg_quintal: "सरासरी / क्विंटल",
+                verified: "सत्यापित",
+                my_stock: "माझा साठा",
+                view_details: "तपशील पहा",
+                no_orders: "कोणतेही ऑर्डर सापडले नाहीत.",
+                counter_offer: "प्रति ऑफर",
+                proposal_sent: "प्रस्ताव पाठवला.",
+                search_placeholder: "ऑर्डर आयडी किंवा खरेदीदार शोधा...",
+                search_market_placeholder: "पीक किंवा खरेदीदार शोधा...",
+                completed: "पूर्ण",
+                cancelled: "रद्द"
+            },
+            kn: {
+                app_subtitle: "ರೈತ ಮಿತ್ರ",
+                nav_dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+                nav_market: "ಮಾರುಕಟ್ಟೆ",
+                nav_orders: "ಆರ್ಡರ್‌ಗಳು",
+                nav_profile: "ಪ್ರೊಫೈಲ್",
+                mandi_live: "ಮಂಡಿ ಲೈವ್",
+                good_afternoon: "ಶುಭ ಮಧ್ಯಾಹ್ನ",
+                market_insight_text: "ಇಂದು <span class='font-bold text-white'>ಹೈಬ್ರಿಡ್ ಟೊಮೆಟೊ</span> ಮಾರುಕಟ್ಟೆ 12% ಏರಿಕೆಯಾಗಿದೆ. ಮಾರಾಟಕ್ಕೆ ಸೂಕ್ತ ಸಮಯ.",
+                sunny: "ಬಿಸಿಲು",
+                create_listing: "ಹೊಸ ಪಟ್ಟಿ",
+                view_orders_btn: "ಆರ್ಡರ್‌ಗಳು",
+                total_revenue: "ಒಟ್ಟು ಆದಾಯ",
+                live_rates: "ದರಗಳು",
+                see_orders: "ನೋಡಿ",
+                direct_requests: "ನೇರ ಬೇಡಿಕೆಗಳು",
+                verified_msg: "ದೃಢೀಕರಿಸಿದ ಖರೀದಿದಾರರು",
+                accept: "ಒಪ್ಪಿಕೊಳ್ಳಿ",
+                decline: "ತಿರಸ್ಕರಿಸಿ",
+                negotiations: "ಚೌಕಾಶಿ",
+                waiting: "ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
+                view_history: "ಇತಿಹಾಸ",
+                all_stock: "ಎಲ್ಲಾ",
+                vegetables: "ತರಕಾರಿ",
+                grains: "ಧಾನ್ಯ",
+                fruits: "ಹಣ್ಣು",
+                no_listings: "ಯಾವುದೇ ಪಟ್ಟಿ ಇಲ್ಲ",
+                order_mgmt: "ಆರ್ಡರ್ ನಿರ್ವಹಣೆ",
+                track_sales: "ನಿಮ್ಮ ಮಾರಾಟವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
+                export_report: "ವರದಿ ಡೌನ್‌ಲೋಡ್",
+                total_orders: "ಒಟ್ಟು ಆರ್ಡರ್‌ಗಳು",
+                lifetime_sales: "ಒಟ್ಟು ಮಾರಾಟ",
+                pending: "ಬಾಕಿ ಇದೆ",
+                requires_action: "ಗಮನಹರಿಸಿ",
+                tab_all: "ಎಲ್ಲಾ",
+                tab_pending: "ಬಾಕಿ",
+                tab_completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
+                th_id: "ಆರ್ಡರ್ ID",
+                th_product: "ಉತ್ಪನ್ನ ಮತ್ತು ಖರೀದಿದಾರ",
+                th_date: "ದಿನಾಂಕ",
+                th_amount: "ಮೊತ್ತ",
+                th_status: "ಸ್ಥಿತಿ",
+                th_actions: "ಕ್ರಿಯೆ",
+                edit_cover: "ಕವರ್ ಬದಲಿಸಿ",
+                edit_profile: "ಪ್ರೊಫೈಲ್ ತಿದ್ದಿ",
+                active_listings: "ಸಕ್ರಿಯ ಪಟ್ಟಿಗಳು",
+                buyer_rating: "ರೇಟಿಂಗ್",
+                membership: "ಸದಸ್ಯತ್ವ",
+                personal_info: "ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ",
+                recent_sales: "ಇತ್ತೀಚಿನ ಮಾರಾಟ",
+                view_all_orders: "ಎಲ್ಲಾ ಆರ್ಡರ್‌ಗಳು",
+                my_inventory: "ನನ್ನ ಬೆಳೆಗಳು / ದಾಸ್ತಾನು",
+                new_listing: "ಹೊಸ ಪಟ್ಟಿ",
+                publish: "ಪ್ರಕಟಿಸಿ",
+                avg_quintal: "ಸರಾಸರಿ / ಕ್ವಿಂಟಾಲ್",
+                verified: "ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+                my_stock: "ನನ್ನ ದಾಸ್ತಾನು",
+                view_details: "ವಿವರಗಳು",
+                no_orders: "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.",
+                counter_offer: "ಪ್ರತಿ ಬೆಲೆ",
+                proposal_sent: "ಪ್ರಸ್ತಾಪ ಕಳುಹಿಸಲಾಗಿದೆ.",
+                search_placeholder: "ಆರ್ಡರ್ ID ಅಥವಾ ಖರೀದಿದಾರನನ್ನು ಹುಡುಕಿ...",
+                search_market_placeholder: "ಬೆಳೆಗಳು ಅಥವಾ ಖರೀದಿದಾರರನ್ನು ಹುಡುಕಿ...",
+                completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
+                cancelled: "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+            }
+        };
+
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             renderPrices();
             renderListings();
+            renderProfileOrders();
+            renderFullOrderSummary();
             updateProfileUI();
+            updateTranslations();
+            
+            // Global Click Listener for Menu Closing
+            window.addEventListener('click', function(e) {
+                const btn = document.getElementById('lang-btn');
+                const menu = document.getElementById('lang-menu');
+                const arrow = document.getElementById('lang-arrow');
+                
+                if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                    menu.classList.add('hidden');
+                    if(arrow) arrow.classList.remove('rotate-180');
+                }
+            });
         });
+
+        // --- Helper Function for Translation ---
+        function t(key) {
+            return translations[state.currentLang][key] || key;
+        }
+
+        // Helper to translate product names within strings
+        function tProduct(text) {
+            if (state.currentLang === 'en') return text;
+            
+            let translatedText = text;
+            Object.keys(product_names).forEach(engName => {
+                if (translatedText.includes(engName)) {
+                    const trans = product_names[engName][state.currentLang];
+                    if (trans) {
+                        // Case insensitive replacement
+                        const regex = new RegExp(engName, 'gi');
+                        translatedText = translatedText.replace(regex, trans);
+                    }
+                }
+            });
+            return translatedText;
+        }
+
+        // --- Language Logic ---
+        function toggleLangMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('lang-menu');
+            const arrow = document.getElementById('lang-arrow');
+            menu.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        function changeLanguage(lang) {
+            state.currentLang = lang;
+            updateTranslations();
+            
+            // Re-render dynamic components
+            renderPrices();
+            renderListings(); 
+            renderProfileOrders();
+            renderFullOrderSummary(); 
+            
+            // Update Dropdown Label
+            const labels = { 'en': 'English', 'hi': 'हिंदी', 'mr': 'मराठी', 'kn': 'ಕನ್ನಡ' };
+            document.getElementById('current-lang-label').innerText = labels[lang];
+            
+            // Update Checkmarks visually
+            document.querySelectorAll('[id^="check-"]').forEach(el => el.classList.remove('opacity-100'));
+            document.querySelectorAll('[id^="check-"]').forEach(el => el.classList.add('opacity-0'));
+            const activeCheck = document.getElementById(`check-${lang}`);
+            if(activeCheck) {
+                activeCheck.classList.remove('opacity-0');
+                activeCheck.classList.add('opacity-100');
+            }
+
+            // Close Menu
+            const menu = document.getElementById('lang-menu');
+            const arrow = document.getElementById('lang-arrow');
+            menu.classList.add('hidden');
+            arrow.classList.remove('rotate-180');
+        }
+
+        function updateTranslations() {
+            // Update text content
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[state.currentLang][key]) {
+                    el.innerHTML = translations[state.currentLang][key];
+                }
+            });
+
+            // Update placeholders
+            const inputs = document.querySelectorAll('[data-translate-placeholder]');
+            inputs.forEach(el => {
+                const key = el.getAttribute('data-translate-placeholder');
+                if (translations[state.currentLang][key]) {
+                    el.placeholder = translations[state.currentLang][key];
+                }
+            });
+        }
 
         // --- Navigation Logic ---
         function switchTab(tabId) {
@@ -773,26 +1217,138 @@
 
         // --- Data Rendering ---
         function renderPrices() {
-            const container = document.getElementById('price-ticker');
+            const container = document.getElementById('hero-price-ticker');
+            if(!container) return;
+            
             container.innerHTML = state.marketPrices.map(item => {
                 const isUp = item.trend === 'up';
                 const isDown = item.trend === 'down';
-                const colorClass = isUp ? 'text-green-600 bg-green-50 border-green-100' : (isDown ? 'text-red-600 bg-red-50 border-red-100' : 'text-slate-500 bg-slate-50 border-slate-100');
-                const icon = isUp ? 'fa-arrow-trend-up' : (isDown ? 'fa-arrow-trend-down' : 'fa-minus');
+                const colorClass = isUp ? 'text-green-600 bg-green-50' : (isDown ? 'text-red-600 bg-red-50' : 'text-slate-500 bg-slate-50');
+                const icon = isUp ? 'fa-caret-up' : (isDown ? 'fa-caret-down' : 'fa-minus');
                 
                 return `
-                <div class="bg-white p-5 rounded-2xl border border-earth-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex items-center justify-between group">
+                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border-b border-dashed border-slate-100 last:border-0 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg ${colorClass} flex items-center justify-center text-xs">
+                             <i class="fa-solid ${icon}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm leading-tight group-hover:text-brand-700 transition-colors">${tProduct(item.name)}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">₹${item.price} / Qtl</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold ${isUp ? 'text-green-600' : (isDown ? 'text-red-600' : 'text-slate-400')}">
+                        ${isUp ? '+' : ''}${item.change}%
+                    </span>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function renderProfileOrders() {
+            const container = document.getElementById('orders-list');
+            if(!container) return;
+
+            container.innerHTML = state.orders.map(order => {
+                let displayStatus = order.status;
+                if(order.status === 'Completed') displayStatus = t('completed');
+                else if(order.status === 'Pending') displayStatus = t('pending');
+                
+                return `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-earth-50 border border-transparent hover:border-earth-200 transition-all">
                     <div>
-                        <p class="font-bold text-slate-800 text-sm group-hover:text-brand-700 transition-colors">${item.name}</p>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Avg / Quintal</p>
+                        <p class="font-bold text-slate-800 text-sm">${tProduct(order.item)}</p>
+                        <p class="text-[10px] text-slate-500 font-bold tracking-wide">${order.buyer}</p>
                     </div>
                     <div class="text-right">
-                        <p class="font-bold text-slate-900 text-lg">₹${item.price}</p>
-                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${colorClass}">
-                            <i class="fa-solid ${icon}"></i> ${item.change}%
-                        </span>
+                        <p class="font-bold text-slate-900 text-sm">₹${order.amount.toLocaleString()}</p>
+                        <span class="text-[9px] font-bold uppercase tracking-wider ${order.status === 'Completed' ? 'text-green-600' : 'text-amber-600'}">${displayStatus}</span>
                     </div>
                 </div>
+            `}).join('');
+        }
+
+        function renderFullOrderSummary(filterStatus = 'All', filterText = '') {
+            const container = document.getElementById('full-order-table-body');
+            if(!container) return;
+
+            let filtered = state.orders;
+
+            // Apply Status Filter
+            if (filterStatus !== 'All') {
+                filtered = filtered.filter(o => o.status === filterStatus);
+            }
+
+            // Apply Search Filter
+            if (filterText) {
+                const lower = filterText.toLowerCase();
+                filtered = filtered.filter(o => 
+                    o.id.toLowerCase().includes(lower) || 
+                    o.buyer.toLowerCase().includes(lower) ||
+                    o.item.toLowerCase().includes(lower)
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-slate-300">
+                                <i class="fa-solid fa-box-open text-4xl mb-3"></i>
+                                <p class="text-sm font-bold text-slate-500">${t('no_orders')}</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(order => {
+                const statusStyles = {
+                    'Completed': 'bg-green-100 text-green-700 border-green-200 icon-check',
+                    'Pending': 'bg-amber-100 text-amber-700 border-amber-200 icon-clock',
+                    'Cancelled': 'bg-red-100 text-red-700 border-red-200 icon-xmark'
+                };
+                
+                const style = statusStyles[order.status] || 'bg-slate-100 text-slate-600';
+                const icon = order.status === 'Completed' ? 'fa-check' : (order.status === 'Pending' ? 'fa-clock' : 'fa-xmark');
+                
+                let displayStatus = order.status;
+                if(order.status === 'Completed') displayStatus = t('completed');
+                else if(order.status === 'Pending') displayStatus = t('pending');
+                else if(order.status === 'Cancelled') displayStatus = t('cancelled');
+
+                return `
+                <tr class="hover:bg-brand-50/30 transition-colors group">
+                    <td class="py-4 pl-6 font-bold text-brand-600 font-mono text-xs">${order.id}</td>
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-earth-100 flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform">
+                                ${order.category === 'vegetable' ? '🍅' : (order.category === 'fruit' ? '🍊' : '🌾')}
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">${tProduct(order.item)}</p>
+                                <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                                    <span class="font-bold text-slate-700">${order.buyer}</span>
+                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    <span>${order.qty}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 text-slate-500 text-xs font-bold">${order.date}</td>
+                    <td class="py-4 font-bold text-slate-900">₹${order.amount.toLocaleString()}</td>
+                    <td class="py-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border ${style} uppercase tracking-wide">
+                            <i class="fa-solid ${icon}"></i> ${displayStatus}
+                        </span>
+                    </td>
+                    <td class="py-4 pr-6 text-right">
+                        <button class="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all flex items-center justify-center bg-slate-50" title="${t('view_details')}">
+                            <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </td>
+                </tr>
                 `;
             }).join('');
         }
@@ -825,12 +1381,12 @@
                         <div class="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-bold text-slate-900 shadow-sm border border-white/20">
                             ₹${item.price}/kg
                         </div>
-                        ${item.verified ? '<div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm"><i class="fa-solid fa-certificate"></i> VERIFIED</div>' : ''}
-                        ${item.isMine ? '<div class="absolute top-4 left-4 bg-brand-600/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">MY STOCK</div>' : ''}
+                        ${item.verified ? `<div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm"><i class="fa-solid fa-certificate"></i> ${t('verified')}</div>` : ''}
+                        ${item.isMine ? `<div class="absolute top-4 left-4 bg-brand-600/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">${t('my_stock')}</div>` : ''}
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="mb-4">
-                            <h3 class="font-bold text-slate-900 text-lg leading-tight line-clamp-1 group-hover:text-brand-700 transition-colors">${item.name}</h3>
+                            <h3 class="font-bold text-slate-900 text-lg leading-tight line-clamp-1 group-hover:text-brand-700 transition-colors">${tProduct(item.name)}</h3>
                             <p class="text-xs text-slate-500 mt-1 font-medium flex items-center"><i class="fa-solid fa-location-dot mr-1.5 text-brand-500"></i> ${item.loc}</p>
                         </div>
                         
@@ -866,7 +1422,7 @@
             document.querySelectorAll('.market-filter').forEach(btn => {
                 btn.classList.remove('active', 'bg-brand-900', 'text-white');
                 btn.classList.add('bg-white', 'text-slate-600');
-                if(btn.innerText.includes("All")) {
+                if(btn.innerText.includes("All") || btn.innerText.includes("सभी") || btn.innerText.includes("सर्व") || btn.innerText.includes("ಎಲ್ಲಾ")) {
                      btn.classList.add('active', 'bg-brand-900', 'text-white');
                      btn.classList.remove('bg-white', 'text-slate-600');
                 }
@@ -889,6 +1445,10 @@
         // --- Profile Logic ---
         function updateProfileUI() {
             document.querySelectorAll('.user-name-display').forEach(el => el.innerText = state.user.name);
+            document.querySelectorAll('.user-email-display').forEach(el => el.innerText = state.user.email);
+            document.querySelectorAll('.user-phone-display').forEach(el => el.innerText = state.user.phone);
+            document.querySelectorAll('.user-address-display').forEach(el => el.innerText = state.user.address);
+            
             document.querySelectorAll('.user-farm-display').forEach(el => {
                 // Keep the icon if it exists inside
                 const icon = el.querySelector('i');
@@ -920,7 +1480,7 @@
                 <div class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-earth-100 shadow-sm hover:shadow-md transition-shadow group">
                     <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover" alt="thumb">
                     <div class="flex-1">
-                        <h4 class="font-bold text-slate-900 text-sm">${item.name}</h4>
+                        <h4 class="font-bold text-slate-900 text-sm">${tProduct(item.name)}</h4>
                         <div class="flex items-center gap-3 mt-1">
                             <span class="text-xs text-slate-500 font-medium bg-earth-50 px-2 py-0.5 rounded">${item.qty}</span>
                             <span class="text-xs text-brand-700 font-bold">₹${item.price}/kg</span>
@@ -947,6 +1507,31 @@
             updateProfileUI();
             toggleEditProfile();
             showToast('Profile updated successfully!');
+        }
+
+        function filterOrders(status) {
+            // Update UI Tabs
+            document.querySelectorAll('.order-tab').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-900', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById(`tab-${status}`);
+            activeBtn.classList.add('active', 'bg-slate-900', 'text-white', 'shadow-md');
+            activeBtn.classList.remove('text-slate-500');
+
+            // Filter Data
+            const searchVal = document.getElementById('order-search').value;
+            renderFullOrderSummary(status, searchVal);
+        }
+
+        function searchOrders() {
+            const searchVal = document.getElementById('order-search').value;
+            // Get active tab status
+            let activeStatus = 'All';
+            document.querySelectorAll('.order-tab').forEach(btn => {
+                if(btn.classList.contains('active')) activeStatus = btn.id.split('-')[1];
+            });
+            renderFullOrderSummary(activeStatus, searchVal);
         }
 
         // --- Interaction Logic ---
