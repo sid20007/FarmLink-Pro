@@ -22,8 +22,6 @@
         const token = localStorage.getItem('token');
         if (!token) window.location.href = 'login.html';
 
-
-
         // Theme Init
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');

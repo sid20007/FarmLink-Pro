@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+
+
+const mongodb = require('mongodb');
 const cors = require('cors');
 const path = require('path');//new 
 
@@ -30,8 +32,8 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/crops', require('./routes/crops'));
+app.use('/api/auth', require('./auth_path'));
+app.use('/api/crops', require('./crops_path'));
 
 // Fallback to index.html for SPA-like navigation (optional, but keep it last)
 app.get('*', (req, res) => {

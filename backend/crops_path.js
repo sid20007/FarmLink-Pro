@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
-const Crop = require('../models/Crop');
+const auth = require('./middleware/auth');
+const Crop = require('./models/Crop');
 
 // Get All Crops (with filtering)
 router.get('/', async (req, res) => {
