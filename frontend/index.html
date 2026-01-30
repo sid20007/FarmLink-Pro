@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgriConnect | The Future of Farming</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        nature: {
+                            50: '#f7f9f5',
+                            100: '#edf2e9',
+                            200: '#dce6d3',
+                            300: '#c0d2b0',
+                            400: '#a1b889',
+                            500: '#7d9a61',
+                            600: '#617d47',
+                            700: '#4c6239',
+                            800: '#3f5031',
+                            900: '#36432c',
+                            950: '#1c2416',
+                        },
+                        earth: {
+                            50: '#fdf8f6',
+                            500: '#d97706',
+                            600: '#b45309',
+                        }
+                    },
+                    borderRadius: {
+                        '3xl': '1.5rem',
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body {
+            background-color: #f7f9f5;
+            color: #1c2416;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px -12px rgba(28, 36, 22, 0.08);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .view-section {
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .tab-active {
+            background: #4c6239 !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(76, 98, 57, 0.2);
+        }
+
+        /* Pulse for Live Indicators */
+        .pulse-green {
+            box-shadow: 0 0 0 0 rgba(76, 98, 57, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 98, 57, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(76, 98, 57, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 98, 57, 0); }
+        }
+
+        /* Custom Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #1c2416;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 100px;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 100px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 100px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body class="pb-24 md:pb-8">
+
+    <!-- Custom Notification Toast -->
+    <div id="toast">Produce listed successfully! 🌿</div>
+
+    <!-- Main Navigation -->
+    <nav class="sticky top-0 z-40 glass-nav border-b border-nature-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-nature-700 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3">
+                        <i class="fa-solid fa-sprout text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-nature-900 block leading-none">AgriConnect</span>
+                        <span class="text-[10px] uppercase tracking-widest font-bold text-nature-500">Digital Harvest</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center bg-nature-50 p-1.5 rounded-2xl border border-nature-100">
+                    <button onclick="switchTab('dashboard')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900 tab-active" id="btn-dashboard">Home</button>
+                    <button onclick="switchTab('marketplace')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900" id="btn-marketplace">Market</button>
+                    <button onclick="switchTab('analytics')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900" id="btn-analytics">Intelligence</button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button class="relative w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-nature-100 text-nature-600 hover:bg-nature-50 transition">
+                        <i class="fa-regular fa-bell text-lg"></i>
+                        <span class="absolute top-3 right-3 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white"></span>
+                    </button>
+                    <div class="w-11 h-11 rounded-2xl bg-nature-100 border-2 border-white shadow-sm overflow-hidden cursor-pointer active:scale-95 transition">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- VIEW: DASHBOARD -->
+        <section id="dashboard" class="view-section space-y-8">
+            
+            <!-- Hero Weather & Status -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 relative bg-nature-950 rounded-[2.5rem] p-8 text-white overflow-hidden shadow-2xl">
+                    <!-- Decor -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-nature-500 opacity-20 blur-[80px] -mr-32 -mt-32"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-nature-700 opacity-10 blur-[60px] -ml-24 -mb-24"></div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 h-full">
+                        <div class="space-y-4">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-nature-800/50 border border-nature-700/50 rounded-full text-xs font-bold text-nature-300">
+                                <span class="w-1.5 h-1.5 rounded-full bg-nature-400 animate-pulse"></span> Optimal Harvest Conditions
+                            </span>
+                            <h2 class="text-4xl font-extrabold tracking-tight">Welcome back,<br><span class="text-nature-400">Farmer Rajesh</span></h2>
+                            <p class="text-nature-300/80 max-w-xs text-sm leading-relaxed">Local market demand for <span class="text-white font-bold underline decoration-nature-500">Tomatoes</span> is 24% higher than usual this week.</p>
+                        </div>
+                        
+                        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-6 min-w-[200px]">
+                            <div class="text-center">
+                                <i class="fa-solid fa-cloud-sun-rain text-4xl text-nature-300 mb-2"></i>
+                                <p class="text-sm font-medium opacity-60">Today</p>
+                            </div>
+                            <div class="h-12 w-px bg-white/10"></div>
+                            <div>
+                                <p class="text-4xl font-black">28°</p>
+                                <p class="text-xs font-bold text-nature-400">PUNE, MH</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] p-8 border border-nature-100 card-shadow flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-extrabold text-nature-950 mb-1">Quick Action</h3>
+                        <p class="text-sm text-nature-500 mb-6">Create a listing in seconds</p>
+                    </div>
+                    <button onclick="openModal()" class="w-full bg-nature-700 hover:bg-nature-800 text-white p-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg shadow-nature-700/20">
+                        <i class="fa-solid fa-circle-plus"></i> List My Produce
+                    </button>
+                    <div class="mt-6 flex items-center justify-between text-xs font-bold text-nature-400 px-1">
+                        <span>ACTIVE DEALS: 04</span>
+                        <a href="#" class="text-nature-700 hover:underline">VIEW ALL</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Stat 1 -->
+                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-wallet text-xl"></i>
+                        </div>
+                        <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">+12%</span>
+                    </div>
+                    <p class="text-nature-500 font-bold text-sm uppercase tracking-wider">Net Sales</p>
+                    <h4 class="text-2xl font-black text-nature-950 mt-1">₹48,200</h4>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-truck-ramp-box text-xl"></i>
+                        </div>
+                        <span class="text-xs font-black text-nature-400 bg-nature-50 px-2.5 py-1 rounded-lg">8 Active</span>
+                    </div>
+                    <p class="text-nature-500 font-bold text-sm uppercase tracking-wider">Total Stocks</p>
+                    <h4 class="text-2xl font-black text-nature-950 mt-1">2.4 Tons</h4>
+                </div>
+                <!-- Stat 3 -->
+                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-users text-xl"></i>
+                        </div>
+                        <span class="text-xs font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">High</span>
+                    </div>
+                    <p class="text-nature-500 font-bold text-sm uppercase tracking-wider">New Buyers</p>
+                    <h4 class="text-2xl font-black text-nature-950 mt-1">12 Enquiries</h4>
+                </div>
+                <!-- Stat 4 -->
+                <div class="bg-nature-100 p-6 rounded-3xl border border-nature-200 card-shadow text-nature-900 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <p class="text-nature-600 font-bold text-sm uppercase tracking-wider">Price Forecast</p>
+                        <h4 class="text-lg font-black mt-2">Wheat Prices Rising</h4>
+                        <p class="text-xs text-nature-500 font-semibold mt-1">Next 14 Days</p>
+                    </div>
+                    <i class="fa-solid fa-chart-line absolute -bottom-2 -right-2 text-6xl text-nature-200 opacity-50"></i>
+                </div>
+            </div>
+
+            <!-- Market Trends (Less Stocky, More Informative) -->
+            <div class="bg-white rounded-[2.5rem] p-8 border border-nature-100 card-shadow">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-nature-950">Current Market Value</h3>
+                        <p class="text-sm text-nature-500">Live average prices from nearby Mandis</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 bg-nature-50 text-nature-700 rounded-xl text-xs font-bold border border-nature-100 hover:bg-nature-100">Regional Average</button>
+                        <button class="px-4 py-2 bg-nature-950 text-white rounded-xl text-xs font-bold shadow-md shadow-nature-950/20">National Index</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="dashboard-price-grid">
+                    <!-- Cards via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- VIEW: MARKETPLACE -->
+        <section id="marketplace" class="view-section hidden space-y-6">
+            <!-- Search & Filters -->
+            <div class="bg-white p-6 rounded-3xl card-shadow border border-nature-100">
+                <div class="flex flex-col lg:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-5 top-5 text-nature-400"></i>
+                        <input type="text" placeholder="Search for organic produce, grains, or seeds..." class="w-full bg-nature-50 border-nature-100 rounded-2xl py-4.5 pl-14 pr-6 text-sm font-medium focus:ring-2 focus:ring-nature-500 transition-all outline-none">
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                        <button class="bg-nature-900 text-white px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap">All Produce</button>
+                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Vegetables</button>
+                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Grains & Pulses</button>
+                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Seeds</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Listings -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="marketplace-grid">
+                <!-- Cards via JS -->
+            </div>
+        </section>
+
+
+        <!-- VIEW: ANALYTICS (INTELLIGENCE) -->
+        <section id="analytics" class="view-section hidden space-y-8">
+            <div class="bg-nature-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden">
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl font-black mb-4 leading-tight">Harvest Intelligence<br>& Market Forecasting</h2>
+                        <p class="text-nature-300 text-base max-w-md leading-relaxed mb-8">We use historical data and current crop cycles to predict the best time to sell your produce for maximum profit.</p>
+                        <div class="flex items-center gap-6">
+                            <div class="flex -space-x-3">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=A" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=B" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=C" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                            </div>
+                            <p class="text-sm font-bold text-nature-400">Joined by 1.2k local farmers</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual Chart Container -->
+                    <div class="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-6">
+                            <p class="font-bold text-sm">Wheat Trend (30d)</p>
+                            <span class="text-xs font-bold text-nature-400">Pune District</span>
+                        </div>
+                        <div class="h-48 flex items-end justify-between gap-1.5 px-2">
+                            <div class="w-full bg-nature-700/30 rounded-t-lg h-[40%]"></div>
+                            <div class="w-full bg-nature-700/30 rounded-t-lg h-[60%]"></div>
+                            <div class="w-full bg-nature-700/30 rounded-t-lg h-[45%]"></div>
+                            <div class="w-full bg-nature-700/30 rounded-t-lg h-[75%]"></div>
+                            <div class="w-full bg-nature-700/30 rounded-t-lg h-[65%]"></div>
+                            <div class="w-full bg-nature-400 rounded-t-lg h-[85%] shadow-lg shadow-nature-400/20"></div>
+                        </div>
+                        <div class="flex justify-between mt-4 text-[10px] font-bold text-nature-500 uppercase tracking-widest">
+                            <span>Week 1</span>
+                            <span>Week 2</span>
+                            <span>Week 3</span>
+                            <span>Today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-nature-100">
+                    <h3 class="text-xl font-extrabold text-nature-950 mb-6">High Demand Zones</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">1</div>
+                                <div>
+                                    <p class="font-bold text-nature-900">Mumbai Central</p>
+                                    <p class="text-xs text-nature-500">Tomatoes & Onions</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-nature-700 uppercase">Extreme</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">2</div>
+                                <div>
+                                    <p class="font-bold text-nature-900">Pune Wholesale</p>
+                                    <p class="text-xs text-nature-500">Wheat & Grains</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-nature-700 uppercase">Rising</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-nature-100">
+                    <h3 class="text-xl font-extrabold text-nature-950 mb-6">Farming Insights</h3>
+                    <div class="flex items-start gap-5 p-6 rounded-2xl bg-nature-950 text-white relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-nature-800 rounded-xl flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-lightbulb text-nature-300"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg mb-1">Cold Storage Alert</p>
+                            <p class="text-sm text-nature-400">Storing your Potato harvest for 15 more days could yield ₹200 more per Quintal.</p>
+                        </div>
+                        <i class="fa-solid fa-arrow-right absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Navigation Bar (Mobile) -->
+    <div class="md:hidden fixed bottom-6 left-6 right-6 z-50 glass-nav border border-nature-100 p-2 rounded-3xl card-shadow">
+        <div class="flex justify-around items-center">
+            <button onclick="switchTab('dashboard')" class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-950 bg-nature-100 transition-all" id="mob-dashboard">
+                <i class="fa-solid fa-house-user text-xl"></i>
+            </button>
+            
+            <button onclick="openModal()" class="flex items-center justify-center w-16 h-16 rounded-[2rem] bg-nature-800 text-white shadow-xl shadow-nature-800/30 -mt-8 active:scale-90 transition-transform ring-4 ring-white">
+                <i class="fa-solid fa-plus text-2xl"></i>
+            </button>
+
+            <button onclick="switchTab('marketplace')" class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-400 transition-all" id="mob-marketplace">
+                <i class="fa-solid fa-leaf text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Listing Modal (Bottom Sheet Style) -->
+    <div id="sellModal" class="fixed inset-0 z-[60] hidden transition-opacity duration-300">
+        <div class="absolute inset-0 bg-nature-950/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        
+        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[3rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+            
+            <div class="px-8 py-6 border-b border-nature-50 flex justify-between items-center bg-nature-50/50">
+                <div>
+                    <h3 class="text-2xl font-black text-nature-950">Post Produce</h3>
+                    <p class="text-xs font-bold text-nature-500 uppercase tracking-widest mt-1">Direct to market</p>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-2xl bg-white border border-nature-100 flex items-center justify-center text-nature-950 hover:bg-nature-100 transition shadow-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-8 space-y-6 overflow-y-auto">
+                <div>
+                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-3">Crop Category</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-700 bg-nature-50 text-nature-900 font-bold text-sm transition-all">
+                            <i class="fa-solid fa-carrot text-nature-700"></i> Vegetables
+                        </button>
+                        <button class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-100 bg-white text-nature-500 font-bold text-sm hover:bg-nature-50 transition-all">
+                            <i class="fa-solid fa-wheat-awn"></i> Grains
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Item Name</label>
+                    <input type="text" id="cropName" placeholder="e.g. Organic Red Tomatoes" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Quantity (KG)</label>
+                        <input type="number" id="cropQty" placeholder="500" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Price per KG</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-4 text-nature-400 font-bold">₹</span>
+                            <input type="number" id="cropPrice" placeholder="24" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 pl-8 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 flex gap-4">
+                    <i class="fa-solid fa-circle-info text-orange-600 mt-1"></i>
+                    <p class="text-xs text-orange-900 font-medium leading-relaxed">
+                        Setting a price within <span class="font-bold text-orange-600">₹18 - ₹22</span> will increase your chances of a quick sale by 40%.
+                    </p>
+                </div>
+
+                <button onclick="submitListing()" class="w-full bg-nature-800 hover:bg-nature-950 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-nature-800/20 active:scale-95 uppercase tracking-widest text-sm">
+                    Publish Listing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const marketData = [
+            { id: 1, name: 'Premium Wheat', price: 2450, change: 1.2, trend: 'up' },
+            { id: 2, name: 'Red Onions', price: 1800, change: 5.4, trend: 'up' },
+            { id: 3, name: 'Basmati Rice', price: 4200, change: 0.0, trend: 'stable' },
+            { id: 4, name: 'Hybrid Tomato', price: 950, change: -2.1, trend: 'down' },
+            { id: 5, name: 'Yellow Corn', price: 1650, change: 1.8, trend: 'up' },
+            { id: 6, name: 'Soybean', price: 5600, change: -0.5, trend: 'down' },
+        ];
+
+        const listings = [
+            { id: 101, crop: 'Organic Tomatoes', farmer: 'Rajesh K.', location: 'Nashik', qty: '500 kg', price: 22, date: '2h ago', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=400', verified: true },
+            { id: 102, crop: 'Premium Wheat', farmer: 'Suresh P.', location: 'Nagpur', qty: '2 Tons', price: 25, date: '5h ago', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=400', verified: false },
+            { id: 103, crop: 'Fresh Potatoes', farmer: 'Amit S.', location: 'Pune', qty: '1.2 Tons', price: 18, date: '1d ago', img: 'https://images.unsplash.com/photo-1518977676651-71f6480aeef9?auto=format&fit=crop&q=80&w=400', verified: true },
+        ];
+
+        // --- Core UI Logic ---
+
+        function init() {
+            renderPrices();
+            renderMarketplace();
+        }
+
+        function switchTab(tabId) {
+            // Section visibility
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Nav Styling (Desktop)
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('tab-active'));
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(activeBtn) activeBtn.classList.add('tab-active');
+
+            // Nav Styling (Mobile)
+            document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+                btn.classList.remove('bg-nature-100', 'text-nature-950');
+                btn.classList.add('text-nature-400');
+            });
+            const activeMobBtn = document.getElementById(`mob-${tabId}`);
+            if(activeMobBtn) {
+                activeMobBtn.classList.remove('text-nature-400');
+                activeMobBtn.classList.add('bg-nature-100', 'text-nature-950');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPrices() {
+            const grid = document.getElementById('dashboard-price-grid');
+            grid.innerHTML = marketData.map(item => {
+                const trendIcon = item.trend === 'up' ? 'fa-arrow-trend-up text-emerald-500' : 
+                                 item.trend === 'down' ? 'fa-arrow-trend-down text-rose-500' : 
+                                 'fa-minus text-nature-300';
+                return `
+                    <div class="p-5 rounded-2xl bg-nature-50 border border-nature-100 flex items-center justify-between hover:bg-white hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm">
+                                <i class="fa-solid fa-leaf text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-nature-950 text-sm">${item.name}</p>
+                                <p class="text-[10px] text-nature-400 font-bold uppercase tracking-widest">Quintal Avg</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-black text-nature-950 leading-none">₹${item.price}</p>
+                            <span class="text-[10px] font-bold ${item.trend === 'up' ? 'text-emerald-600' : 'text-rose-600'}">
+                                <i class="fa-solid ${trendIcon} mr-1"></i>${Math.abs(item.change)}%
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMarketplace() {
+            const grid = document.getElementById('marketplace-grid');
+            grid.innerHTML = listings.map(item => `
+                <div class="bg-white rounded-[2.5rem] overflow-hidden border border-nature-100 card-shadow group hover:border-nature-400 transition-all">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="${item.crop}">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-black text-nature-950 shadow-sm border border-white/20">
+                            ₹${item.price}/KG
+                        </div>
+                        ${item.verified ? `
+                        <div class="absolute top-4 right-4 bg-nature-900/80 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center text-nature-300 border border-white/10" title="Verified Farmer">
+                            <i class="fa-solid fa-certificate text-xs"></i>
+                        </div>` : ''}
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-nature-950">${item.crop}</h3>
+                                <p class="text-xs font-bold text-nature-400 mt-1 flex items-center gap-1.5 uppercase tracking-widest">
+                                    <i class="fa-solid fa-location-dot text-nature-700"></i> ${item.location}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-black text-nature-900">${item.qty}</p>
+                                <p class="text-[10px] font-bold text-nature-400 uppercase tracking-widest">Availability</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-6 border-t border-nature-50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-nature-100 border border-nature-200 overflow-hidden">
+                                    <img src="https://api.dicebear.com/7.x/initials/svg?seed=${item.farmer}" alt="Farmer">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-nature-950">${item.farmer}</p>
+                                    <p class="text-[10px] font-bold text-nature-400">${item.date}</p>
+                                </div>
+                            </div>
+                            <button class="bg-nature-100 hover:bg-nature-950 hover:text-white text-nature-950 w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-sm">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Interaction Logic ---
+
+        function openModal() {
+            const modal = document.getElementById('sellModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('sellModal');
+            modal.classList.add('hidden');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.innerText = msg;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function submitListing() {
+            const name = document.getElementById('cropName').value;
+            const qty = document.getElementById('cropQty').value;
+            const price = document.getElementById('cropPrice').value;
+
+            if(!name || !qty || !price) {
+                showToast("Please fill all details! 🌾");
+                return;
+            }
+
+            // Mock append
+            listings.unshift({
+                id: Date.now(),
+                crop: name,
+                farmer: 'You',
+                location: 'Pune',
+                qty: `${qty} kg`,
+                price: price,
+                date: 'Just now',
+                img: 'https://images.unsplash.com/photo-1615484477778-ca3b77940c25?auto=format&fit=crop&q=80&w=400',
+                verified: true
+            });
+
+            renderMarketplace();
+            closeModal();
+            showToast("Harvest listed successfully! 🌿");
+            switchTab('marketplace');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
