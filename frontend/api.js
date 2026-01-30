@@ -3,7 +3,7 @@
    ========================================= */
 const SoftYield = {
     // URL Configuration (Update this if you change your Vercel/Render URL)
-    BASE_URL: 'https://farmbox.onrender.com/api',
+    BASE_URL: 'http://localhost:5000/api',
 
     // Helper: Get Auth Headers
     getHeaders(isFormData = false) {
@@ -49,7 +49,7 @@ const SoftYield = {
             // Check if backend path exists, else fallback to mock for dev
             try {
                 const res = await fetch(`${SoftYield.BASE_URL}/produce`);
-                if(!res.ok) throw new Error("Endpoint not ready");
+                if (!res.ok) throw new Error("Endpoint not ready");
                 return await res.json();
             } catch (e) {
                 console.warn("Using Mock Data for Produce");
@@ -148,7 +148,7 @@ const SoftYield = {
 
     // --- 5. PROFILE ---
     profile: {
-        async loadDetails(){
+        async loadDetails() {
             // Retaining your original mock
             return { phone: '9999', city: 'pune', role: 'Farmer' };
         }
