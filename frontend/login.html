@@ -6,18 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | AgriConnect</title>
 
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -139,22 +135,18 @@
 
 <body class="min-h-screen flex items-center justify-center bg-slate-100 relative overflow-hidden font-sans">
 
-    <!-- Background Image -->
     <div class="absolute inset-0 z-0">
         <img src="https://images.unsplash.com/photo-1625246333195-5848c428ad69?q=80&w=2560&auto=format&fit=crop"
             class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/60 via-slate-900/30 to-transparent"></div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast"></div>
 
-    <!-- Main Card -->
     <div class="relative z-10 w-full max-w-[480px] p-6 animate-up">
 
         <div class="glass-card rounded-[2.5rem] p-8 md:p-12">
 
-            <!-- Header -->
             <div class="text-center mb-10">
                 <div
                     class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 text-white mb-6 shadow-xl shadow-emerald-500/30">
@@ -164,7 +156,6 @@
                 <p class="text-slate-600 font-medium" id="header-subtitle">Welcome back, farmer</p>
             </div>
 
-            <!-- Google Sign-In Section (New Backend) -->
             <div class="mb-8">
                 <div id="g_id_onload"
                     data-client_id="267198204860-f20gaunl73o5ob3tog36ptkpplkig2m5.apps.googleusercontent.com"
@@ -177,14 +168,12 @@
                 </div>
             </div>
 
-            <!-- Legacy Form (Disabled) -->
             <div class="hidden opacity-50 pointer-events-none relative">
                 <div class="absolute inset-0 flex items-center justify-center z-10">
                     <span
                         class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200">Deprecated:
                         Use Google Sign-In</span>
                 </div>
-                <!-- Toggle Switch -->
                 <div class="flex p-1.5 bg-slate-200/50 rounded-xl mb-8">
                     <button id="toggle-login" onclick="setMode('login')"
                         class="toggle-btn active flex-1 py-3.5 rounded-lg text-sm font-bold transition-all">
@@ -196,62 +185,7 @@
                     </button>
                 </div>
 
-                <!-- Form -->
                 <form id="authForm" onsubmit="handleSubmit(event)" class="space-y-4">
-
-                    <!-- Role Selection (Register Only) -->
-                    <div id="role-selector" class="hidden grid grid-cols-2 gap-3 mb-2">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="role" value="farmer" checked class="peer sr-only"
-                                onchange="toggleLocationField()">
-                            <div
-                                class="p-4 rounded-xl border border-transparent bg-white/60 text-slate-500 text-center peer-checked:bg-emerald-50 peer-checked:text-emerald-700 peer-checked:border-emerald-200 transition-all hover:bg-white/80">
-                                <i class="fa-solid fa-tractor mb-2 text-xl"></i><br><span
-                                    class="text-xs font-bold uppercase tracking-wider">Farmer</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="role" value="buyer" class="peer sr-only"
-                                onchange="toggleLocationField()">
-                            <div
-                                class="p-4 rounded-xl border border-transparent bg-white/60 text-slate-500 text-center peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-checked:border-blue-200 transition-all hover:bg-white/80">
-                                <i class="fa-solid fa-shop mb-2 text-xl"></i><br><span
-                                    class="text-xs font-bold uppercase tracking-wider">Buyer</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- Name Field -->
-                    <div id="name-field" class="hidden input-group relative">
-                        <input type="text" id="name" placeholder="Full Name"
-                            class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
-                        <i
-                            class="fa-regular fa-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                    </div>
-
-                    <!-- Email Field -->
-                    <div class="input-group relative">
-                        <input type="email" id="email" required placeholder="Email Address"
-                            class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
-                        <i
-                            class="fa-regular fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                    </div>
-
-                    <!-- Password Field -->
-                    <div class="input-group relative">
-                        <input type="password" id="password" required placeholder="Password"
-                            class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
-                        <i class="fa-solid fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                    </div>
-
-                    <!-- Location Field -->
-                    <div id="location-field" class="hidden input-group relative">
-                        <input type="text" id="location" placeholder="City or District"
-                            class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
-                        <i
-                            class="fa-solid fa-map-pin absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                    </div>
-
                     <div class="pt-2">
                         <button type="submit" id="submit-btn"
                             class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-xl shadow-slate-900/20 transition-all active:scale-[0.98] text-base">
@@ -262,7 +196,6 @@
 
             </div>
 
-            <!-- Bottom Credits -->
             <p class="text-center text-white/80 text-xs mt-8 font-medium tracking-wide">
                 &copy; 2026 AgriConnect Inc(demo).
             </p>
@@ -272,15 +205,16 @@
         <script>
             // State
             let isLogin = true;
-            // Use RELATIVE URL to match the backend port automatically
-            const apiBase = '/api/auth';
+
+            // Updated API Base to match the api.js file provided
+            const apiBase = 'https://farmbox.onrender.com/api/auth';
 
             // Google Auth Callback
             async function handleCredentialResponse(response) {
                 console.log("Encoded JWT ID token: " + response.credential);
 
                 try {
-                    // Send to Backend
+                    // Send to Backend (Using absolute URL from api.js)
                     const res = await fetch(`${apiBase}/google`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -293,8 +227,11 @@
 
                     // Success
                     console.log('Login Success:', data);
+
+                    // Save Token
                     localStorage.setItem('token', data.token);
-                    // Backend sends { user: { ... } } structure
+
+                    // Save User State - data.user contains { _id, name, picture, joinedEvents }
                     localStorage.setItem('user', JSON.stringify(data.user));
 
                     showToast(`Welcome ${data.user.name}! Redirecting...`);
@@ -305,161 +242,17 @@
 
                 } catch (err) {
                     console.error(err);
-                    showToast(err.message, true);
-                }
-            }
-
-            // --- Core Functions ---
-
-            function setMode(mode) {
-                isLogin = (mode === 'login');
-
-                // UI References
-                const title = document.getElementById('header-subtitle');
-                const submitBtn = document.getElementById('submit-btn');
-                const btnLogin = document.getElementById('toggle-login');
-                const btnReg = document.getElementById('toggle-register');
-
-                // Toggle Logic
-                if (isLogin) {
-                    btnLogin.classList.add('active');
-                    btnReg.classList.remove('active');
-
-                    // Hide Register Fields
-                    document.getElementById('role-selector').classList.add('hidden');
-                    document.getElementById('name-field').classList.add('hidden');
-                    document.getElementById('location-field').classList.add('hidden');
-
-                    // Text Updates
-                    title.innerText = 'Welcome back, farmer';
-                    submitBtn.innerText = 'Log In';
-                } else {
-                    btnReg.classList.add('active');
-                    btnLogin.classList.remove('active');
-
-                    // Show Register Fields
-                    document.getElementById('role-selector').classList.remove('hidden');
-                    document.getElementById('name-field').classList.remove('hidden');
-
-                    // Check location field explicitly
-                    toggleLocationField();
-
-                    // Text Updates
-                    title.innerText = 'Join the network';
-                    submitBtn.innerText = 'Create Account';
-                }
-            }
-
-            function toggleLocationField() {
-                if (isLogin) return; // Don't show in login mode
-
-                const roleInputs = document.querySelectorAll('input[name="role"]');
-                let selectedRole = 'farmer';
-                for (const input of roleInputs) {
-                    if (input.checked) {
-                        selectedRole = input.value;
-                        break;
-                    }
-                }
-
-                const locField = document.getElementById('location-field');
-                if (selectedRole === 'farmer') {
-                    locField.classList.remove('hidden');
-                } else {
-                    locField.classList.add('hidden');
+                    showToast(err.message || 'Login failed', true);
                 }
             }
 
             function showToast(msg, isError = false) {
                 const toast = document.getElementById("toast");
                 toast.innerText = msg;
-                toast.style.backgroundColor = isError ? '#ef4444' : '#0f172a'; // Red for error, Dark for success
+                toast.style.backgroundColor = isError ? '#ef4444' : '#0f172a';
                 toast.className = "show";
                 setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
             }
-
-            async function handleSubmit(e) {
-                e.preventDefault();
-
-                const submitBtn = document.getElementById('submit-btn');
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.7';
-                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-
-                // Gather Data
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value.trim();
-
-                try {
-                    let endpoint = '';
-                    let payload = {};
-
-                    if (isLogin) {
-                        // --- LOGIN ---
-                        endpoint = `${apiBase}/login`;
-                        payload = { email, password };
-                    } else {
-                        // --- REGISTER ---
-                        const name = document.getElementById('name').value.trim();
-                        const location = document.getElementById('location').value.trim();
-
-                        // Get Role
-                        let role = 'farmer';
-                        document.querySelectorAll('input[name="role"]').forEach(r => {
-                            if (r.checked) role = r.value;
-                        });
-
-                        // Validation
-                        if (!name) throw new Error("Name is required.");
-                        if (role === 'farmer' && !location) throw new Error("Location is required for farmers.");
-
-                        endpoint = `${apiBase}/register`;
-                        payload = { name, email, password, role, location };
-                    }
-
-                    console.log('Sending request to:', endpoint, payload); // Debug
-
-                    const res = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const text = await res.text();
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (e) {
-                        console.error('Server returned non-JSON:', text);
-                        throw new Error('Server connection error. Please try again.');
-                    }
-
-                    if (!res.ok) {
-                        throw new Error(data.msg || data.message || 'Operation failed');
-                    }
-
-                    // Success!
-                    console.log('Success:', data);
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-
-                    showToast(`Success! Redirecting...`);
-
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-
-                } catch (err) {
-                    console.error(err);
-                    showToast(err.message, true);
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = '1';
-                    submitBtn.innerText = isLogin ? 'Log In' : 'Create Account';
-                }
-            }
-
-            // Initialize Page
-            setMode('login'); // Default to login
         </script>
 </body>
 
