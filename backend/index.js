@@ -27,7 +27,7 @@ app.use((req, res, next) => {
     req.io = io;
     next();
 });
-
+app.use(express.static(path.join(__dirname, '../frontend')));
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/crops', require('./routes/crops'));
