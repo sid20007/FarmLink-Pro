@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgriConnect | Buyer Portal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        blue: {
+                            50: '#eff6ff',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 15px rgba(37, 99, 235, 0.2)', // Blue glow for buyer theme
+                        'card': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        body {
+            background-color: #f0f4f8; /* Slightly cooler tone for buyer */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-blue {
+            background: rgba(30, 58, 138, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-active {
+            background-color: #1e40af; /* Blue for buyer */
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .view-section {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toast Animation */
+        #toast {
+            visibility: hidden;
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-28 md:pb-12 bg-[url('https://www.transparenttextures.com/patterns/gplay.png')] bg-fixed">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-24 md:bottom-10 left-1/2 z-[100] flex items-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-slate-900/30">
+        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white shrink-0">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm">Success</h4>
+            <p class="text-xs text-slate-400" id="toast-msg">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 glass border-b border-slate-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 transform group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">AgriConnect</h1>
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Buyer Portal</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 backdrop-blur-sm">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-item px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all hover:bg-white hover:text-blue-700 nav-active">Overview</button>
+                <button onclick="switchTab('market')" id="btn-market" class="nav-item px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all hover:bg-white hover:text-blue-700">Browse Market</button>
+                <button onclick="switchTab('orders')" id="btn-orders" class="nav-item px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-600 transition-all hover:bg-white hover:text-blue-700">My Orders</button>
+            </nav>
+
+            <!-- User Actions -->
+            <div class="flex items-center gap-3">
+                <button class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 transition-colors flex items-center justify-center relative">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                </button>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-100 to-blue-50 border border-blue-200 p-0.5 cursor-pointer">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=FreshFoods" class="w-full h-full rounded-[10px]" alt="Profile">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-28">
+
+        <!-- VIEW: DASHBOARD -->
+        <section id="dashboard" class="view-section space-y-6">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-900/20">
+                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-20"></div>
+                <div class="relative z-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div>
+                            <span class="inline-block px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-xs font-bold text-blue-200 mb-3">
+                                FreshFoods Ltd.
+                            </span>
+                            <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Source Fresh.<br>Save Big.</h2>
+                            <p class="text-blue-200 max-w-md">Live connections with 2,400+ verified farmers. Prices for Onions dropped 8% in the last hour.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="switchTab('market')" class="bg-white text-blue-900 px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-105 transition-transform">
+                                Explore Market
+                            </button>
+                            <button onclick="openRequestModal()" class="bg-blue-600 border border-blue-400 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors">
+                                Post Requirement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Stat 1 -->
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-card flex flex-col justify-between h-40 group hover:border-blue-200 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400">In Transit</span>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-display font-bold text-slate-900">4 Orders</h3>
+                        <p class="text-xs text-slate-500 mt-1">Expected delivery: Tomorrow</p>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-card flex flex-col justify-between h-40 group hover:border-green-200 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 text-xl group-hover:bg-green-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400">This Month</span>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-display font-bold text-slate-900">₹12.5k</h3>
+                        <p class="text-xs text-slate-500 mt-1">Saved vs Wholesale Mandi</p>
+                    </div>
+                </div>
+                 <!-- Stat 3 -->
+                 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-card flex flex-col justify-between h-40 group hover:border-purple-200 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 text-xl group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-handshake"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400">Action Required</span>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-display font-bold text-slate-900">2 Offers</h3>
+                        <p class="text-xs text-slate-500 mt-1">Farmers responded to your RFQ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Arrivals Section -->
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-display font-bold text-slate-900">Fresh from Farms</h3>
+                    <button onclick="switchTab('market')" class="text-sm font-bold text-blue-600 hover:text-blue-800">View All</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="dashboard-listings">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: MARKETPLACE -->
+        <section id="market" class="view-section hidden space-y-6">
+            <!-- Search & Filters -->
+            <div class="bg-white p-4 rounded-[1.5rem] shadow-sm border border-slate-100 sticky top-24 z-30">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                        <input type="text" placeholder="Search for potatoes, wheat, or farmers..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                        <button class="px-5 py-3 bg-blue-900 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-lg shadow-blue-900/20">All Produce</button>
+                        <button class="px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold whitespace-nowrap hover:bg-slate-50 hover:border-slate-300 transition-colors">Vegetables</button>
+                        <button class="px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold whitespace-nowrap hover:bg-slate-50 hover:border-slate-300 transition-colors">Fruits</button>
+                        <button class="px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold whitespace-nowrap hover:bg-slate-50 hover:border-slate-300 transition-colors">Grains</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="market-grid">
+                <!-- JS Injected -->
+            </div>
+        </section>
+
+        <!-- VIEW: ORDERS -->
+        <section id="orders" class="view-section hidden space-y-6">
+            <h2 class="text-2xl font-display font-bold text-slate-900">Order History</h2>
+            <div class="space-y-4">
+                <!-- Active Order -->
+                <div class="bg-white p-6 rounded-[2rem] border border-blue-100 shadow-card">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-100 pb-4 mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Order #8821</h4>
+                                <p class="text-xs text-slate-500">Placed on 28 Jan • 200kg Potatoes</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
+                            <span class="w-2 h-2 rounded-full bg-blue-600 mr-2 animate-pulse"></span> In Transit
+                        </span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 overflow-hidden"><img src="https://api.dicebear.com/7.x/initials/svg?seed=RK" alt="Farmer"></div>
+                                <span class="text-sm font-bold text-slate-700">Farmer Rajesh K.</span>
+                            </div>
+                            <p class="text-xs text-slate-500 ml-11"><i class="fa-solid fa-location-dot mr-1"></i> Dispatched from Pune</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-400 font-bold uppercase">Total Amount</p>
+                            <p class="text-xl font-display font-bold text-slate-900">₹4,400</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-50 flex gap-3">
+                        <button class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors">Track Shipment</button>
+                        <button class="flex-1 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 transition-colors">Contact Farmer</button>
+                    </div>
+                </div>
+
+                <!-- Past Order -->
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm opacity-75 hover:opacity-100 transition-opacity">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-100 pb-4 mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-check-double"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Order #8804</h4>
+                                <p class="text-xs text-slate-500">Delivered on 25 Jan • 50kg Onions</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+                            Completed
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                         <div class="flex items-center gap-3">
+                             <div class="w-8 h-8 rounded-full bg-slate-100 overflow-hidden"><img src="https://api.dicebear.com/7.x/initials/svg?seed=AS" alt="Farmer"></div>
+                             <span class="text-sm font-bold text-slate-700">Amit Singh</span>
+                         </div>
+                         <p class="text-lg font-display font-bold text-slate-900">₹1,250</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-50">
+                        <button class="w-full py-2.5 rounded-xl bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors">Re-order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-50 pb-safe shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-center h-20 px-2">
+            <button onclick="switchTab('dashboard')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-blue-700 transition-colors w-16" id="mob-dashboard">
+                <i class="fa-solid fa-chart-simple text-xl mb-0.5"></i>
+                <span class="text-[10px] font-bold">Overview</span>
+            </button>
+            <button onclick="switchTab('market')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16" id="mob-market">
+                <i class="fa-solid fa-store text-xl mb-0.5"></i>
+                <span class="text-[10px] font-bold">Market</span>
+            </button>
+            <button onclick="switchTab('orders')" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16" id="mob-orders">
+                <i class="fa-solid fa-box text-xl mb-0.5"></i>
+                <span class="text-[10px] font-bold">Orders</span>
+            </button>
+             <button class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16">
+                <i class="fa-solid fa-user text-xl mb-0.5"></i>
+                <span class="text-[10px] font-bold">Account</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Request/Post Requirement Modal -->
+    <div id="requestModal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop" onclick="closeRequestModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[2rem] md:rounded-[2rem] shadow-2xl transform translate-y-full md:translate-y-10 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
+            
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-blue-50/50 rounded-t-[2rem]">
+                <div>
+                    <h3 class="text-xl font-display font-bold text-slate-900">Post Requirement</h3>
+                    <p class="text-xs text-slate-500 font-medium">Farmers will bid on your order</p>
+                </div>
+                <button onclick="closeRequestModal()" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Produce Needed</label>
+                    <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" placeholder="e.g. 5 Tons of Wheat">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Quantity (Kg)</label>
+                        <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" placeholder="5000">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Max Price / Kg</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-3.5 text-slate-400 font-bold">₹</span>
+                            <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pl-8 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" placeholder="Target Price">
+                        </div>
+                    </div>
+                </div>
+                
+                 <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Delivery Location</label>
+                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-700">
+                        <option>Warehouse A (Pune)</option>
+                        <option>Retail Store 1 (Mumbai)</option>
+                        <option>Cold Storage (Nashik)</option>
+                    </select>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3 items-start">
+                    <i class="fa-solid fa-bolt text-blue-500 mt-0.5"></i>
+                    <p class="text-xs text-blue-900">
+                        Listing this as a "Bulk Order" (>1 Ton) will automatically notify top-rated farmers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-100 bg-white md:rounded-b-[2rem]">
+                <button onclick="submitRequest()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/20 active:scale-95 transition-all">
+                    Post Requirement
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const items = [
+            { id: 1, name: 'Fresh Organic Tomatoes', price: 22, qty: '500 kg', farmer: 'Rajesh K.', loc: 'Pune', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=400', rating: 4.8 },
+            { id: 2, name: 'Premium Basmati Rice', price: 65, qty: '1.2 Tons', farmer: 'Amit Singh', loc: 'Nashik', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=400', rating: 4.5 },
+            { id: 3, name: 'Red Onions (Nashik)', price: 18, qty: '2 Tons', farmer: 'Suresh P.', loc: 'Nashik', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&q=80&w=400', rating: 4.9 },
+            { id: 4, name: 'Green Capsicum', price: 45, qty: '300 kg', farmer: 'Vijay D.', loc: 'Satara', img: 'https://images.unsplash.com/photo-1563565375-f3fdf5d6c469?auto=format&fit=crop&q=80&w=400', rating: 4.7 },
+            { id: 5, name: 'Alphanso Mangoes', price: 120, qty: '500 Dozen', farmer: 'Ratna Farms', loc: 'Ratnagiri', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&q=80&w=400', rating: 5.0 },
+        ];
+
+        function init() {
+            renderMarket(items, 'market-grid');
+            renderMarket(items.slice(0, 4), 'dashboard-listings');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Re-trigger animation
+            const target = document.getElementById(tabId);
+            target.classList.remove('view-section');
+            void target.offsetWidth;
+            target.classList.add('view-section');
+
+            // Desktop Nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active', 'bg-blue-600', 'text-white'));
+            const btn = document.getElementById(`btn-${tabId}`);
+            if(btn) btn.classList.add('nav-active');
+
+            // Mobile Nav
+            document.querySelectorAll('.mob-nav-btn').forEach(el => {
+                el.classList.remove('text-blue-700');
+                el.classList.add('text-slate-400');
+            });
+            const mobBtn = document.getElementById(`mob-${tabId}`);
+            if(mobBtn) {
+                mobBtn.classList.remove('text-slate-400');
+                mobBtn.classList.add('text-blue-700');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderMarket(data, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.map(item => `
+                <div class="bg-white rounded-[1.5rem] overflow-hidden border border-slate-100 shadow-card group hover:translate-y-[-5px] transition-transform duration-300">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="${item.name}">
+                        <div class="absolute top-3 right-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold text-slate-900 shadow-sm">
+                            ₹${item.price}/kg
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-900 text-lg leading-tight truncate pr-2">${item.name}</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-blue-500"></i> ${item.loc}
+                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span>Min: 50kg</span>
+                        </p>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 border border-slate-200">
+                                    ${item.farmer.charAt(0)}
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">${item.farmer}</p>
+                                    <div class="flex text-[10px] text-yellow-400">
+                                        <i class="fa-solid fa-star"></i> ${item.rating}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="buyNow('${item.name}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors shadow-lg shadow-blue-600/20">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal Logic
+        function openRequestModal() {
+            const modal = document.getElementById('requestModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                content.classList.remove('opacity-0', 'translate-y-full');
+                if(window.innerWidth >= 768) content.classList.remove('md:translate-y-10'); 
+            }, 10);
+        }
+
+        function closeRequestModal() {
+            const modal = document.getElementById('requestModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const content = document.getElementById('modalContent');
+
+            backdrop.classList.add('opacity-0');
+            content.classList.add('opacity-0', 'translate-y-full');
+            if(window.innerWidth >= 768) content.classList.add('md:translate-y-10'); 
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function submitRequest() {
+            closeRequestModal();
+            showToast('Requirement posted! Farmers will bid soon. 🚜');
+        }
+
+        function buyNow(item) {
+            showToast(`Request sent to farmer for ${item}! 📦`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-msg');
+            msgEl.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
