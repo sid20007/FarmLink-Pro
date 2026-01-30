@@ -9,7 +9,7 @@ Proposed Solution: A platform where farmers sell directly to buyers and check li
 
 Innovation And Creativity: We don't buy the crop, we give the farmer the data and the connection to sell it themselves, maximizing their freedom and profit.<br>
 
-Technical Complexity and stack: node js,astro,react,mongoDB,API.<br>
+Technical Complexity and stack: node js, astro,react, mongoDB, API.<br>
 
 Usability and Impact:
 
