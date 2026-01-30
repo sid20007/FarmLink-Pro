@@ -27,13 +27,14 @@ app.use((req, res, next) => {
     req.io = io;
     next();
 });
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/crops', require('./routes/crops'));
 
-// Basic Route
-app.get(/.*/, (req, res) => {
+// Fallback to index.html for SPA-like navigation (optional, but keep it last)
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 // Database Connection
