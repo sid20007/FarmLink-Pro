@@ -26,3 +26,8 @@ Node js, astro,react, mongoDB, API.<br>
 
 
 ### Presentation/ demo link:
+
+
+
+### Final question:
+"How will you convince a traditional farmer to trust your digital platform over a middleman they have known for 20 years?"
