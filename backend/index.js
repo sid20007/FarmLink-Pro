@@ -15,8 +15,8 @@ const io = socketIo(server, {
         methods: ["GET", "POST"]
     }
 });
-
-const PORT = process.env.PORT || 5000;
+const { PORT } = require('./config/config.js')
+//const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
