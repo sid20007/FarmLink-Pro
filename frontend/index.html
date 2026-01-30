@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AgriConnect | The Future of Farming</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <script>
+        // Auth Check - immediate
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
         tailwind.config = {
             theme: {
                 extend: {
@@ -51,8 +59,14 @@
     </script>
 
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         body {
             background-color: #f7f9f5;
@@ -70,8 +84,15 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .view-section {
@@ -89,10 +110,22 @@
             box-shadow: 0 0 0 0 rgba(76, 98, 57, 0.4);
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 98, 57, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(76, 98, 57, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 98, 57, 0); }
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(76, 98, 57, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(76, 98, 57, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(76, 98, 57, 0);
+            }
         }
 
         /* Custom Toast */
@@ -110,14 +143,38 @@
             left: 50%;
             bottom: 100px;
         }
+
         #toast.show {
             visibility: visible;
             animation: fadein 0.5s, fadeout 0.5s 2.5s;
         }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 100px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 100px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 100px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 100px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
     </style>
 </head>
+
 <body class="pb-24 md:pb-8">
 
     <!-- Custom Notification Toast -->
@@ -128,29 +185,56 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center gap-3">
-                    <div class="bg-nature-700 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3">
+                    <div
+                        class="bg-nature-700 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg rotate-3">
                         <i class="fa-solid fa-sprout text-lg"></i>
                     </div>
                     <div>
-                        <span class="font-extrabold text-xl tracking-tight text-nature-900 block leading-none">AgriConnect</span>
-                        <span class="text-[10px] uppercase tracking-widest font-bold text-nature-500">Digital Harvest</span>
+                        <span
+                            class="font-extrabold text-xl tracking-tight text-nature-900 block leading-none">AgriConnect</span>
+                        <span class="text-[10px] uppercase tracking-widest font-bold text-nature-500">Digital
+                            Harvest</span>
                     </div>
                 </div>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center bg-nature-50 p-1.5 rounded-2xl border border-nature-100">
-                    <button onclick="switchTab('dashboard')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900 tab-active" id="btn-dashboard">Home</button>
-                    <button onclick="switchTab('marketplace')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900" id="btn-marketplace">Market</button>
-                    <button onclick="switchTab('analytics')" class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900" id="btn-analytics">Intelligence</button>
+                    <button onclick="switchTab('dashboard')"
+                        class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900 tab-active"
+                        id="btn-dashboard">Home</button>
+                    <button onclick="switchTab('marketplace')"
+                        class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900"
+                        id="btn-marketplace">Market</button>
+                    <button onclick="switchTab('analytics')"
+                        class="nav-btn px-6 py-2.5 rounded-xl text-sm font-semibold transition-all text-nature-600 hover:text-nature-900"
+                        id="btn-analytics">Intelligence</button>
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button class="relative w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-nature-100 text-nature-600 hover:bg-nature-50 transition">
+                    <button
+                        class="relative w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-nature-100 text-nature-600 hover:bg-nature-50 transition">
                         <i class="fa-regular fa-bell text-lg"></i>
-                        <span class="absolute top-3 right-3 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white"></span>
+                        <span
+                            class="absolute top-3 right-3 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white"></span>
                     </button>
-                    <div class="w-11 h-11 rounded-2xl bg-nature-100 border-2 border-white shadow-sm overflow-hidden cursor-pointer active:scale-95 transition">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                    <div class="relative group">
+                        <div
+                            class="w-11 h-11 rounded-2xl bg-nature-100 border-2 border-white shadow-sm overflow-hidden cursor-pointer active:scale-95 transition">
+                            <img id="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                                alt="User">
+                        </div>
+                        <!-- Dropdown -->
+                        <div
+                            class="absolute right-0 top-14 w-48 bg-white rounded-2xl shadow-xl border border-nature-100 hidden group-hover:block p-2 z-50 animate-fade-in">
+                            <div class="px-4 py-2 border-b border-nature-50 mb-1">
+                                <p class="text-xs font-bold text-nature-400 uppercase">Signed in as</p>
+                                <p id="user-name" class="font-bold text-nature-950 truncate">User</p>
+                            </div>
+                            <button onclick="logout()"
+                                class="w-full text-left px-4 py-2 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition">
+                                <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -161,24 +245,33 @@
 
         <!-- VIEW: DASHBOARD -->
         <section id="dashboard" class="view-section space-y-8">
-            
+
             <!-- Hero Weather & Status -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 relative bg-nature-950 rounded-[2.5rem] p-8 text-white overflow-hidden shadow-2xl">
+                <div
+                    class="lg:col-span-2 relative bg-nature-950 rounded-[2.5rem] p-8 text-white overflow-hidden shadow-2xl">
                     <!-- Decor -->
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-nature-500 opacity-20 blur-[80px] -mr-32 -mt-32"></div>
-                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-nature-700 opacity-10 blur-[60px] -ml-24 -mb-24"></div>
-                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-nature-500 opacity-20 blur-[80px] -mr-32 -mt-32">
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-nature-700 opacity-10 blur-[60px] -ml-24 -mb-24">
+                    </div>
+
                     <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 h-full">
                         <div class="space-y-4">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-nature-800/50 border border-nature-700/50 rounded-full text-xs font-bold text-nature-300">
-                                <span class="w-1.5 h-1.5 rounded-full bg-nature-400 animate-pulse"></span> Optimal Harvest Conditions
+                            <span
+                                class="inline-flex items-center gap-2 px-3 py-1 bg-nature-800/50 border border-nature-700/50 rounded-full text-xs font-bold text-nature-300">
+                                <span class="w-1.5 h-1.5 rounded-full bg-nature-400 animate-pulse"></span> Optimal
+                                Harvest Conditions
                             </span>
-                            <h2 class="text-4xl font-extrabold tracking-tight">Welcome back,<br><span class="text-nature-400">Farmer Rajesh</span></h2>
-                            <p class="text-nature-300/80 max-w-xs text-sm leading-relaxed">Local market demand for <span class="text-white font-bold underline decoration-nature-500">Tomatoes</span> is 24% higher than usual this week.</p>
+                            <h2 class="text-4xl font-extrabold tracking-tight">Welcome back,<br><span
+                                    class="text-nature-400" id="welcome-name">Farmer</span></h2>
+                            <p class="text-nature-300/80 max-w-xs text-sm leading-relaxed">Local market demand for <span
+                                    class="text-white font-bold underline decoration-nature-500">Tomatoes</span> is 24%
+                                higher than usual this week.</p>
                         </div>
-                        
-                        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-6 min-w-[200px]">
+
+                        <div
+                            class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-6 min-w-[200px]">
                             <div class="text-center">
                                 <i class="fa-solid fa-cloud-sun-rain text-4xl text-nature-300 mb-2"></i>
                                 <p class="text-sm font-medium opacity-60">Today</p>
@@ -192,12 +285,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[2.5rem] p-8 border border-nature-100 card-shadow flex flex-col justify-between">
+                <div
+                    class="bg-white rounded-[2.5rem] p-8 border border-nature-100 card-shadow flex flex-col justify-between">
                     <div>
                         <h3 class="text-xl font-extrabold text-nature-950 mb-1">Quick Action</h3>
                         <p class="text-sm text-nature-500 mb-6">Create a listing in seconds</p>
                     </div>
-                    <button onclick="openModal()" class="w-full bg-nature-700 hover:bg-nature-800 text-white p-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg shadow-nature-700/20">
+                    <button onclick="openModal()"
+                        class="w-full bg-nature-700 hover:bg-nature-800 text-white p-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg shadow-nature-700/20">
                         <i class="fa-solid fa-circle-plus"></i> List My Produce
                     </button>
                     <div class="mt-6 flex items-center justify-between text-xs font-bold text-nature-400 px-1">
@@ -210,31 +305,39 @@
             <!-- Dashboard Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Stat 1 -->
-                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                <div
+                    class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                        <div
+                            class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
                             <i class="fa-solid fa-wallet text-xl"></i>
                         </div>
-                        <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">+12%</span>
+                        <span
+                            class="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">+12%</span>
                     </div>
                     <p class="text-nature-500 font-bold text-sm uppercase tracking-wider">Net Sales</p>
                     <h4 class="text-2xl font-black text-nature-950 mt-1">₹48,200</h4>
                 </div>
                 <!-- Stat 2 -->
-                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                <div
+                    class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                        <div
+                            class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
                             <i class="fa-solid fa-truck-ramp-box text-xl"></i>
                         </div>
-                        <span class="text-xs font-black text-nature-400 bg-nature-50 px-2.5 py-1 rounded-lg">8 Active</span>
+                        <span class="text-xs font-black text-nature-400 bg-nature-50 px-2.5 py-1 rounded-lg">8
+                            Active</span>
                     </div>
                     <p class="text-nature-500 font-bold text-sm uppercase tracking-wider">Total Stocks</p>
                     <h4 class="text-2xl font-black text-nature-950 mt-1">2.4 Tons</h4>
                 </div>
                 <!-- Stat 3 -->
-                <div class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
+                <div
+                    class="bg-white p-6 rounded-3xl border border-nature-100 card-shadow group hover:border-nature-300 transition-all">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
+                        <div
+                            class="w-12 h-12 bg-nature-50 rounded-2xl flex items-center justify-center text-nature-700 group-hover:bg-nature-700 group-hover:text-white transition-all">
                             <i class="fa-solid fa-users text-xl"></i>
                         </div>
                         <span class="text-xs font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">High</span>
@@ -243,13 +346,15 @@
                     <h4 class="text-2xl font-black text-nature-950 mt-1">12 Enquiries</h4>
                 </div>
                 <!-- Stat 4 -->
-                <div class="bg-nature-100 p-6 rounded-3xl border border-nature-200 card-shadow text-nature-900 relative overflow-hidden">
+                <div
+                    class="bg-nature-100 p-6 rounded-3xl border border-nature-200 card-shadow text-nature-900 relative overflow-hidden">
                     <div class="relative z-10">
                         <p class="text-nature-600 font-bold text-sm uppercase tracking-wider">Price Forecast</p>
                         <h4 class="text-lg font-black mt-2">Wheat Prices Rising</h4>
                         <p class="text-xs text-nature-500 font-semibold mt-1">Next 14 Days</p>
                     </div>
-                    <i class="fa-solid fa-chart-line absolute -bottom-2 -right-2 text-6xl text-nature-200 opacity-50"></i>
+                    <i
+                        class="fa-solid fa-chart-line absolute -bottom-2 -right-2 text-6xl text-nature-200 opacity-50"></i>
                 </div>
             </div>
 
@@ -261,8 +366,12 @@
                         <p class="text-sm text-nature-500">Live average prices from nearby Mandis</p>
                     </div>
                     <div class="flex gap-2">
-                        <button class="px-4 py-2 bg-nature-50 text-nature-700 rounded-xl text-xs font-bold border border-nature-100 hover:bg-nature-100">Regional Average</button>
-                        <button class="px-4 py-2 bg-nature-950 text-white rounded-xl text-xs font-bold shadow-md shadow-nature-950/20">National Index</button>
+                        <button
+                            class="px-4 py-2 bg-nature-50 text-nature-700 rounded-xl text-xs font-bold border border-nature-100 hover:bg-nature-100">Regional
+                            Average</button>
+                        <button
+                            class="px-4 py-2 bg-nature-950 text-white rounded-xl text-xs font-bold shadow-md shadow-nature-950/20">National
+                            Index</button>
                     </div>
                 </div>
 
@@ -280,13 +389,20 @@
                 <div class="flex flex-col lg:flex-row gap-4">
                     <div class="relative flex-1">
                         <i class="fa-solid fa-magnifying-glass absolute left-5 top-5 text-nature-400"></i>
-                        <input type="text" placeholder="Search for organic produce, grains, or seeds..." class="w-full bg-nature-50 border-nature-100 rounded-2xl py-4.5 pl-14 pr-6 text-sm font-medium focus:ring-2 focus:ring-nature-500 transition-all outline-none">
+                        <input type="text" placeholder="Search for organic produce, grains, or seeds..."
+                            class="w-full bg-nature-50 border-nature-100 rounded-2xl py-4.5 pl-14 pr-6 text-sm font-medium focus:ring-2 focus:ring-nature-500 transition-all outline-none">
                     </div>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                        <button class="bg-nature-900 text-white px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap">All Produce</button>
-                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Vegetables</button>
-                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Grains & Pulses</button>
-                        <button class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Seeds</button>
+                        <button
+                            class="bg-nature-900 text-white px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap">All
+                            Produce</button>
+                        <button
+                            class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Vegetables</button>
+                        <button
+                            class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Grains
+                            & Pulses</button>
+                        <button
+                            class="bg-white border border-nature-200 text-nature-600 px-6 py-4 rounded-2xl text-xs font-extrabold whitespace-nowrap hover:bg-nature-50">Seeds</button>
                     </div>
                 </div>
             </div>
@@ -303,18 +419,23 @@
             <div class="bg-nature-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden">
                 <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="text-3xl font-black mb-4 leading-tight">Harvest Intelligence<br>& Market Forecasting</h2>
-                        <p class="text-nature-300 text-base max-w-md leading-relaxed mb-8">We use historical data and current crop cycles to predict the best time to sell your produce for maximum profit.</p>
+                        <h2 class="text-3xl font-black mb-4 leading-tight">Harvest Intelligence<br>& Market Forecasting
+                        </h2>
+                        <p class="text-nature-300 text-base max-w-md leading-relaxed mb-8">We use historical data and
+                            current crop cycles to predict the best time to sell your produce for maximum profit.</p>
                         <div class="flex items-center gap-6">
                             <div class="flex -space-x-3">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=A" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=B" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=C" class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=A"
+                                    class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=B"
+                                    class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=C"
+                                    class="w-10 h-10 rounded-full border-2 border-nature-950 bg-nature-800">
                             </div>
                             <p class="text-sm font-bold text-nature-400">Joined by 1.2k local farmers</p>
                         </div>
                     </div>
-                    
+
                     <!-- Visual Chart Container -->
                     <div class="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10">
                         <div class="flex justify-between items-center mb-6">
@@ -329,7 +450,8 @@
                             <div class="w-full bg-nature-700/30 rounded-t-lg h-[65%]"></div>
                             <div class="w-full bg-nature-400 rounded-t-lg h-[85%] shadow-lg shadow-nature-400/20"></div>
                         </div>
-                        <div class="flex justify-between mt-4 text-[10px] font-bold text-nature-500 uppercase tracking-widest">
+                        <div
+                            class="flex justify-between mt-4 text-[10px] font-bold text-nature-500 uppercase tracking-widest">
                             <span>Week 1</span>
                             <span>Week 2</span>
                             <span>Week 3</span>
@@ -343,9 +465,12 @@
                 <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-nature-100">
                     <h3 class="text-xl font-extrabold text-nature-950 mb-6">High Demand Zones</h3>
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
+                        <div
+                            class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
                             <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">1</div>
+                                <div
+                                    class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">
+                                    1</div>
                                 <div>
                                     <p class="font-bold text-nature-900">Mumbai Central</p>
                                     <p class="text-xs text-nature-500">Tomatoes & Onions</p>
@@ -353,9 +478,12 @@
                             </div>
                             <span class="text-xs font-black text-nature-700 uppercase">Extreme</span>
                         </div>
-                        <div class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
+                        <div
+                            class="flex items-center justify-between p-4 rounded-2xl bg-nature-50 border border-nature-100">
                             <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">2</div>
+                                <div
+                                    class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-nature-700 shadow-sm font-bold">
+                                    2</div>
                                 <div>
                                     <p class="font-bold text-nature-900">Pune Wholesale</p>
                                     <p class="text-xs text-nature-500">Wheat & Grains</p>
@@ -368,15 +496,18 @@
 
                 <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-nature-100">
                     <h3 class="text-xl font-extrabold text-nature-950 mb-6">Farming Insights</h3>
-                    <div class="flex items-start gap-5 p-6 rounded-2xl bg-nature-950 text-white relative overflow-hidden group">
+                    <div
+                        class="flex items-start gap-5 p-6 rounded-2xl bg-nature-950 text-white relative overflow-hidden group">
                         <div class="w-12 h-12 bg-nature-800 rounded-xl flex items-center justify-center shrink-0">
                             <i class="fa-solid fa-lightbulb text-nature-300"></i>
                         </div>
                         <div>
                             <p class="font-bold text-lg mb-1">Cold Storage Alert</p>
-                            <p class="text-sm text-nature-400">Storing your Potato harvest for 15 more days could yield ₹200 more per Quintal.</p>
+                            <p class="text-sm text-nature-400">Storing your Potato harvest for 15 more days could yield
+                                ₹200 more per Quintal.</p>
                         </div>
-                        <i class="fa-solid fa-arrow-right absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        <i
+                            class="fa-solid fa-arrow-right absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                     </div>
                 </div>
             </div>
@@ -385,17 +516,23 @@
     </main>
 
     <!-- Floating Navigation Bar (Mobile) -->
-    <div class="md:hidden fixed bottom-6 left-6 right-6 z-50 glass-nav border border-nature-100 p-2 rounded-3xl card-shadow">
+    <div
+        class="md:hidden fixed bottom-6 left-6 right-6 z-50 glass-nav border border-nature-100 p-2 rounded-3xl card-shadow">
         <div class="flex justify-around items-center">
-            <button onclick="switchTab('dashboard')" class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-950 bg-nature-100 transition-all" id="mob-dashboard">
+            <button onclick="switchTab('dashboard')"
+                class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-950 bg-nature-100 transition-all"
+                id="mob-dashboard">
                 <i class="fa-solid fa-house-user text-xl"></i>
             </button>
-            
-            <button onclick="openModal()" class="flex items-center justify-center w-16 h-16 rounded-[2rem] bg-nature-800 text-white shadow-xl shadow-nature-800/30 -mt-8 active:scale-90 transition-transform ring-4 ring-white">
+
+            <button onclick="openModal()"
+                class="flex items-center justify-center w-16 h-16 rounded-[2rem] bg-nature-800 text-white shadow-xl shadow-nature-800/30 -mt-8 active:scale-90 transition-transform ring-4 ring-white">
                 <i class="fa-solid fa-plus text-2xl"></i>
             </button>
 
-            <button onclick="switchTab('marketplace')" class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-400 transition-all" id="mob-marketplace">
+            <button onclick="switchTab('marketplace')"
+                class="mob-nav-btn flex flex-col items-center justify-center w-14 h-14 rounded-2xl text-nature-400 transition-all"
+                id="mob-marketplace">
                 <i class="fa-solid fa-leaf text-xl"></i>
             </button>
         </div>
@@ -404,47 +541,58 @@
     <!-- Listing Modal (Bottom Sheet Style) -->
     <div id="sellModal" class="fixed inset-0 z-[60] hidden transition-opacity duration-300">
         <div class="absolute inset-0 bg-nature-950/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
-        
-        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[3rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
-            
+
+        <div
+            class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[3rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+
             <div class="px-8 py-6 border-b border-nature-50 flex justify-between items-center bg-nature-50/50">
                 <div>
                     <h3 class="text-2xl font-black text-nature-950">Post Produce</h3>
                     <p class="text-xs font-bold text-nature-500 uppercase tracking-widest mt-1">Direct to market</p>
                 </div>
-                <button onclick="closeModal()" class="w-10 h-10 rounded-2xl bg-white border border-nature-100 flex items-center justify-center text-nature-950 hover:bg-nature-100 transition shadow-sm">
+                <button onclick="closeModal()"
+                    class="w-10 h-10 rounded-2xl bg-white border border-nature-100 flex items-center justify-center text-nature-950 hover:bg-nature-100 transition shadow-sm">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            
+
             <div class="p-8 space-y-6 overflow-y-auto">
                 <div>
-                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-3">Crop Category</label>
+                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-3">Crop
+                        Category</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <button class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-700 bg-nature-50 text-nature-900 font-bold text-sm transition-all">
+                        <button
+                            class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-700 bg-nature-50 text-nature-900 font-bold text-sm transition-all">
                             <i class="fa-solid fa-carrot text-nature-700"></i> Vegetables
                         </button>
-                        <button class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-100 bg-white text-nature-500 font-bold text-sm hover:bg-nature-50 transition-all">
+                        <button
+                            class="flex items-center gap-3 p-4 rounded-2xl border-2 border-nature-100 bg-white text-nature-500 font-bold text-sm hover:bg-nature-50 transition-all">
                             <i class="fa-solid fa-wheat-awn"></i> Grains
                         </button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Item Name</label>
-                    <input type="text" id="cropName" placeholder="e.g. Organic Red Tomatoes" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                    <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Item
+                        Name</label>
+                    <input type="text" id="cropName" placeholder="e.g. Organic Red Tomatoes"
+                        class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Quantity (KG)</label>
-                        <input type="number" id="cropQty" placeholder="500" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Quantity
+                            (KG)</label>
+                        <input type="number" id="cropQty" placeholder="500"
+                            class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Price per KG</label>
+                        <label class="block text-xs font-black text-nature-400 uppercase tracking-widest mb-2">Price per
+                            KG</label>
                         <div class="relative">
                             <span class="absolute left-4 top-4 text-nature-400 font-bold">₹</span>
-                            <input type="number" id="cropPrice" placeholder="24" class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 pl-8 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
+                            <input type="number" id="cropPrice" placeholder="24"
+                                class="w-full bg-nature-50 border-nature-100 rounded-2xl p-4 pl-8 text-sm font-bold focus:ring-2 focus:ring-nature-700 outline-none border transition-all">
                         </div>
                     </div>
                 </div>
@@ -452,11 +600,13 @@
                 <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 flex gap-4">
                     <i class="fa-solid fa-circle-info text-orange-600 mt-1"></i>
                     <p class="text-xs text-orange-900 font-medium leading-relaxed">
-                        Setting a price within <span class="font-bold text-orange-600">₹18 - ₹22</span> will increase your chances of a quick sale by 40%.
+                        Setting a price within <span class="font-bold text-orange-600">₹18 - ₹22</span> will increase
+                        your chances of a quick sale by 40%.
                     </p>
                 </div>
 
-                <button onclick="submitListing()" class="w-full bg-nature-800 hover:bg-nature-950 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-nature-800/20 active:scale-95 uppercase tracking-widest text-sm">
+                <button onclick="submitListing()"
+                    class="w-full bg-nature-800 hover:bg-nature-950 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-nature-800/20 active:scale-95 uppercase tracking-widest text-sm">
                     Publish Listing
                 </button>
             </div>
@@ -483,8 +633,23 @@
         // --- Core UI Logic ---
 
         function init() {
+            // Load User Data
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                document.getElementById('user-name').innerText = user.name;
+                document.getElementById('welcome-name').innerText = user.name;
+                document.getElementById('user-avatar').src = `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`;
+            }
+
             renderPrices();
             renderMarketplace();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
 
         function switchTab(tabId) {
@@ -495,7 +660,7 @@
             // Nav Styling (Desktop)
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('tab-active'));
             const activeBtn = document.getElementById(`btn-${tabId}`);
-            if(activeBtn) activeBtn.classList.add('tab-active');
+            if (activeBtn) activeBtn.classList.add('tab-active');
 
             // Nav Styling (Mobile)
             document.querySelectorAll('.mob-nav-btn').forEach(btn => {
@@ -503,7 +668,7 @@
                 btn.classList.add('text-nature-400');
             });
             const activeMobBtn = document.getElementById(`mob-${tabId}`);
-            if(activeMobBtn) {
+            if (activeMobBtn) {
                 activeMobBtn.classList.remove('text-nature-400');
                 activeMobBtn.classList.add('bg-nature-100', 'text-nature-950');
             }
@@ -514,9 +679,9 @@
         function renderPrices() {
             const grid = document.getElementById('dashboard-price-grid');
             grid.innerHTML = marketData.map(item => {
-                const trendIcon = item.trend === 'up' ? 'fa-arrow-trend-up text-emerald-500' : 
-                                 item.trend === 'down' ? 'fa-arrow-trend-down text-rose-500' : 
-                                 'fa-minus text-nature-300';
+                const trendIcon = item.trend === 'up' ? 'fa-arrow-trend-up text-emerald-500' :
+                    item.trend === 'down' ? 'fa-arrow-trend-down text-rose-500' :
+                        'fa-minus text-nature-300';
                 return `
                     <div class="p-5 rounded-2xl bg-nature-50 border border-nature-100 flex items-center justify-between hover:bg-white hover:shadow-md transition-all">
                         <div class="flex items-center gap-4">
@@ -610,7 +775,7 @@
             const qty = document.getElementById('cropQty').value;
             const price = document.getElementById('cropPrice').value;
 
-            if(!name || !qty || !price) {
+            if (!name || !qty || !price) {
                 showToast("Please fill all details! 🌾");
                 return;
             }
@@ -638,4 +803,5 @@
 
     </script>
 </body>
+
 </html>
