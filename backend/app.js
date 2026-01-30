@@ -1,77 +1,32 @@
-require('dotenv').config();
 const express = require('express');
-
-
-const mongodb = require('mongodb');
 const cors = require('cors');
-const path = require('path');//new 
+const path = require('path');
 
-const http = require('http');
-const socketIo = require('socket.io');
+const { connectToMongoDB, closeMongoDB, client } = require('./database/mongodb');
+
+
+const authRoutes = require('./auth_path');
+const eventRoutes = require('./crops_path');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-const { PORT } = require('./config/config.js')
-//const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://independent-irita-clubspot-9e43f2fa.koyeb.app/api'],
+  methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
+}));
 
-// Attach Socket.io to request
-app.use((req, res, next) => {
-    req.io = io;
-    next();
-});
-// Serve static frontend files
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.set('trust proxy', 1); 
 app.use(express.static(path.join(__dirname, '../frontend')));
-// Routes
-app.use('/api/auth', require('./auth_path'));
-app.use('/api/crops', require('./crops_path'));
 
-// Fallback to index.html for SPA-like navigation (optional, but keep it last)
-app.get('*', (req, res) => {
+// Mount the Feature Routes
+app.use('/api/auth', authRoutes);   // Handles /api/auth/google, /api/auth/me
+app.use('/api/events', eventRoutes); // Handles /api/events, /api/events/join
+
+// Catch-all
+app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
-// Database Connection
-const { MongoMemoryServer } = require('mongodb-memory-server');
 
-const connectDB = async () => {
-    try {
-        // Try connecting to local DB first if defined
-        if (process.env.MONGO_URI && !process.env.USE_MEMORY_DB) {
-            try {
-                await mongoose.connect(process.env.MONGO_URI);
-                console.log('MongoDB Connected (Local)');
-                return;
-            } catch (err) {
-                console.log('Local MongoDB failed, falling back to Memory Server...');
-            }
-        }
-
-        // Fallback to Memory Server
-        const mongod = await MongoMemoryServer.create();
-        const uri = mongod.getUri();
-        await mongoose.connect(uri);
-        console.log(`MongoDB Connected (In-Memory) at ${uri}`);
-
-        // Seed data automatically since it's fresh
-        console.log('Seeding in-memory database...');
-        const seedData = require('./seed');
-        await seedData();
-    } catch (err) {
-        console.error('Database connection error:', err.message);
-    }
-};
-
-// Start Server
-server.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
-    await connectDB();
-});
+module.exports = { app, connectToMongoDB, closeMongoDB, client };

@@ -1,65 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('./models/User');
+const { ObjectId } = require('mongodb');
+const { getUsersCollection } = require('./database/mongodb');
+const { verifyGoogleToken } = require('./auth/google.auth');
+const { signTokenJWT, authenticateJWT } = require('./auth/middleware');
 
+// ==============================================================================
+// POST PATHS
+// ==============================================================================
 
-
-// Register
-router.post('/register', async (req, res) => {
-    const { name, email, password, role, location } = req.body;
+router.post('/google', async (req, res) => {
     try {
-        let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ msg: 'User already exists' });
+        const usersCollection = getUsersCollection();
+        const { token: googleToken } = req.body;
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const googleUser = await verifyGoogleToken(googleToken);
+        if (!googleUser) return res.status(401).json({ error: "Invalid Token" });
 
-        user = new User({
-            name,
-            email,
-            password: hashedPassword,
-            role,
-            location,
-            lastLogin: Date.now() // Set initial login date
+        const result = await usersCollection.findOneAndUpdate(
+            { email: googleUser.email },
+            { $set: { name: googleUser.name, picture: googleUser.picture, lastLogin: new Date() },
+              $setOnInsert: { joinedEvents: [], createdAt: new Date() } },
+            { upsert: true, returnDocument: 'after' } 
+        );
+
+        const user = result.value || result; 
+        const token = signTokenJWT(user._id, user.name);
+
+        res.status(200).json({ 
+            success: true,
+            token: token,
+            user: { _id: user._id, name: user.name, picture: user.picture, joinedEvents: user.joinedEvents }
         });
-
-        await user.save();
-
-        const payload = { user: { id: user.id, role: user.role } };
-        jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
-            if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role, lastLogin: user.lastLogin } });
-        });
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ msg: err.message });
+    } catch (e) { 
+        res.status(500).json({ error: "Authentication failed" });
     }
 });
 
-// Login
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+router.post('/logout', (req, res) => {
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+});
+
+// ==============================================================================
+// GET PATHS
+// ==============================================================================
+
+router.get('/me', authenticateJWT, async (req, res) => {
     try {
-        let user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
-
-        // Update last login
-        user.lastLogin = Date.now();
-        await user.save();
-
-        const payload = { user: { id: user.id, role: user.role } };
-        jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
-            if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, role: user.role, lastLogin: user.lastLogin } });
-        });
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        const usersCollection = getUsersCollection();
+        const user = await usersCollection.findOne(
+            { _id: new ObjectId(req.userId) }, 
+            { projection: { _id: 1, name: 1, picture: 1, joinedEvents: 1 } }
+        );
+        if (!user) return res.status(401).json({ error: "User not found" });
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ error: "Session check failed" });
     }
 });
 
