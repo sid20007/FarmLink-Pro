@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');//new 
 
 const http = require('http');
 const socketIo = require('socket.io');
@@ -32,10 +33,9 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/crops', require('./routes/crops'));
 
 // Basic Route
-app.get('/', (req, res) => {
-    res.json({ message: 'AgriDirect Backend API is running!' });
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
-
 // Database Connection
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
