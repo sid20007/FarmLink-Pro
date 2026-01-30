@@ -4,6 +4,11 @@ AgriLink<br>
 CS03AE<br>
 ### Team Name:
 KENBRISELLERIS<br>
+### Team MEMBERS:
+SHAWN 
+SID
+CHRIS
+GISELLE<br>
 ### College Name: 
 St.Aloysius(deemed to be university)-School of engineering<br>
 
