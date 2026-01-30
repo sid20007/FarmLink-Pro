@@ -1,6 +1,8 @@
 *refrence.md
 *.bat
-node_modules/
+*node_modules/
 .env
 .DS_Store
+*note.md
+*notess/
 

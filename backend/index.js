@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');//new 
 
 const http = require('http');
 const socketIo = require('socket.io');
@@ -14,8 +15,8 @@ const io = socketIo(server, {
         methods: ["GET", "POST"]
     }
 });
-
-const PORT = process.env.PORT || 5000;
+const { PORT } = require('./config/config.js')
+//const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
@@ -26,16 +27,16 @@ app.use((req, res, next) => {
     req.io = io;
     next();
 });
-
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../frontend')));
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/crops', require('./routes/crops'));
 
-// Basic Route
-app.get('/', (req, res) => {
-    res.json({ message: 'AgriDirect Backend API is running!' });
+// Fallback to index.html for SPA-like navigation (optional, but keep it last)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
-
 // Database Connection
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
