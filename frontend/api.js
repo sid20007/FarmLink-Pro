@@ -1,9 +1,10 @@
 /* =========================================
-   FIDA: API SERVICE (Farmer & Buyer Feeds)
+   AGRIFLOW: API SERVICE (Source of Truth)
    ========================================= */
 const SoftYield = {
-    // URL Configuration (Update this if you change your Vercel/Render URL)
-    BASE_URL: 'http://localhost:5000/api',
+    // URL Configuration
+    BASE_URL: 'http://localhost:3000/api',
+
 
     // Helper: Get Auth Headers
     getHeaders(isFormData = false) {
@@ -15,7 +16,7 @@ const SoftYield = {
         return headers;
     },
 
-    // --- 1. AUTHENTICATION (Preserved) ---
+    // --- 1. AUTHENTICATION ---
     auth: {
         async googleLogin(googleToken) {
             const res = await fetch(`${SoftYield.BASE_URL}/auth/google`, {
@@ -39,13 +40,14 @@ const SoftYield = {
         }
     },
 
-    // --- 2. FARMER PRODUCE (Renovated from 'Events') ---
+    // --- 2. FARMER PRODUCE (The Feed) ---
     produce: {
         /**
-         * Get all produce listings (The Marketplace)
-         * API: GET /produce
+         * Get all produce listings
+         * Endpoint: GET /api/produce
          */
         async getAll() {
+
             // Check if backend path exists, else fallback to mock for dev
             try {
                 const res = await fetch(`${SoftYield.BASE_URL}/produce`);
@@ -61,25 +63,23 @@ const SoftYield = {
         },
 
         /**
-         * Farmer posts new crop/produce
-         * API: POST /produce
-         * Form Data: title, price, quantity, location, image
+         * Farmer posts new crop
+         * Endpoint: POST /api/produce
          */
         async create(formData) {
             const res = await fetch(`${SoftYield.BASE_URL}/produce`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('fida_token')}` },
+                headers: SoftYield.getHeaders(true), // True = FormData (no Content-Type header)
                 body: formData
             });
             return await res.json();
         },
 
         /**
-         * Buyer expresses interest in produce
-         * API: POST /produce/interest
+         * Buyer contacts seller
+         * Endpoint: POST /api/produce/interest
          */
         async contactSeller(produceId) {
-            // Renamed from 'join' to 'contactSeller'
             const res = await fetch(`${SoftYield.BASE_URL}/produce/interest`, {
                 method: 'POST',
                 headers: SoftYield.getHeaders(),
@@ -89,68 +89,70 @@ const SoftYield = {
         }
     },
 
-    // --- 3. MARKET DATA (Farmer Feed Components) ---
+    // --- 3. MARKET DATA (Realtime & System) ---
     market: {
         /**
-         * Database of verified buy requests
-         * (What companies/wholesalers are looking for)
+         * Get active buy requests
+         * Endpoint: GET /api/market/requests
          */
         async getBuyRequests() {
-            // MOCK: Waiting for backend implementation
-            return new Promise(resolve => {
-                setTimeout(() => resolve([
-                    { _id: 'br1', crop: 'Red Onions', quantity: '500 kg', buyer: 'BigBasket Hub', verified: true, maxPrice: 35 },
-                    { _id: 'br2', crop: 'Potatoes (Chip Grade)', quantity: '1 Ton', buyer: 'Local Chips Co', verified: true, maxPrice: 22 },
-                    { _id: 'br3', crop: 'Ginger', quantity: '200 kg', buyer: 'Mandi Agent #4', verified: false, maxPrice: 150 }
-                ]), 400); // Simulate network delay
+            const res = await fetch(`${SoftYield.BASE_URL}/market/requests`, {
+                headers: SoftYield.getHeaders()
             });
+            return await res.json();
         },
 
         /**
-         * Database of current vegetable prices (Mandi Rates)
+         * Get current Mandi Rates
+         * Endpoint: GET /api/market/prices
          */
         async getPrices() {
-            // MOCK: Live Mandi Rates
-            return Promise.resolve([
-                { item: 'Tomato', price: '₹30-40', trend: 'stable' },
-                { item: 'Onion', price: '₹25-30', trend: 'down' },
-                { item: 'Potato', price: '₹20-22', trend: 'up' },
-                { item: 'Chilli', price: '₹60-70', trend: 'up' }
-            ]);
+            const res = await fetch(`${SoftYield.BASE_URL}/market/prices`, {
+                headers: SoftYield.getHeaders()
+            });
+            return await res.json();
         },
 
         /**
-         * Database of forecasted prices (AI/Algo)
+         * Get AI Price Forecasts
+         * Endpoint: GET /api/market/forecast
          */
         async getPriceForecast() {
-            // MOCK: AI Predictions
-            return Promise.resolve([
-                { item: 'Tomato', prediction: 'Rise expected in 3 days due to rain', color: 'green' },
-                { item: 'Onion', prediction: 'Prices will drop as new supply arrives', color: 'red' }
-            ]);
+            const res = await fetch(`${SoftYield.BASE_URL}/market/forecast`, {
+                headers: SoftYield.getHeaders()
+            });
+            return await res.json();
         }
     },
 
-    // --- 4. DIRECTORY (Buyer Feed Components) ---
+    // --- 4. DIRECTORY ---
     directory: {
-        /**
-         * Database of verified farmers
-         */
         async getVerifiedFarmers() {
-            // MOCK: List of farmers for buyers to browse
-            return Promise.resolve([
-                { _id: 'f1', name: 'Rajesh Kumar', location: 'Satara', rating: 4.8, crops: ['Wheat', 'Sugarcane'], verified: true },
-                { _id: 'f2', name: 'Green Earth Organics', location: 'Pune', rating: 4.5, crops: ['Spinach', 'Methi'], verified: true },
-                { _id: 'f3', name: 'Amit Patil', location: 'Kolhapur', rating: 3.9, crops: ['Rice'], verified: false }
-            ]);
+            const res = await fetch(`${SoftYield.BASE_URL}/directory/farmers`, {
+                headers: SoftYield.getHeaders()
+            });
+            return await res.json();
         }
     },
 
     // --- 5. PROFILE ---
     profile: {
         async loadDetails() {
-            // Retaining your original mock
-            return { phone: '9999', city: 'pune', role: 'Farmer' };
+            const res = await fetch(`${SoftYield.BASE_URL}/profile`, {
+                headers: SoftYield.getHeaders()
+            });
+            if(!res.ok) return null;
+            return await res.json();
+        },
+
+        async updateDetails(data) {
+            const res = await fetch(`${SoftYield.BASE_URL}/profile`, {
+                method: 'POST',
+                headers: SoftYield.getHeaders(),
+                body: JSON.stringify(data)
+            });
+            return await res.json();
+
         }
     }
 };

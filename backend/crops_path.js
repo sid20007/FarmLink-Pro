@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { ObjectId } = require('mongodb'); 
-const { getEventsCollection, getUsersCollection } = require('./database/mongodb');
+// Updated imports to match the new mongodb.js exports
+const { getProduceCollection, getUsersCollection } = require('./database/mongodb');
 
 const { uploadImageQuick } = require('./database/cloudinary');
 const { authenticateJWT } = require('./auth/middleware');
 const multer = require('multer');
 
-// Multer Config (Local to this file because only events use it)
+// Multer Config
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -15,12 +16,15 @@ const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } 
 // GET PATHS
 // ==============================================================================
 
+// Get all produce listings (The Feed)
 router.get('/', async (req, res) => {
     try {
-        const eventsCollection = getEventsCollection();
-        const events = await eventsCollection.find({}).toArray();
-        res.status(200).json(events);
+        const produceCollection = getProduce();
+        // Sort by newest first
+        const items = await produceCollection.find({}).sort({ createdAt: -1 }).toArray();
+        res.status(200).json(items);
     } catch (e) {
+        console.error("Fetch error:", e);
         res.status(500).json({ error: "Fetch failed" });
     }
 });
@@ -29,96 +33,114 @@ router.get('/', async (req, res) => {
 // POST PATHS
 // ==============================================================================
 
+// Create a new Produce Listing
 router.post('/', authenticateJWT, upload.single('image'), async (req, res) => {
     try {
-        const eventsCollection = getEventsCollection();
-        const { title, description, date, time, location, price, mode, category } = req.body;
+        const produceCollection = getProduce();
         
-        // Logic: Handle "Infinity" attendees safely
-        let maxAttendees = req.body.maxAttendees;
-        if (maxAttendees === 'Infinity') {
+        // New AgriFlow Fields:
+        const { title, price, unit, quantity, location, description } = req.body;
 
-            maxAttendees = 8000000000; 
-
-        } else {
-            maxAttendees = parseInt(maxAttendees, 10);
+        if (!title || !price || !quantity) {
+            return res.status(400).json({ error: "Missing required fields (Title, Price, Qty)" });
         }
-
-        if (!title || !date) return res.status(400).json({ error: "Missing required fields" });
         
-        // Logic: Image Upload
-        let imageUrl = "chris.jpg";
+        // Image Upload Logic
+        let imageUrl = "https://placehold.co/600x400/d97706/FFF?text=Crops"; // Default fallback
         if (req.file) {
             const imageBuffer = req.file.buffer;
             const imageBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+            // Assuming uploadImageQuick returns the URL string
             imageUrl = await uploadImageQuick(imageBase64);
         }
         
-        const newEvent = {
-            title, date, time, location, category, description, 
-            maxAttendees, mode, 
-            price: parseFloat(price), 
-            creatorId: req.userId, 
-            creatorName: req.userName, 
+        const newListing = {
+            title, 
+            location, 
+            description: description || "",
+            price: parseFloat(price),
+            unit: unit || 'kg',
+            quantity: quantity, // e.g., "500" or "500 kg"
+            
+            // Seller Info
+            sellerId: req.userId, 
+            sellerName: req.userName, 
+            
             image: imageUrl,
-            attendees: [], comments: [], createdAt: new Date(), checkedIn: []
+            
+            // Interaction Arrays
+            interestedBuyers: [], // Replaces 'attendees'
+            comments: [], 
+            createdAt: new Date()
         };
 
-        const result = await eventsCollection.insertOne(newEvent);
-        res.status(201).json({ success: true, eventId: result.insertedId });
+        const result = await produceCollection.insertOne(newListing);
+        res.status(201).json({ success: true, id: result.insertedId });
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: "Creation failed" });
+        res.status(500).json({ error: "Listing creation failed" });
     }
 });
 
-router.post('/join', authenticateJWT, async (req, res) => {
+// Buyer expresses interest (Replaces /join)
+router.post('/interest', authenticateJWT, async (req, res) => {
     try {
-        const usersCollection = getUsersCollection();
-        const eventsCollection = getEventsCollection();
+        const produceCollection = getProduce();
         const userId = req.userId; 
-        const { eventId } = req.body;
+        const { produceId } = req.body;
 
-        if (!eventId) return res.status(400).json({ error: "Missing Event ID" });
+        if (!produceId) return res.status(400).json({ error: "Missing Produce ID" });
 
-        const eventUpdate = await eventsCollection.updateOne(
+        // Check if user is the seller (Seller can't buy own crops)
+        const listing = await produceCollection.findOne({ _id: new ObjectId(produceId) });
+        if (!listing) return res.status(404).json({ error: "Listing not found" });
+        if (listing.sellerId === userId) return res.status(400).json({ error: "You cannot buy your own produce." });
+
+        // Add user to interestedBuyers if not already there
+        const update = await produceCollection.updateOne(
             { 
-                _id: new ObjectId(eventId),
-                // BUG FIX: Removed $toInt crash. Direct comparison is safer.
-                $expr: { $lt: [{ $size: "$attendees" }, "$maxAttendees"] },
-                attendees: { $ne: userId },
-                creatorId: { $ne: userId }
+                _id: new ObjectId(produceId),
+                interestedBuyers: { $ne: userId } // Avoid duplicates
             },
-            { $addToSet: { attendees: userId } }
+            { $addToSet: { interestedBuyers: userId } }
         );
 
-        if (eventUpdate.matchedCount === 0) return res.status(400).json({ error: "Can't join: Full, joined, or owner." });
+        if (update.modifiedCount === 0) {
+            return res.status(200).json({ message: "Already contacted or updated." });
+        }
 
-        await usersCollection.updateOne(
-            { _id: new ObjectId(userId) },
-            { $addToSet: { joinedEvents: eventId } }
-        );
-
-        res.status(200).json({ success: true, message: "Successfully joined!" });
+        res.status(200).json({ success: true, message: "Interest sent to farmer!" });
     } catch (e) { 
         console.error(e);
-        res.status(500).json({ error: "Join failed" });
+        res.status(500).json({ error: "Interest failed" });
     }
 });
 
+// Comments / Q&A on a listing
 router.post('/comment', authenticateJWT, async (req, res) => {
     try {
-        const usersCollection = getUsersCollection();
-        const eventsCollection = getEventsCollection();
+        const usersCollection = getUsers();
+        const produceCollection = getProduce();
         const userId = req.userId; 
-        const { eventId, text } = req.body;
+        const { produceId, text } = req.body;
 
-        if (!eventId || !text.trim()) return res.status(400).json({ error: "Missing data" });
+        if (!produceId || !text.trim()) return res.status(400).json({ error: "Missing data" });
 
         const userDoc = await usersCollection.findOne({ _id: new ObjectId(userId) }, { projection: { name: 1 } });
-        const comment = { _id: new ObjectId(), userId, userName: userDoc.name, text, timestamp: new Date() };
+        
+        const comment = { 
+            _id: new ObjectId(), 
+            userId, 
+            userName: userDoc.name, 
+            text, 
+            timestamp: new Date() 
+        };
 
-        await eventsCollection.updateOne({ _id: new ObjectId(eventId) }, { $push: { comments: comment } });
+        await produceCollection.updateOne(
+            { _id: new ObjectId(produceId) }, 
+            { $push: { comments: comment } }
+        );
+        
         res.status(200).json({ success: true });
     } catch (e) { 
         res.status(500).json({ error: "Comment failed" });
@@ -129,40 +151,23 @@ router.post('/comment', authenticateJWT, async (req, res) => {
 // DELETE PATHS
 // ==============================================================================
 
+// Delete a listing
 router.delete('/:id', authenticateJWT, async (req, res) => {
     try {
-        const usersCollection = getUsersCollection();
-        const eventsCollection = getEventsCollection();
-        const eventId = req.params.id;
+        const produceCollection = getProduce();
+        const produceId = req.params.id;
         const userId = req.userId;
 
-        const event = await eventsCollection.findOne({ _id: new ObjectId(eventId) });
-        if (!event) return res.status(404).json({ error: "Event not found" });
-        if (event.creatorId !== userId) return res.status(403).json({ error: "Unauthorized" });
+        const item = await produceCollection.findOne({ _id: new ObjectId(produceId) });
+        if (!item) return res.status(404).json({ error: "Listing not found" });
+        
+        // Only the seller can delete
+        if (item.sellerId !== userId) return res.status(403).json({ error: "Unauthorized" });
 
-        await usersCollection.updateMany(
-            { joinedEvents: eventId }, 
-            { $pull: { joinedEvents: eventId } }
-        );
-        await eventsCollection.deleteOne({ _id: new ObjectId(eventId) });
+        await produceCollection.deleteOne({ _id: new ObjectId(produceId) });
         res.status(200).json({ success: true });
     } catch (e) {
         res.status(500).json({ error: "Delete failed" });
-    }
-});
-
-router.delete('/:eventId/comments/:commentId', authenticateJWT, async (req, res) => {
-    try {
-        const eventsCollection = getEventsCollection();
-        const { eventId, commentId } = req.params;
-        const result = await eventsCollection.updateOne(
-            { _id: new ObjectId(eventId) },
-            { $pull: { comments: { _id: new ObjectId(commentId), userId: req.userId } } }
-        );
-        if (result.modifiedCount === 0) return res.status(403).json({ error: "Failed to delete" });
-        res.status(200).json({ success: true });
-    } catch (e){
-        res.status(500).json({ error: "Comment deletion failed" });
     }
 });
 

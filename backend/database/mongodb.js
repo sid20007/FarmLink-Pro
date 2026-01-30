@@ -1,88 +1,119 @@
 const { dbUrl } = require('../config/config.js');
-//=============
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-const DATABASE_NAME = "softyield";
+const DATABASE_NAME = "softyield_agri";
 
-// Changed to 'let' to allow fallback replacement
-let client = new MongoClient(dbUrl, {
-    serverSelectionTimeoutMS: 1000, // Fail fast (1 second) to switch to In-Memory
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-});
 
-let db;
-let usersCollection;
-let eventsCollection;
-//=============
+let client = null;
+let db = null;
 
-// Exported connection function
+
+// --- Collection References ---
+let usersCollection;      // Auth & Profiles
+let produceCollection;    // Farmer Listings (was events)
+let requestsCollection;   // Buyer Demands
+let pricesCollection;     // Mandi Rates (Read Only for users)
+let forecastsCollection;  // AI Predictions (Read Only for users)
+
+/**
+ * Connects to MongoDB (Local -> Fallback to Memory)
+ * and initializes all agricultural collections.
+ */
 async function connectToMongoDB() {
     try {
         console.log("Attempting local MongoDB connection...");
+        // 1. Try Local/Cloud URL
+        client = new MongoClient(dbUrl, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: false, // CHANGED: Must be false to allow Text Indexes
+                deprecationErrors: true,
+            }
+        });
         await client.connect();
-        console.log("Connected to MongoDB successfully! (Local)");
-
-        db = client.db(DATABASE_NAME);
-        usersCollection = db.collection("users");
-        eventsCollection = db.collection("events");
-        await usersCollection.createIndex({ email: 1 }, { unique: true });
+        console.log("Connected to MongoDB successfully!");
+        await initializeCollections(client); // Await this to ensure indexes are built
         return true;
+
     } catch (error) {
-        console.warn('Local MongoDB failed connection. Switching to In-Memory DB...');
+        console.warn('Local MongoDB failed. Switching to In-Memory DB...');
+        // console.error(error); // Uncomment to debug specific connection errors
         try {
-            // Lazy load memory server to avoid overhead if not needed
+            // 2. Fallback: In-Memory DB
             const { MongoMemoryServer } = require('mongodb-memory-server');
             const mongod = await MongoMemoryServer.create();
             const uri = mongod.getUri();
-
-            console.log(`Fallback: Connecting to In-Memory DB at ${uri}`);
-
-            // Create NEW client for the fallback URI
-            client = new MongoClient(uri);
+            
+            console.log(`Fallback: Connected to In-Memory DB at ${uri}`);
+            client = new MongoClient(uri); // In-memory doesn't use strict mode by default
             await client.connect();
-
-            // Update exports logic so other modules get the live client (if they access it via module.exports)
-            // Note: Modules that already destructured { client } = require(...) will hold the OLD client.
-            // But our helper functions below use the module-level variables (usersCollection), so they WILL work.
-            if (module.exports) module.exports.client = client;
-
-            db = client.db(DATABASE_NAME);
-            usersCollection = db.collection("users");
-            eventsCollection = db.collection("events");
-
-            // Seed basic data? Optional but helpful.
+            
+            await initializeCollections(client);
+            
+            // Seed data because In-Memory is empty on start
+            await seedSystemData(); 
             return true;
 
         } catch (memErr) {
-            console.error('Fatal: Both Local and Memory DB failed to start.', memErr);
+            console.error('Fatal: Database connection failed completely.', memErr);
             return false;
         }
     }
 }
 
-// Helper functions to get the collections safely
-function getUsersCollection() {
-    if (!usersCollection) {
-        throw new Error("Database not connected yet! Call connectToMongoDB first.");
-    }
-    return usersCollection;
+async function initializeCollections(connectedClient) {
+    db = connectedClient.db(DATABASE_NAME);
+    
+    usersCollection = db.collection("users");
+    produceCollection = db.collection("produce");
+    requestsCollection = db.collection("requests");
+    pricesCollection = db.collection("prices");
+    forecastsCollection = db.collection("forecasts");
+
+    // Indexes for performance
+    // Note: This requires strict: false in ServerApi
+    await usersCollection.createIndex({ email: 1 }, { unique: true });
+    await produceCollection.createIndex({ location: "text", title: "text" }); 
 }
 
-function getEventsCollection() {
-    if (!eventsCollection) {
-        throw new Error("Database not connected yet!");
+// --- Seeder for System Data (Prices/Forecasts) ---
+async function seedSystemData() {
+    const priceCount = await pricesCollection.countDocuments();
+    if(priceCount === 0) {
+        console.log("Seeding Market Data...");
+        await pricesCollection.insertMany([
+            { item: 'Tomato', price: '₹35-42', trend: 'stable', date: new Date() },
+            { item: 'Onion (Red)', price: '₹28-32', trend: 'down', date: new Date() },
+            { item: 'Potato', price: '₹22-25', trend: 'up', date: new Date() },
+            { item: 'Green Chilli', price: '₹65-70', trend: 'up', date: new Date() },
+            { item: 'Garlic', price: '₹120-140', trend: 'stable', date: new Date() }
+        ]);
+        
+        await forecastsCollection.insertMany([
+            { item: 'Tomato', prediction: 'Prices expected to rise due to heavy rains in Nashik.', color: 'green' },
+            { item: 'Onion', prediction: 'New harvest arriving; prices will stabilize.', color: 'red' }
+        ]);
+
+        await requestsCollection.insertMany([
+            { crop: 'Red Onions', quantity: '500 kg', buyer: 'BigBasket Hub', verified: true, maxPrice: 35 },
+            { crop: 'Potatoes', quantity: '1 Ton', buyer: 'Local Chips Co', verified: true, maxPrice: 22 }
+        ]);
     }
-    return eventsCollection;
 }
 
 async function closeMongoDB() {
     if (client) await client.close();
 }
 
+// --- Exports ---
 module.exports = {
-    connectToMongoDB, closeMongoDB, client, ObjectId, getUsersCollection, getEventsCollection
-}
+    connectToMongoDB, 
+    closeMongoDB, 
+    ObjectId,
+    client,
+    getUsersCollection: () => usersCollection,
+    getProduceCollection: () => produceCollection,
+    getRequestsCollection: () => requestsCollection,
+    getPricesCollection: () => pricesCollection,
+    getForecastsCollection: () => forecastsCollection
+};

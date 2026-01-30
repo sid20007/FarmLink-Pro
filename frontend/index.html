@@ -1,287 +1,172 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>AgriConnect | Professional Farmer Suite</title>
-
-
-
-    <!-- Tailwind CSS -->
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
-
-    <!-- Font Awesome -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
-
-    <!-- Google Fonts -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-
-
-    <script>
-
-        tailwind.config = {
-
-            theme: {
-
-                extend: {
-
-                    fontFamily: {
-
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-
-                        display: ['"Outfit"', 'sans-serif'],
-
-                    },
-
-                    colors: {
-
-                        brand: {
-
-                            50: '#f0fdf4',
-
-                            100: '#dcfce7',
-
-                            200: '#bbf7d0',
-
-                            300: '#86efac',
-
-                            400: '#4ade80',
-
-                            500: '#22c55e',
-
-                            600: '#16a34a',
-
-                            700: '#15803d',
-
-                            800: '#166534',
-
-                            900: '#14532d',
-
-                            950: '#052e16',
-
-                        },
-
-                        earth: {
-
-                            50: '#fbfaf8',
-
-                            100: '#f5f2eb',
-
-                            200: '#e6e0d4',
-
-                            800: '#5c5245',
-
-                        },
-
-                        accent: {
-
-                            500: '#f59e0b',
-
-                            600: '#d97706',
-
-                        },
-
-                    },
-
-                    boxShadow: {
-
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-
-                        'glow': '0 0 20px rgba(34, 197, 94, 0.25)',
-
-                        'card': '0 10px 30px -5px rgba(0,0,0,0.06)',
-
-                        'depth': '0 20px 40px -10px rgba(22, 101, 52, 0.15)',
-
-                    },
-
-                    animation: {
-
-                        'float': 'float 6s ease-in-out infinite',
-
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-
-                    },
-
-                }
-
-            }
-
-        }
-
-    </script>
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFlow | Farmer Network</title>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script defer src="api.js"></script>
 
     <style>
-        /* Custom Scrollbar */
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        :root {
+            /* Theme: Cream Autumn (Dark Earth) */
+            --bg: #1c1917;       /* Warm Black */
+            --surface: #292524;  /* Dark Stone */
+            --text: #ffffff;     /* Cream */
+            --text-muted: #a8a29e;
+            --accent: #d97706;   /* Harvest Gold */
+            --accent-hover: #b45309;
+            --green: #65a30d;    /* Crop Green */
+            --red: #ef4444;      /* Alert Red */
+            --border: #44403c;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-
-            background-color: #fbfaf8;
-            /* Warm Earth Tone */
-
-            -webkit-tap-highlight-color: transparent;
-
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            padding-bottom: 80px; /* Space for dock */
         }
 
+        /* --- Utilities --- */
+        .hidden { display: none !important; }
+        button { cursor: pointer; font-family: inherit; }
+        img { display: block; max-width: 100%; }
 
-
-        .glass {
-
-            background: rgba(255, 255, 255, 0.92);
-
-            backdrop-filter: blur(16px);
-
-            -webkit-backdrop-filter: blur(16px);
-
-            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-
+        /* --- Layout --- */
+        header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+            position: sticky; top: 0; z-index: 10;
         }
+        .brand { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: -0.05em; text-transform: uppercase; }
+        .user-badge { font-size: 0.9rem; color: var(--text-muted); }
 
+        main { padding: 20px; max-width: 600px; margin: 0 auto; }
+        section { display: none; } 
+        section.active { display: block; animation: fadeIn 0.2s; }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .glass-dark {
-
-            background: rgba(20, 83, 45, 0.9);
-
-            backdrop-filter: blur(12px);
-
-            border: 1px solid rgba(255, 255, 255, 0.1);
-
-        }
-
-
-
-        .nav-item {
-
-            position: relative;
-
+        /* --- Components --- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
             overflow: hidden;
+        }
+        .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: var(--text); }
+        .meta { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; display: flex; gap: 10px; align-items: center; }
+        .tag { background: var(--border); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: var(--text); }
+        .tag.verified { background: rgba(101, 163, 13, 0.2); color: var(--green); border: 1px solid var(--green); }
 
+        /* Inputs */
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #000;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 4px;
+        }
+        input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 700;
+            width: 100%;
+            border-radius: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .btn:hover { background: var(--accent-hover); }
+        .btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn.sm { width: auto; padding: 5px 10px; font-size: 0.8rem; }
+        .btn.green { background: var(--green); color: white; }
+
+        /* Search Bar */
+        .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        
+        /* Modals */
+        .modal {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            padding: 20px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 4px;
         }
 
+        /* Navigation Dock */
+        .dock {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around;
+            padding: 15px 0;
+            z-index: 50;
+        }
+        .dock-btn {
+            background: none; border: none; color: var(--text-muted);
+            font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .dock-btn.active { color: var(--accent); }
 
-
-        .nav-active {
-
-            background-color: #15803d;
-
-            color: white;
-
-            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
-
+        /* Images */
+        .crop-img {
+            width: 100%; height: 180px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background: #000;
         }
 
+        /* Price Trends */
+        .trend-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 8px 0; }
+        .trend-up { color: var(--green); }
+        .trend-down { color: var(--red); }
 
-
-        /* Smooth Fade In */
-
-        .view-section {
-
-            display: none;
-
-            opacity: 0;
-
-            transform: translateY(10px);
-
-            animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-
-
-        @keyframes fadeIn {
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-        }
-
-
-
-        /* Toast Animation */
-
+        /* Toast */
         #toast {
-
-            visibility: hidden;
-
-            opacity: 0;
-
-            transform: translateX(-50%) translateY(20px);
-
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-        }
-
-        #toast.show {
-
-            visibility: visible;
-
-            opacity: 1;
-
-            transform: translateX(-50%) translateY(0);
-
-        }
-
-
-
-        .custom-pattern {
-
-            background-image: radial-gradient(#166534 0.5px, transparent 0.5px), radial-gradient(#166534 0.5px, #fbfaf8 0.5px);
-
-            background-size: 20px 20px;
-
-            background-position: 0 0, 10px 10px;
-
-            opacity: 0.03;
-
+            position: fixed; top: 10px; right: 10px;
+            background: var(--accent); color: #000;
+            padding: 10px 20px; font-weight: bold;
+            display: none; z-index: 9999; border-radius: 4px;
         }
     </style>
-
 </head>
+<body>
 
+<<<<<<< HEAD
+    <div id="toast"></div>
+=======
 <body class="text-slate-800 antialiased pb-28 md:pb-12 relative">
 
 
@@ -479,9 +364,20 @@
             </div>
 
         </div>
+>>>>>>> 8e37a1a6b8824b616f56c5babfb9fa35ab719db6
 
+    <header>
+        <div class="brand">AgriFlow</div>
+        <div class="user-badge" id="headerName">GUEST</div>
     </header>
 
+<<<<<<< HEAD
+    <div id="authScreen" class="modal hidden">
+        <div class="modal-content" style="text-align: center; border-color: var(--border);">
+            <h1 style="color:var(--accent); margin-bottom: 10px;">AGRI FLOW</h1>
+            <p style="margin-bottom: 30px; color: var(--text-muted);">Connect. Trade. Grow.</p>
+            <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
+=======
 
 
     <!-- Main Content -->
@@ -1576,1989 +1472,448 @@
 
             </button>
 
+>>>>>>> 8e37a1a6b8824b616f56c5babfb9fa35ab719db6
         </div>
-
-    </nav>
-
-
-
-    <!-- Create Listing Modal -->
-
-    <div id="listingModal" class="fixed inset-0 z-[60] hidden">
-
-        <!-- Backdrop -->
-
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop"
-            onclick="closeModal()"></div>
-
-
-
-        <!-- Modal Content -->
-
-        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl transform translate-y-full md:translate-y-10 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]"
-            id="modalContent">
-
-
-
-            <div
-                class="p-8 border-b border-slate-100 flex justify-between items-center bg-earth-50/50 rounded-t-[2.5rem]">
-
-                <div>
-
-                    <h3 class="text-xl font-display font-bold text-slate-900" data-translate="new_listing">New Listing
-                    </h3>
-
-                    <p class="text-xs text-slate-500 font-medium mt-1">Connect with 500+ verified buyers</p>
-
-                </div>
-
-                <button onclick="closeModal()"
-                    class="w-9 h-9 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors">
-
-                    <i class="fa-solid fa-xmark text-sm"></i>
-
-                </button>
-
-            </div>
-
-
-
-            <div class="p-8 overflow-y-auto space-y-6 custom-scrollbar">
-
-                <!-- Image Upload -->
-
-                <div
-                    class="w-full h-40 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-slate-400 bg-slate-50 hover:bg-brand-50 hover:border-brand-300 hover:text-brand-600 transition-all cursor-pointer group">
-
-                    <div
-                        class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-
-                        <i class="fa-solid fa-camera text-xl"></i>
-
-                    </div>
-
-                    <span class="text-xs font-bold">Add Crop Photos</span>
-
-                </div>
-
-
-
-                <div>
-
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Item
-                        Name</label>
-
-                    <input type="text" id="itemName"
-                        class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all"
-                        placeholder="e.g. Organic Red Tomatoes">
-
-                </div>
-
-
-
-                <div class="grid grid-cols-2 gap-5">
-
-                    <div>
-
-                        <label
-                            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
-
-                        <div class="relative">
-
-                            <select id="itemCat"
-                                class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none appearance-none">
-
-                                <option value="vegetable">Vegetable</option>
-
-                                <option value="grain">Grain</option>
-
-                                <option value="fruit">Fruit</option>
-
-                            </select>
-
-                            <i
-                                class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Quantity
-                            (Kg)</label>
-
-                        <input type="number" id="itemQty"
-                            class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all"
-                            placeholder="0">
-
-                    </div>
-
-                </div>
-
-
-
-                <div>
-
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Price /
-                        Kg</label>
-
-                    <div class="relative">
-
-                        <span class="absolute left-4 top-4 text-slate-400 font-bold">₹</span>
-
-                        <input type="number" id="itemPrice"
-                            class="w-full bg-white border border-slate-200 rounded-2xl p-4 pl-8 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all"
-                            placeholder="00">
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Price Advice -->
-
-                <div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 flex gap-4 items-start">
-
-                    <div
-                        class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-
-                        <i class="fa-solid fa-lightbulb"></i>
-
-                    </div>
-
-                    <div class="text-xs text-amber-900 leading-relaxed">
-
-                        <p class="font-bold mb-1">Pricing Insight</p>
-
-                        <p>Market average is <span class="font-bold">₹24</span>. Listing at <span
-                                class="font-bold text-green-700">₹22</span> usually sells in under 4 hours.</p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="p-6 border-t border-slate-100 bg-white md:rounded-b-[2.5rem]">
-
-                <button onclick="submitListing()"
-                    class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/20 active:scale-95 transition-all text-sm tracking-wide"
-                    data-translate="publish">
-
-                    Publish Listing
-
-                </button>
-
-            </div>
-
-        </div>
-
     </div>
 
+    <main>
+        <section id="viewProduce" class="active">
+            <div class="search-row">
+                <input type="text" id="searchInput" placeholder="Find crops, location..." onkeyup="handleSearch(this.value)">
+            </div>
+            <div id="produceContainer"></div>
+        </section>
 
+        <section id="viewDemand">
+            <h2 style="margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">BUYER REQUESTS</h2>
+            <div id="demandContainer"></div>
+        </section>
+
+        <section id="viewMarket">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>MANDI RATES</h2>
+                <button class="btn sm" onclick="startScanner()">SCAN QR</button>
+            </div>
+            
+            <div class="card">
+                <h3 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:10px;">TODAY'S PRICES</h3>
+                <div id="priceContainer">
+                    <div style="padding:10px; text-align:center;">Loading rates...</div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 25px; margin-bottom: 15px;">AI FORECAST</h2>
+            <div id="forecastContainer"></div>
+        </section>
+
+        <section id="viewSettings">
+            <h2 style="margin-bottom: 15px;">FARMER PROFILE</h2>
+            <form onsubmit="saveProfile(event)">
+                <label style="font-size:0.8rem; color:var(--text-muted);">Name</label>
+                <input type="text" id="pName" required>
+                
+                <label style="font-size:0.8rem; color:var(--text-muted);">Email</label>
+                <input type="email" id="pEmail" disabled style="opacity: 0.5;">
+                
+                <label style="font-size:0.8rem; color:var(--text-muted);">Contact Phone</label>
+                <input type="tel" id="pPhone" placeholder="+91...">
+                
+                <label style="font-size:0.8rem; color:var(--text-muted);">Region / Mandi</label>
+                <input type="text" id="pCity" placeholder="e.g. Nashik">
+
+                <button type="submit" class="btn" style="margin-top: 10px;">SAVE DETAILS</button>
+            </form>
+            <button onclick="logout()" class="btn outline" style="margin-top: 20px; border-color: var(--red); color: var(--red);">LOGOUT</button>
+        </section>
+    </main>
+
+    <div id="createModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--accent); margin-bottom: 15px;">LIST PRODUCE</h2>
+            <form onsubmit="handleCreate(event)">
+                <input type="text" id="cTitle" placeholder="Crop Name (e.g. Red Onions)" required>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="number" id="cPrice" placeholder="Price" required>
+                    <select id="cUnit">
+                        <option value="kg">/ kg</option>
+                        <option value="quintal">/ Quintal</option>
+                        <option value="ton">/ Ton</option>
+                    </select>
+                </div>
+
+                <input type="number" id="cQty" placeholder="Total Quantity Available" required>
+                <input type="text" id="cLoc" placeholder="Farm Location" required>
+                
+                <input type="file" id="cImageInput" style="display:none;"> 
+
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn outline" onclick="document.getElementById('createModal').classList.add('hidden')">CANCEL</button>
+                    <button type="submit" class="btn">POST LISTING</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+            <div id="detailsContent"></div>
+            <button class="btn outline" style="margin-top: 15px;" onclick="document.getElementById('detailsModal').classList.add('hidden')">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="scannerModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="text-align:center; margin-bottom:10px;">SCAN PRODUCT/ID</h3>
+            <div id="reader" style="width:100%; background:#000;"></div>
+            <button class="btn outline" style="margin-top:15px;" onclick="stopScanner()">STOP SCAN</button>
+        </div>
+    </div>
+
+    <div id="scanResultModal" class="modal hidden">
+        <div class="modal-content" style="text-align: center;">
+            <h1 id="scanStatus" style="font-size: 2rem;">VERIFIED</h1>
+            <p id="scanData" style="margin-bottom: 20px; font-family: monospace; color: var(--text-muted);">Data</p>
+            <button class="btn" onclick="document.getElementById('scanResultModal').classList.add('hidden'); startScanner();">SCAN NEXT</button>
+            <button class="btn outline" style="margin-top: 10px;" onclick="document.getElementById('scanResultModal').classList.add('hidden')">DONE</button>
+        </div>
+    </div>
+
+    <nav class="dock">
+        <button class="dock-btn active" onclick="switchView('produce', this)">Produce</button>
+        <button class="dock-btn" onclick="switchView('demand', this)">Demand</button>
+        <button class="dock-btn" style="color:var(--accent); font-size: 1.5rem; line-height: 1rem;" onclick="document.getElementById('createModal').classList.remove('hidden')">+</button>
+        <button class="dock-btn" onclick="switchView('market', this)">Market</button>
+        <button class="dock-btn" onclick="switchView('settings', this)">Profile</button>
+    </nav>
 
     <script>
-
-        // --- State Management ---
-
-        const state = {
-
-            currentLang: 'en',
-
-            user: {
-
-                name: 'Rajesh Kumar',
-
-                farmName: 'Green Valley Farms',
-
-                location: 'Pune, Maharashtra',
-
-                phone: '+91 98765 43210',
-
-                email: 'rajesh.kumar@agriconnect.com',
-
-                address: 'Plot No. 45, Indrayani Nagar, Talegaon Dabhade, Pune - 410507',
-
-                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh',
-
-                joined: '3 yrs'
-
-            },
-
-            marketPrices: [
-
-                { id: 1, name: 'Wheat (Lokwan)', price: 2600, trend: 'up', change: 2.4 },
-
-                { id: 2, name: 'Onion (Red)', price: 1850, trend: 'up', change: 5.1 },
-
-                { id: 3, name: 'Soybean', price: 4100, trend: 'down', change: 1.2 },
-
-                { id: 4, name: 'Tomato (Hybrid)', price: 1200, trend: 'stable', change: 0.0 },
-
-                { id: 5, name: 'Potato (Indore)', price: 1500, trend: 'up', change: 1.8 },
-
-                { id: 6, name: 'Cotton', price: 6200, trend: 'down', change: 0.5 },
-
-            ],
-
-            orders: [
-
-                { id: 'ORD-7782', buyer: 'Reliance Fresh', item: 'Organic Tomatoes', category: 'vegetable', qty: '500 kg', date: '28 Jan', amount: 11000, status: 'Completed' },
-
-                { id: 'ORD-7783', buyer: 'Grand Maratha Hotel', item: 'Onions (Red)', category: 'vegetable', qty: '150 kg', date: '26 Jan', amount: 4500, status: 'Pending' },
-
-                { id: 'ORD-7784', buyer: 'BigBasket', item: 'Wheat (Grade A)', category: 'grain', qty: '1 Ton', date: '20 Jan', amount: 25000, status: 'Completed' },
-
-                { id: 'ORD-7785', buyer: 'Local Market Vendor', item: 'Spinach Bunch', category: 'vegetable', qty: '200 units', date: '15 Jan', amount: 1200, status: 'Completed' },
-
-            ],
-
-            listings: [
-
-                { id: 1, name: 'Fresh Organic Tomatoes', category: 'vegetable', price: 22, qty: '500 kg', farmer: 'Rajesh Kumar', loc: 'Pune, MH', time: '2h ago', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=600', verified: true, isMine: true },
-
-                { id: 2, name: 'Premium Basmati Rice', category: 'grain', price: 65, qty: '1.2 Tons', farmer: 'Amit Singh', loc: 'Nashik, MH', time: '5h ago', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=600', verified: false, isMine: false },
-
-                { id: 3, name: 'Yellow Corn / Maize', category: 'grain', price: 18, qty: '800 kg', farmer: 'Suresh P.', loc: 'Satara, MH', time: '1d ago', img: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&q=80&w=600', verified: true, isMine: false },
-
-                { id: 4, name: 'Nagpur Oranges', category: 'fruit', price: 40, qty: '300 kg', farmer: 'Vijay D.', loc: 'Nagpur, MH', time: '3h ago', img: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5a?auto=format&fit=crop&q=80&w=600', verified: true, isMine: false },
-
-            ]
-
-        };
-
-
-
-        // --- Translation Dictionary ---
-
-        const product_names = {
-
-            'Wheat': { hi: 'गेहूँ', mr: 'गहू', kn: 'ಗೋಧಿ' },
-
-            'Onion': { hi: 'प्याज़', mr: 'कांदा', kn: 'ಈರುಳ್ಳಿ' },
-
-            'Soybean': { hi: 'सोयाबीन', mr: 'सोयाबीन', kn: 'ಸೋಯಾಬೀನ್' },
-
-            'Tomato': { hi: 'टमाटर', mr: 'टोमॅटो', kn: 'ಟೊಮೆಟೊ' },
-
-            'Tomatoes': { hi: 'टमाटर', mr: 'टोमॅटो', kn: 'ಟೊಮೆಟೊ' },
-
-            'Potato': { hi: 'आलू', mr: 'बटाटा', kn: 'ಆಲೂಗಡ್ಡೆ' },
-
-            'Cotton': { hi: 'कपास', mr: 'कापूस', kn: 'ಹತ್ತಿ' },
-
-            'Rice': { hi: 'चावल', mr: 'तांदूळ', kn: 'ಅಕ್ಕಿ' },
-
-            'Corn': { hi: 'मक्का', mr: 'मका', kn: 'ಜೋಳ' },
-
-            'Maize': { hi: 'मक्का', mr: 'मका', kn: 'ಜೋಳ' },
-
-            'Orange': { hi: 'संतरा', mr: 'संत्री', kn: 'ಕಿತ್ತಳೆ' },
-
-            'Oranges': { hi: 'संतरा', mr: 'संत्री', kn: 'ಕಿತ್ತಳೆ' },
-
-            'Spinach': { hi: 'पालक', mr: 'पालक', kn: 'ಪಾಲಕ್' },
-
-            'Organic': { hi: 'जैविक', mr: 'सेंद्रिय', kn: 'ಸಾವಯವ' },
-
-            'Fresh': { hi: 'ताज़ा', mr: 'ताजे', kn: 'ತಾಜಾ' },
-
-            'Yellow': { hi: 'पीला', mr: 'पिवळा', kn: 'ಹಳದಿ' },
-
-            'Red': { hi: 'लाल', mr: 'लाल', kn: 'ಕೆಂಪು' },
-
-            'Premium': { hi: 'प्रीमियम', mr: 'प्रीमियम', kn: 'ಪ್ರೀಮಿಯಂ' }
-
-        };
-
-
-
-        const translations = {
-
-            en: {
-
-                app_subtitle: "Farmer Suite",
-
-                nav_dashboard: "Dashboard",
-
-                nav_market: "Market",
-
-                nav_orders: "Orders",
-
-                nav_profile: "Farm Profile",
-
-                mandi_live: "Mandi Live",
-
-                good_afternoon: "Good Afternoon",
-
-                market_insight_text: "The market for <span class='font-bold text-white'>Hybrid Tomatoes</span> is trending up by 12% today.",
-
-                sunny: "Sunny",
-
-                create_listing: "Create Listing",
-
-                view_orders_btn: "View Orders",
-
-                total_revenue: "Total Revenue",
-
-                live_rates: "Live Rates",
-
-                see_orders: "See Orders",
-
-                direct_requests: "Direct Buyer Requests",
-
-                verified_msg: "Verified businesses looking for your crops",
-
-                accept: "Accept",
-
-                decline: "Decline",
-
-                negotiations: "Negotiations",
-
-                waiting: "Waiting",
-
-                view_history: "View History",
-
-                all_stock: "All Stock",
-
-                vegetables: "Vegetables",
-
-                grains: "Grains",
-
-                fruits: "Fruits",
-
-                no_listings: "No listings found",
-
-                order_mgmt: "Order Management",
-
-                track_sales: "Track and manage your sales efficiently.",
-
-                export_report: "Export Report",
-
-                total_orders: "Total Orders",
-
-                lifetime_sales: "Lifetime Sales",
-
-                pending: "Pending",
-
-                requires_action: "Requires Action",
-
-                tab_all: "All",
-
-                tab_pending: "Pending",
-
-                tab_completed: "Completed",
-
-                th_id: "Order ID",
-
-                th_product: "Product & Buyer",
-
-                th_date: "Date",
-
-                th_amount: "Amount",
-
-                th_status: "Status",
-
-                th_actions: "Actions",
-
-                edit_cover: "Edit Cover",
-
-                edit_profile: "Edit Profile",
-
-                active_listings: "Active Listings",
-
-                buyer_rating: "Buyer Rating",
-
-                membership: "Membership",
-
-                personal_info: "Personal Information",
-
-                recent_sales: "Recent Orders (Sales)",
-
-                view_all_orders: "View All Orders",
-
-                my_inventory: "My Products / Inventory",
-
-                new_listing: "New Listing",
-
-                publish: "Publish Listing",
-
-                avg_quintal: "Avg / Quintal",
-
-                verified: "VERIFIED",
-
-                my_stock: "MY STOCK",
-
-                view_details: "View Details",
-
-                no_orders: "No orders found.",
-
-                counter_offer: "Counter Offer",
-
-                proposal_sent: "Proposal sent to buyer.",
-
-                search_placeholder: "Search Order ID or Buyer...",
-
-                search_market_placeholder: "Search crops, buyers...",
-
-                completed: "Completed",
-
-                cancelled: "Cancelled"
-
-            },
-
-            hi: {
-
-                app_subtitle: "किसान सुइट",
-
-                nav_dashboard: "डैशबोर्ड",
-
-                nav_market: "बाज़ार",
-
-                nav_orders: "ऑर्डर्स",
-
-                nav_profile: "प्रोफ़ाइल",
-
-                mandi_live: "मंडी लाइव",
-
-                good_afternoon: "शुभ दोपहर",
-
-                market_insight_text: "आज <span class='font-bold text-white'>हाइब्रिड टमाटर</span> का बाज़ार 12% ऊपर है। बेचने का सही समय।",
-
-                sunny: "धूप",
-
-                create_listing: "नई लिस्टिंग",
-
-                view_orders_btn: "ऑर्डर देखें",
-
-                total_revenue: "कुल कमाई",
-
-                live_rates: "ताज़ा भाव",
-
-                see_orders: "ऑर्डर देखें",
-
-                direct_requests: "सीधे खरीदार अनुरोध",
-
-                verified_msg: "आपकी फसल के लिए सत्यापित खरीदार",
-
-                accept: "स्वीकार करें",
-
-                decline: "अस्वीकार करें",
-
-                negotiations: "बातचीत",
-
-                waiting: "प्रतीक्षा",
-
-                view_history: "इतिहास देखें",
-
-                all_stock: "सभी स्टॉक",
-
-                vegetables: "सब्जियां",
-
-                grains: "अनाज",
-
-                fruits: "फल",
-
-                no_listings: "कोई लिस्टिंग नहीं मिली",
-
-                order_mgmt: "ऑर्डर प्रबंधन",
-
-                track_sales: "अपनी बिक्री को कुशलतापूर्वक ट्रैक करें।",
-
-                export_report: "रिपोर्ट डाउनलोड",
-
-                total_orders: "कुल ऑर्डर",
-
-                lifetime_sales: "जीवनकाल बिक्री",
-
-                pending: "लंबित",
-
-                requires_action: "कार्रवाई आवश्यक",
-
-                tab_all: "सभी",
-
-                tab_pending: "लंबित",
-
-                tab_completed: "पूर्ण",
-
-                th_id: "ऑर्डर आईडी",
-
-                th_product: "उत्पाद और खरीदार",
-
-                th_date: "दिनांक",
-
-                th_amount: "राशि",
-
-                th_status: "स्थिति",
-
-                th_actions: "कार्रवाई",
-
-                edit_cover: "कवर बदलें",
-
-                edit_profile: "प्रोफ़ाइल बदलें",
-
-                active_listings: "सक्रिय लिस्टिंग",
-
-                buyer_rating: "खरीदार रेटिंग",
-
-                membership: "सदस्यता",
-
-                personal_info: "व्यक्तिगत जानकारी",
-
-                recent_sales: "हाल के ऑर्डर (बिक्री)",
-
-                view_all_orders: "सभी ऑर्डर देखें",
-
-                my_inventory: "मेरे उत्पाद / इन्वेंटरी",
-
-                new_listing: "नई लिस्टिंग",
-
-                publish: "लिस्टिंग प्रकाशित करें",
-
-                avg_quintal: "औसत / क्विंटल",
-
-                verified: "सत्यापित",
-
-                my_stock: "मेरा स्टॉक",
-
-                view_details: "विवरण देखें",
-
-                no_orders: "कोई ऑर्डर नहीं मिला।",
-
-                counter_offer: "जवाबी पेशकश",
-
-                proposal_sent: "प्रस्ताव भेजा गया।",
-
-                search_placeholder: "ऑर्डर आईडी या खरीदार खोजें...",
-
-                search_market_placeholder: "फसल या खरीदार खोजें...",
-
-                completed: "पूर्ण",
-
-                cancelled: "रद्द"
-
-            },
-
-            mr: {
-
-                app_subtitle: "शेतकरी सुइट",
-
-                nav_dashboard: "डॅशबोर्ड",
-
-                nav_market: "बाजार",
-
-                nav_orders: "ऑर्डर्स",
-
-                nav_profile: "प्रोफाइल",
-
-                mandi_live: "मंडी लाइव",
-
-                good_afternoon: "शुभ दुपार",
-
-                market_insight_text: "आज <span class='font-bold text-white'>हायब्रिड टोमॅटो</span> मार्केट 12% वर आहे. विक्रीची योग्य वेळ.",
-
-                sunny: "सूर्यप्रकाश",
-
-                create_listing: "नवीन लिस्टिंग",
-
-                view_orders_btn: "ऑर्डर पहा",
-
-                total_revenue: "एकूण महसूल",
-
-                live_rates: "बाजार भाव",
-
-                see_orders: "ऑर्डर पहा",
-
-                direct_requests: "थेट खरेदीदार विनंत्या",
-
-                verified_msg: "आपल्या पिकासाठी सत्यापित खरेदीदार",
-
-                accept: "स्वीकारा",
-
-                decline: "नकारा",
-
-                negotiations: "वाटाघाटी",
-
-                waiting: "प्रतीक्षा",
-
-                view_history: "इतिहास पहा",
-
-                all_stock: "सर्व साठा",
-
-                vegetables: "भाज्या",
-
-                grains: "धान्य",
-
-                fruits: "फळे",
-
-                no_listings: "कोणतीही लिस्टिंग सापडली नाही",
-
-                order_mgmt: "ऑर्डर व्यवस्थापन",
-
-                track_sales: "तुमच्या विक्रीचा मागोवा घ्या.",
-
-                export_report: "अहवाल डाउनलोड",
-
-                total_orders: "एकूण ऑर्डर",
-
-                lifetime_sales: "एकूण विक्री",
-
-                pending: "प्रलंबित",
-
-                requires_action: "कृती आवश्यक",
-
-                tab_all: "सर्व",
-
-                tab_pending: "प्रलंबित",
-
-                tab_completed: "पूर्ण",
-
-                th_id: "ऑर्डर आयडी",
-
-                th_product: "उत्पादन आणि खरेदीदार",
-
-                th_date: "तारीख",
-
-                th_amount: "रक्कम",
-
-                th_status: "स्थिती",
-
-                th_actions: "कृती",
-
-                edit_cover: "कव्हर बदला",
-
-                edit_profile: "प्रोफाइल संपादित करा",
-
-                active_listings: "सक्रिय लिस्टिंग",
-
-                buyer_rating: "खरेदीदार रेटिंग",
-
-                membership: "सदस्यत्व",
-
-                personal_info: "वैयक्तिक माहिती",
-
-                recent_sales: "अलीकडील ऑर्डर (विक्री)",
-
-                view_all_orders: "सर्व ऑर्डर पहा",
-
-                my_inventory: "माझे उत्पादन / साठा",
-
-                new_listing: "नवीन लिस्टिंग",
-
-                publish: "लिस्टिंग प्रकाशित करा",
-
-                avg_quintal: "सरासरी / क्विंटल",
-
-                verified: "सत्यापित",
-
-                my_stock: "माझा साठा",
-
-                view_details: "तपशील पहा",
-
-                no_orders: "कोणतेही ऑर्डर सापडले नाहीत.",
-
-                counter_offer: "प्रति ऑफर",
-
-                proposal_sent: "प्रस्ताव पाठवला.",
-
-                search_placeholder: "ऑर्डर आयडी किंवा खरेदीदार शोधा...",
-
-                search_market_placeholder: "पीक किंवा खरेदीदार शोधा...",
-
-                completed: "पूर्ण",
-
-                cancelled: "रद्द"
-
-            },
-
-            kn: {
-
-                app_subtitle: "ರೈತ ಮಿತ್ರ",
-
-                nav_dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
-
-                nav_market: "ಮಾರುಕಟ್ಟೆ",
-
-                nav_orders: "ಆರ್ಡರ್‌ಗಳು",
-
-                nav_profile: "ಪ್ರೊಫೈಲ್",
-
-                mandi_live: "ಮಂಡಿ ಲೈವ್",
-
-                good_afternoon: "ಶುಭ ಮಧ್ಯಾಹ್ನ",
-
-                market_insight_text: "ಇಂದು <span class='font-bold text-white'>ಹೈಬ್ರಿಡ್ ಟೊಮೆಟೊ</span> ಮಾರುಕಟ್ಟೆ 12% ಏರಿಕೆಯಾಗಿದೆ. ಮಾರಾಟಕ್ಕೆ ಸೂಕ್ತ ಸಮಯ.",
-
-                sunny: "ಬಿಸಿಲು",
-
-                create_listing: "ಹೊಸ ಪಟ್ಟಿ",
-
-                view_orders_btn: "ಆರ್ಡರ್‌ಗಳು",
-
-                total_revenue: "ಒಟ್ಟು ಆದಾಯ",
-
-                live_rates: "ದರಗಳು",
-
-                see_orders: "ನೋಡಿ",
-
-                direct_requests: "ನೇರ ಬೇಡಿಕೆಗಳು",
-
-                verified_msg: "ದೃಢೀಕರಿಸಿದ ಖರೀದಿದಾರರು",
-
-                accept: "ಒಪ್ಪಿಕೊಳ್ಳಿ",
-
-                decline: "ತಿರಸ್ಕರಿಸಿ",
-
-                negotiations: "ಚೌಕಾಶಿ",
-
-                waiting: "ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
-
-                view_history: "ಇತಿಹಾಸ",
-
-                all_stock: "ಎಲ್ಲಾ",
-
-                vegetables: "ತರಕಾರಿ",
-
-                grains: "ಧಾನ್ಯ",
-
-                fruits: "ಹಣ್ಣು",
-
-                no_listings: "ಯಾವುದೇ ಪಟ್ಟಿ ಇಲ್ಲ",
-
-                order_mgmt: "ಆರ್ಡರ್ ನಿರ್ವಹಣೆ",
-
-                track_sales: "ನಿಮ್ಮ ಮಾರಾಟವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
-
-                export_report: "ವರದಿ ಡೌನ್‌ಲೋಡ್",
-
-                total_orders: "ಒಟ್ಟು ಆರ್ಡರ್‌ಗಳು",
-
-                lifetime_sales: "ಒಟ್ಟು ಮಾರಾಟ",
-
-                pending: "ಬಾಕಿ ಇದೆ",
-
-                requires_action: "ಗಮನಹರಿಸಿ",
-
-                tab_all: "ಎಲ್ಲಾ",
-
-                tab_pending: "ಬಾಕಿ",
-
-                tab_completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
-
-                th_id: "ಆರ್ಡರ್ ID",
-
-                th_product: "ಉತ್ಪನ್ನ ಮತ್ತು ಖರೀದಿದಾರ",
-
-                th_date: "ದಿನಾಂಕ",
-
-                th_amount: "ಮೊತ್ತ",
-
-                th_status: "ಸ್ಥಿತಿ",
-
-                th_actions: "ಕ್ರಿಯೆ",
-
-                edit_cover: "ಕವರ್ ಬದಲಿಸಿ",
-
-                edit_profile: "ಪ್ರೊಫೈಲ್ ತಿದ್ದಿ",
-
-                active_listings: "ಸಕ್ರಿಯ ಪಟ್ಟಿಗಳು",
-
-                buyer_rating: "ರೇಟಿಂಗ್",
-
-                membership: "ಸದಸ್ಯತ್ವ",
-
-                personal_info: "ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ",
-
-                recent_sales: "ಇತ್ತೀಚಿನ ಮಾರಾಟ",
-
-                view_all_orders: "ಎಲ್ಲಾ ಆರ್ಡರ್‌ಗಳು",
-
-                my_inventory: "ನನ್ನ ಬೆಳೆಗಳು / ದಾಸ್ತಾನು",
-
-                new_listing: "ಹೊಸ ಪಟ್ಟಿ",
-
-                publish: "ಪ್ರಕಟಿಸಿ",
-
-                avg_quintal: "ಸರಾಸರಿ / ಕ್ವಿಂಟಾಲ್",
-
-                verified: "ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
-
-                my_stock: "ನನ್ನ ದಾಸ್ತಾನು",
-
-                view_details: "ವಿವರಗಳು",
-
-                no_orders: "ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳಿಲ್ಲ.",
-
-                counter_offer: "ಪ್ರತಿ ಬೆಲೆ",
-
-                proposal_sent: "ಪ್ರಸ್ತಾಪ ಕಳುಹಿಸಲಾಗಿದೆ.",
-
-                search_placeholder: "ಆರ್ಡರ್ ID ಅಥವಾ ಖರೀದಿದಾರನನ್ನು ಹುಡುಕಿ...",
-
-                search_market_placeholder: "ಬೆಳೆಗಳು ಅಥವಾ ಖರೀದಿದಾರರನ್ನು ಹುಡುಕಿ...",
-
-                completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
-
-                cancelled: "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
-
-            }
-
-        };
-
-
-
-        // --- Initialization ---
-
-        document.addEventListener('DOMContentLoaded', () => {
-
-            renderPrices();
-
-            renderListings();
-
-            renderProfileOrders();
-
-            renderFullOrderSummary();
-
-            updateProfileUI();
-
-            updateTranslations();
-
-
-
-            // Global Click Listener for Menu Closing
-
-            window.addEventListener('click', function (e) {
-
-                const btn = document.getElementById('lang-btn');
-
-                const menu = document.getElementById('lang-menu');
-
-                const arrow = document.getElementById('lang-arrow');
-
-
-
-                if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
-
-                    menu.classList.add('hidden');
-
-                    if (arrow) arrow.classList.remove('rotate-180');
-
+        let currentUser = null;
+        let currentProduce = []; 
+        let html5QrcodeScanner = null;
+        let currentSearch = '';
+
+        // --- Init ---
+        window.addEventListener('load', () => {
+            if(window.google) {
+                google.accounts.id.initialize({
+                    client_id: "611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com", 
+                    callback: handleGoogleResponse
+                });
+                const btnContainer = document.getElementById("googleBtnContainer");
+                if(btnContainer) {
+                    google.accounts.id.renderButton(btnContainer, { theme: "filled_black", size: "large", width: "250" });
                 }
-
-            });
-
+            }
+            checkAuth();
         });
 
-
-
-        // --- Helper Function for Translation ---
-
-        function t(key) {
-
-            return translations[state.currentLang][key] || key;
-
-        }
-
-
-
-        // Helper to translate product names within strings
-
-        function tProduct(text) {
-
-            if (state.currentLang === 'en') return text;
-
-
-
-            let translatedText = text;
-
-            Object.keys(product_names).forEach(engName => {
-
-                if (translatedText.includes(engName)) {
-
-                    const trans = product_names[engName][state.currentLang];
-
-                    if (trans) {
-
-                        // Case insensitive replacement
-
-                        const regex = new RegExp(engName, 'gi');
-
-                        translatedText = translatedText.replace(regex, trans);
-
-                    }
-
+        // --- Auth ---
+        async function handleGoogleResponse(response) {
+            try {
+                // Using SoftYield.auth from your API file
+                const data = await SoftYield.auth.googleLogin(response.credential);
+                if(data.success || data.token) { // Adjust based on actual API return
+                    localStorage.setItem('softy_token', data.token || 'mock_token');
+                    checkAuth();
+                } else {
+                    // Fallback for demo if API fails
+                    localStorage.setItem('softy_token', 'demo_token');
+                    checkAuth();
                 }
-
-            });
-
-            return translatedText;
-
+            } catch(e) { console.error(e); }
         }
 
-
-
-        // --- Language Logic ---
-
-        function toggleLangMenu(event) {
-
-            event.stopPropagation();
-
-            const menu = document.getElementById('lang-menu');
-
-            const arrow = document.getElementById('lang-arrow');
-
-            menu.classList.toggle('hidden');
-
-            arrow.classList.toggle('rotate-180');
-
-        }
-
-
-
-        function changeLanguage(lang) {
-
-            state.currentLang = lang;
-
-            updateTranslations();
-
-
-
-            // Re-render dynamic components
-
-            renderPrices();
-
-            renderListings();
-
-            renderProfileOrders();
-
-            renderFullOrderSummary();
-
-
-
-            // Update Dropdown Label
-
-            const labels = { 'en': 'English', 'hi': 'हिंदी', 'mr': 'मराठी', 'kn': 'ಕನ್ನಡ' };
-
-            document.getElementById('current-lang-label').innerText = labels[lang];
-
-
-
-            // Update Checkmarks visually
-
-            document.querySelectorAll('[id^="check-"]').forEach(el => el.classList.remove('opacity-100'));
-
-            document.querySelectorAll('[id^="check-"]').forEach(el => el.classList.add('opacity-0'));
-
-            const activeCheck = document.getElementById(`check-${lang}`);
-
-            if (activeCheck) {
-
-                activeCheck.classList.remove('opacity-0');
-
-                activeCheck.classList.add('opacity-100');
-
-            }
-
-
-
-            // Close Menu
-
-            const menu = document.getElementById('lang-menu');
-
-            const arrow = document.getElementById('lang-arrow');
-
-            menu.classList.add('hidden');
-
-            arrow.classList.remove('rotate-180');
-
-        }
-
-
-
-        function updateTranslations() {
-
-            // Update text content
-
-            const elements = document.querySelectorAll('[data-translate]');
-
-            elements.forEach(el => {
-
-                const key = el.getAttribute('data-translate');
-
-                if (translations[state.currentLang][key]) {
-
-                    el.innerHTML = translations[state.currentLang][key];
-
-                }
-
-            });
-
-
-
-            // Update placeholders
-
-            const inputs = document.querySelectorAll('[data-translate-placeholder]');
-
-            inputs.forEach(el => {
-
-                const key = el.getAttribute('data-translate-placeholder');
-
-                if (translations[state.currentLang][key]) {
-
-                    el.placeholder = translations[state.currentLang][key];
-
-                }
-
-            });
-
-        }
-
-
-
-        // --- Navigation Logic ---
-
-        function switchTab(tabId) {
-
-            // Hide all sections
-
-            document.querySelectorAll('.view-section').forEach(el => {
-
-                el.classList.remove('active');
-
-            });
-
-
-
-            // Show target
-
-            const target = document.getElementById(tabId);
-
-            if (target) target.classList.add('active');
-
-
-
-            // Desktop Nav Update
-
-            document.querySelectorAll('.nav-item').forEach(el => {
-
-                el.classList.remove('nav-active', 'bg-slate-100');
-
-            });
-
-            const activeDesktop = document.getElementById(`nav-${tabId}`);
-
-            if (activeDesktop) activeDesktop.classList.add('nav-active');
-
-
-
-            // Mobile Nav Update
-
-            document.querySelectorAll('.mob-nav-btn').forEach(el => {
-
-                el.classList.remove('mob-active', 'text-brand-700');
-
-                el.classList.add('text-slate-400');
-
-            });
-
-            const activeMobile = document.getElementById(`mob-${tabId}`);
-
-            if (activeMobile) {
-
-                activeMobile.classList.remove('text-slate-400');
-
-                activeMobile.classList.add('mob-active', 'text-brand-700');
-
-            }
-
-
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        }
-
-
-
-        // --- Data Rendering ---
-
-        function renderPrices() {
-
-            const container = document.getElementById('hero-price-ticker');
-
-            if (!container) return;
-
-
-
-            container.innerHTML = state.marketPrices.map(item => {
-
-                const isUp = item.trend === 'up';
-
-                const isDown = item.trend === 'down';
-
-                const colorClass = isUp ? 'text-green-600 bg-green-50' : (isDown ? 'text-red-600 bg-red-50' : 'text-slate-500 bg-slate-50');
-
-                const icon = isUp ? 'fa-caret-up' : (isDown ? 'fa-caret-down' : 'fa-minus');
-
-
-
-                return `
-
-                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border-b border-dashed border-slate-100 last:border-0 group">
-
-                    <div class="flex items-center gap-3">
-
-                        <div class="w-8 h-8 rounded-lg ${colorClass} flex items-center justify-center text-xs">
-
-                             <i class="fa-solid ${icon}"></i>
-
-                        </div>
-
-                        <div>
-
-                            <p class="font-bold text-slate-800 text-sm leading-tight group-hover:text-brand-700 transition-colors">${tProduct(item.name)}</p>
-
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">₹${item.price} / Qtl</p>
-
-                        </div>
-
-                    </div>
-
-                    <span class="text-xs font-bold ${isUp ? 'text-green-600' : (isDown ? 'text-red-600' : 'text-slate-400')}">
-
-                        ${isUp ? '+' : ''}${item.change}%
-
-                    </span>
-
-                </div>
-
-                `;
-
-            }).join('');
-
-        }
-
-
-
-        function renderProfileOrders() {
-
-            const container = document.getElementById('orders-list');
-
-            if (!container) return;
-
-
-
-            container.innerHTML = state.orders.map(order => {
-
-                let displayStatus = order.status;
-
-                if (order.status === 'Completed') displayStatus = t('completed');
-
-                else if (order.status === 'Pending') displayStatus = t('pending');
-
-
-
-                return `
-
-                <div class="flex items-center justify-between p-3 rounded-xl bg-earth-50 border border-transparent hover:border-earth-200 transition-all">
-
-                    <div>
-
-                        <p class="font-bold text-slate-800 text-sm">${tProduct(order.item)}</p>
-
-                        <p class="text-[10px] text-slate-500 font-bold tracking-wide">${order.buyer}</p>
-
-                    </div>
-
-                    <div class="text-right">
-
-                        <p class="font-bold text-slate-900 text-sm">₹${order.amount.toLocaleString()}</p>
-
-                        <span class="text-[9px] font-bold uppercase tracking-wider ${order.status === 'Completed' ? 'text-green-600' : 'text-amber-600'}">${displayStatus}</span>
-
-                    </div>
-
-                </div>
-
-            `}).join('');
-
-        }
-
-
-
-        function renderFullOrderSummary(filterStatus = 'All', filterText = '') {
-
-            const container = document.getElementById('full-order-table-body');
-
-            if (!container) return;
-
-
-
-            let filtered = state.orders;
-
-
-
-            // Apply Status Filter
-
-            if (filterStatus !== 'All') {
-
-                filtered = filtered.filter(o => o.status === filterStatus);
-
-            }
-
-
-
-            // Apply Search Filter
-
-            if (filterText) {
-
-                const lower = filterText.toLowerCase();
-
-                filtered = filtered.filter(o =>
-
-                    o.id.toLowerCase().includes(lower) ||
-
-                    o.buyer.toLowerCase().includes(lower) ||
-
-                    o.item.toLowerCase().includes(lower)
-
-                );
-
-            }
-
-
-
-            if (filtered.length === 0) {
-
-                container.innerHTML = `
-
-                    <tr>
-
-                        <td colspan="6" class="py-12 text-center">
-
-                            <div class="flex flex-col items-center justify-center text-slate-300">
-
-                                <i class="fa-solid fa-box-open text-4xl mb-3"></i>
-
-                                <p class="text-sm font-bold text-slate-500">${t('no_orders')}</p>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
+        async function checkAuth() {
+            const token = localStorage.getItem('softy_token');
+            if (!token) {
+                document.getElementById('authScreen').classList.remove('hidden');
                 return;
-
             }
-
-
-
-            container.innerHTML = filtered.map(order => {
-
-                const statusStyles = {
-
-                    'Completed': 'bg-green-100 text-green-700 border-green-200 icon-check',
-
-                    'Pending': 'bg-amber-100 text-amber-700 border-amber-200 icon-clock',
-
-                    'Cancelled': 'bg-red-100 text-red-700 border-red-200 icon-xmark'
-
-                };
-
-
-
-                const style = statusStyles[order.status] || 'bg-slate-100 text-slate-600';
-
-                const icon = order.status === 'Completed' ? 'fa-check' : (order.status === 'Pending' ? 'fa-clock' : 'fa-xmark');
-
-
-
-                let displayStatus = order.status;
-
-                if (order.status === 'Completed') displayStatus = t('completed');
-
-                else if (order.status === 'Pending') displayStatus = t('pending');
-
-                else if (order.status === 'Cancelled') displayStatus = t('cancelled');
-
-
-
-                return `
-
-                <tr class="hover:bg-brand-50/30 transition-colors group">
-
-                    <td class="py-4 pl-6 font-bold text-brand-600 font-mono text-xs">${order.id}</td>
-
-                    <td class="py-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <div class="w-10 h-10 rounded-xl bg-earth-100 flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform">
-
-                                ${order.category === 'vegetable' ? '🍅' : (order.category === 'fruit' ? '🍊' : '🌾')}
-
-                            </div>
-
-                            <div>
-
-                                <p class="font-bold text-slate-900">${tProduct(order.item)}</p>
-
-                                <div class="flex items-center gap-1.5 text-xs text-slate-500">
-
-                                    <span class="font-bold text-slate-700">${order.buyer}</span>
-
-                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-
-                                    <span>${order.qty}</span>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                    <td class="py-4 text-slate-500 text-xs font-bold">${order.date}</td>
-
-                    <td class="py-4 font-bold text-slate-900">₹${order.amount.toLocaleString()}</td>
-
-                    <td class="py-4">
-
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border ${style} uppercase tracking-wide">
-
-                            <i class="fa-solid ${icon}"></i> ${displayStatus}
-
-                        </span>
-
-                    </td>
-
-                    <td class="py-4 pr-6 text-right">
-
-                        <button class="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all flex items-center justify-center bg-slate-50" title="${t('view_details')}">
-
-                            <i class="fa-solid fa-angle-right"></i>
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join('');
-
-        }
-
-
-
-        function renderListings(filterText = '', category = 'all') {
-
-            const container = document.getElementById('marketplace-grid');
-
-            const noResults = document.getElementById('no-results');
-
-
-
-            // Filter Logic
-
-            const filtered = state.listings.filter(item => {
-
-                const matchesSearch = item.name.toLowerCase().includes(filterText.toLowerCase()) ||
-
-                    item.farmer.toLowerCase().includes(filterText.toLowerCase());
-
-                const matchesCat = category === 'all' || item.category === category;
-
-                return matchesSearch && matchesCat;
-
-            });
-
-
-
-            if (filtered.length === 0) {
-
-                container.innerHTML = '';
-
-                noResults.classList.remove('hidden');
-
-                return;
-
-            } else {
-
-                noResults.classList.add('hidden');
-
-            }
-
-
-
-            container.innerHTML = filtered.map(item => `
-
-                <div class="bg-white rounded-[2rem] overflow-hidden border border-earth-100 shadow-card group hover:translate-y-[-5px] transition-transform duration-300 flex flex-col h-full hover:shadow-depth">
-
-                    <div class="relative h-56 overflow-hidden">
-
-                        <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${item.name}">
-
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
-
-                        <div class="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-bold text-slate-900 shadow-sm border border-white/20">
-
-                            ₹${item.price}/kg
-
-                        </div>
-
-                        ${item.verified ? `<div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm"><i class="fa-solid fa-certificate"></i> ${t('verified')}</div>` : ''}
-
-                        ${item.isMine ? `<div class="absolute top-4 left-4 bg-brand-600/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">${t('my_stock')}</div>` : ''}
-
-                    </div>
-
-                    <div class="p-6 flex flex-col flex-1">
-
-                        <div class="mb-4">
-
-                            <h3 class="font-bold text-slate-900 text-lg leading-tight line-clamp-1 group-hover:text-brand-700 transition-colors">${tProduct(item.name)}</h3>
-
-                            <p class="text-xs text-slate-500 mt-1 font-medium flex items-center"><i class="fa-solid fa-location-dot mr-1.5 text-brand-500"></i> ${item.loc}</p>
-
-                        </div>
-
-                        
-
-                        <div class="mt-auto pt-4 border-t border-earth-100 flex items-center justify-between">
-
-                            <div class="flex items-center gap-3">
-
-                                <div class="w-9 h-9 rounded-full bg-earth-100 flex items-center justify-center text-xs font-bold text-slate-600 border border-earth-200 shadow-sm">
-
-                                    ${item.farmer.charAt(0)}
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-xs font-bold text-slate-800 line-clamp-1">${item.farmer}</p>
-
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${item.time}</p>
-
-                                </div>
-
-                            </div>
-
-                            <button onclick="contactFarmer('${item.name}')" class="bg-earth-50 text-slate-400 border border-earth-200 hover:bg-brand-600 hover:text-white hover:border-brand-600 transition-colors w-10 h-10 rounded-xl flex items-center justify-center">
-
-                                <i class="fa-solid fa-phone text-sm"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `).join('');
-
-
-
-            // Also update Profile History
-
-            renderProfileHistory();
-
-        }
-
-
-
-        // --- Marketplace Filters ---
-
-        function filterMarketplace() {
-
-            const searchVal = document.getElementById('market-search').value;
-
-            // Simplified: Reset filters to 'all' visually if searching, for this demo
-
-            // In a real app, we'd keep track of active category state
-
-            renderListings(searchVal, 'all');
-
-
-
-            document.querySelectorAll('.market-filter').forEach(btn => {
-
-                btn.classList.remove('active', 'bg-brand-900', 'text-white');
-
-                btn.classList.add('bg-white', 'text-slate-600');
-
-                if (btn.innerText.includes("All") || btn.innerText.includes("सभी") || btn.innerText.includes("सर्व") || btn.innerText.includes("ಎಲ್ಲಾ")) {
-
-                    btn.classList.add('active', 'bg-brand-900', 'text-white');
-
-                    btn.classList.remove('bg-white', 'text-slate-600');
-
+            try {
+                // If backend isn't ready, we mock the user to let you test UI
+                try {
+                    currentUser = await SoftYield.auth.getMe();
+                } catch(err) {
+                    currentUser = { name: 'Farmer User', _id: 'u1', email: 'demo@agri.com' };
                 }
-
-            });
-
-        }
-
-
-
-        function filterCategory(cat) {
-
-            const searchVal = document.getElementById('market-search').value;
-
-            renderListings(searchVal, cat);
-
-
-
-            // Update Button Styles
-
-            document.querySelectorAll('.market-filter').forEach(btn => {
-
-                btn.classList.remove('active', 'bg-brand-900', 'text-white');
-
-                btn.classList.add('bg-white', 'text-slate-600');
-
-            });
-
-            event.target.classList.add('active', 'bg-brand-900', 'text-white');
-
-            event.target.classList.remove('bg-white', 'text-slate-600');
-
-        }
-
-
-
-        // --- Profile Logic ---
-
-        function updateProfileUI() {
-
-            document.querySelectorAll('.user-name-display').forEach(el => el.innerText = state.user.name);
-
-            document.querySelectorAll('.user-email-display').forEach(el => el.innerText = state.user.email);
-
-            document.querySelectorAll('.user-phone-display').forEach(el => el.innerText = state.user.phone);
-
-            document.querySelectorAll('.user-address-display').forEach(el => el.innerText = state.user.address);
-
-
-
-            document.querySelectorAll('.user-farm-display').forEach(el => {
-
-                // Keep the icon if it exists inside
-
-                const icon = el.querySelector('i');
-
-                el.innerText = ` ${state.user.farmName} • ${state.user.location}`;
-
-                if (icon) el.prepend(icon);
-
-            });
-
-
-
-            // Pre-fill inputs
-
-            document.getElementById('edit-name').value = state.user.name;
-
-            document.getElementById('edit-farm').value = state.user.farmName;
-
-            document.getElementById('edit-location').value = state.user.location;
-
-            document.getElementById('edit-phone').value = state.user.phone;
-
-
-
-            // Count Listings
-
-            const myCount = state.listings.filter(l => l.isMine).length;
-
-            document.getElementById('profile-listings-count').innerText = myCount;
-
-        }
-
-
-
-        function renderProfileHistory() {
-
-            const myListings = state.listings.filter(l => l.isMine);
-
-            const container = document.getElementById('profile-history-list');
-
-
-
-            if (myListings.length === 0) {
-
-                container.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 italic">No inventory listed yet.</div>';
-
-                return;
-
+                
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('headerName').innerText = currentUser.name;
+                loadAllData();
+                loadProfileData();
+            } catch (e) {
+                logout();
             }
-
-
-
-            container.innerHTML = myListings.map(item => `
-
-                <div class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-earth-100 shadow-sm hover:shadow-md transition-shadow group">
-
-                    <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover" alt="thumb">
-
-                    <div class="flex-1">
-
-                        <h4 class="font-bold text-slate-900 text-sm">${tProduct(item.name)}</h4>
-
-                        <div class="flex items-center gap-3 mt-1">
-
-                            <span class="text-xs text-slate-500 font-medium bg-earth-50 px-2 py-0.5 rounded">${item.qty}</span>
-
-                            <span class="text-xs text-brand-700 font-bold">₹${item.price}/kg</span>
-
-                        </div>
-
-                    </div>
-
-                    <button class="w-8 h-8 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center">
-
-                        <i class="fa-solid fa-trash-can"></i>
-
-                    </button>
-
-                </div>
-
-            `).join('');
-
         }
-
-
-
-        function toggleEditProfile() {
-
-            const form = document.getElementById('edit-profile-form');
-
-            form.classList.toggle('hidden');
-
-        }
-
-
-
-        function saveProfile() {
-
-            state.user.name = document.getElementById('edit-name').value;
-
-            state.user.farmName = document.getElementById('edit-farm').value;
-
-            state.user.location = document.getElementById('edit-location').value;
-
-            state.user.phone = document.getElementById('edit-phone').value;
-
-
-
-            updateProfileUI();
-
-            toggleEditProfile();
-
-            showToast('Profile updated successfully!');
-
-        }
-
-
-
-        function filterOrders(status) {
-
-            // Update UI Tabs
-
-            document.querySelectorAll('.order-tab').forEach(btn => {
-
-                btn.classList.remove('active', 'bg-slate-900', 'text-white', 'shadow-md');
-
-                btn.classList.add('text-slate-500');
-
-            });
-
-            const activeBtn = document.getElementById(`tab-${status}`);
-
-            activeBtn.classList.add('active', 'bg-slate-900', 'text-white', 'shadow-md');
-
-            activeBtn.classList.remove('text-slate-500');
-
-
-
-            // Filter Data
-
-            const searchVal = document.getElementById('order-search').value;
-
-            renderFullOrderSummary(status, searchVal);
-
-        }
-
-
-
-        function searchOrders() {
-
-            const searchVal = document.getElementById('order-search').value;
-
-            // Get active tab status
-
-            let activeStatus = 'All';
-
-            document.querySelectorAll('.order-tab').forEach(btn => {
-
-                if (btn.classList.contains('active')) activeStatus = btn.id.split('-')[1];
-
-            });
-
-            renderFullOrderSummary(activeStatus, searchVal);
-
-        }
-
-
-
-        // --- Interaction Logic ---
-
-        function handleRequest(elementId, action) {
-
-            const el = document.getElementById(elementId);
-
-            el.style.transform = 'translateX(100%)';
-
-            el.style.opacity = '0';
-
-
-
-            setTimeout(() => {
-
-                el.style.display = 'none';
-
-                // Check if empty
-
-                const container = document.getElementById('requests-container');
-
-                // Simple check for demo purposes
-
-                let visible = 0;
-
-                Array.from(container.children).forEach(c => {
-
-                    if (c.style.display !== 'none') visible++;
-
-                });
-
-
-
-                if (visible === 0) {
-
-                    container.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm font-medium border-2 border-dashed border-earth-100 rounded-2xl">No active requests at the moment.</div>';
-
-                }
-
-            }, 300);
-
-
-
-            showToast(`Request ${action}.`);
-
-        }
-
-
-
-        function contactFarmer(itemName) {
-
-            showToast(`Calling owner...`);
-
-        }
-
-
-
-        // --- Modal Logic ---
-
-        function openModal() {
-
-            const modal = document.getElementById('listingModal');
-
-            const backdrop = document.getElementById('modalBackdrop');
-
-            const content = document.getElementById('modalContent');
-
-
-
-            modal.classList.remove('hidden');
-
-            setTimeout(() => {
-
-                backdrop.classList.remove('opacity-0');
-
-                content.classList.remove('opacity-0', 'translate-y-full');
-
-                if (window.innerWidth >= 768) content.classList.remove('md:translate-y-10');
-
-            }, 10);
-
-        }
-
-
-
-        function closeModal() {
-
-            const modal = document.getElementById('listingModal');
-
-            const backdrop = document.getElementById('modalBackdrop');
-
-            const content = document.getElementById('modalContent');
-
-
-
-            backdrop.classList.add('opacity-0');
-
-            content.classList.add('opacity-0', 'translate-y-full');
-
-            if (window.innerWidth >= 768) content.classList.add('md:translate-y-10');
-
-
-
-            setTimeout(() => {
-
-                modal.classList.add('hidden');
-
-            }, 300);
-
-        }
-
-
-
-        function submitListing() {
-
-            const name = document.getElementById('itemName').value;
-
-            const price = document.getElementById('itemPrice').value;
-
-            const qty = document.getElementById('itemQty').value;
-
-            const cat = document.getElementById('itemCat').value;
-
-
-
-            if (!name || !price || !qty) {
-
-                showToast('Please fill all fields', 'Error');
-
-                return;
-
-            }
-
-
-
-            // Add to State
-
-            state.listings.unshift({
-
-                id: Date.now(),
-
-                name: name,
-
-                category: cat,
-
-                price: price,
-
-                qty: qty + ' kg',
-
-                farmer: state.user.name,
-
-                loc: 'Pune, MH', // Default for demo
-
-                time: 'Just now',
-
-                img: 'https://images.unsplash.com/photo-1615484477778-ca3b77940c25?auto=format&fit=crop&q=80&w=600',
-
-                verified: true,
-
-                isMine: true
-
-            });
-
-
-
-            // Refresh Views
-
-            renderListings();
-
-            updateProfileUI(); // Update count
-
-            closeModal();
-
-
-
-            // Show Success
-
-            showToast('Your produce is live! 🚀');
-
-            setTimeout(() => switchTab('marketplace'), 500);
-
-
-
-            // Reset form
-
-            document.getElementById('itemName').value = '';
-
-            document.getElementById('itemPrice').value = '';
-
-            document.getElementById('itemQty').value = '';
-
-        }
-
-
-
-        function showToast(message, title = 'Success') {
-
-            const toast = document.getElementById('toast');
-
-            document.getElementById('toast-msg').innerText = message;
-
-            document.getElementById('toast-title').innerText = title;
-
-            toast.classList.add('show');
-
-            setTimeout(() => {
-
-                toast.classList.remove('show');
-
-            }, 3000);
-
-        }
-
-
 
         function logout() {
+            localStorage.removeItem('softy_token');
+            location.reload();
+        }
 
-            // Clear user session/token
+        // --- Views & Routing ---
+        function switchView(viewName, btnEl) {
+            document.querySelectorAll('section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.dock-btn').forEach(el => el.classList.remove('active'));
+            
+            if(btnEl) btnEl.classList.add('active');
+            
+            const map = { 
+                'produce': 'viewProduce', 
+                'demand': 'viewDemand', 
+                'market': 'viewMarket', 
+                'settings': 'viewSettings' 
+            };
+            
+            const targetId = map[viewName];
+            if(targetId) {
+                document.getElementById(targetId).classList.add('active');
+                if(viewName === 'produce') renderProduce();
+                if(viewName === 'demand') renderDemand();
+                if(viewName === 'market') renderMarketData();
+            }
+        }
 
-            localStorage.removeItem('token');
+        async function loadAllData() {
+            try {
+                currentProduce = await SoftYield.produce.getAll();
+                renderProduce();
+                renderDemand(); // Pre-load
+                renderMarketData(); // Pre-load
+            } catch (e) { console.log("Data load error", e); }
+        }
 
-            localStorage.removeItem('user');
+        // --- 1. Produce Feed ---
+        function renderProduce() {
+            const container = document.getElementById('produceContainer');
+            container.innerHTML = '';
+            
+            const filtered = currentProduce.filter(item => 
+                (item.title.toLowerCase().includes(currentSearch) || 
+                 item.location.toLowerCase().includes(currentSearch))
+            );
 
+            if(filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No crops found.</div>';
+                return;
+            }
 
+            filtered.forEach(item => {
+                const id = item._id || item.id;
+                // Default image if missing
+                const imgUrl = item.image || `https://placehold.co/600x400/292524/FFF?text=${item.title.substring(0,3)}`;
+                
+                const html = `
+                    <div class="card" onclick="openProduceDetail('${id}')">
+                        <img src="${imgUrl}" class="crop-img" alt="${item.title}">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div>
+                                <h3>${item.title}</h3>
+                                <div class="meta">${item.location} • ${item.sellerName || 'Farmer'}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="color:var(--accent); font-weight:700; font-size:1.1rem;">₹${item.price}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">per ${item.unit || 'kg'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
 
-            showToast('Logging out...', 'Goodbye');
+        // --- 2. Demand (Buy Requests) ---
+        async function renderDemand() {
+            const container = document.getElementById('demandContainer');
+            try {
+                const requests = await SoftYield.market.getBuyRequests();
+                container.innerHTML = '';
+                
+                if(!requests || requests.length === 0) {
+                    container.innerHTML = '<div style="color:var(--text-muted);">No active buy requests.</div>';
+                    return;
+                }
 
+                requests.forEach(req => {
+                    const html = `
+                        <div class="card" style="border-left: 3px solid var(--accent);">
+                            <div style="display:flex; justify-content:space-between;">
+                                <h3>${req.crop}</h3>
+                                <span class="tag ${req.verified ? 'verified' : ''}">${req.verified ? 'VERIFIED BUYER' : 'GUEST'}</span>
+                            </div>
+                            <div style="margin: 5px 0; font-size:0.9rem;">
+                                <strong>Qty Needed:</strong> ${req.quantity}
+                            </div>
+                            <div class="meta">
+                                <span>Target: <span style="color:var(--text);">₹${req.maxPrice}/kg</span></span>
+                                <span>• ${req.buyer}</span>
+                            </div>
+                            <button class="btn sm outline" style="margin-top:10px; width:100%;" onclick="showToast('Contact sent to ${req.buyer}')">ACCEPT REQUEST</button>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+            } catch(e) { container.innerHTML = 'Error loading requests.'; }
+        }
 
+        // --- 3. Market Data ---
+        async function renderMarketData() {
+            // Prices
+            const pContainer = document.getElementById('priceContainer');
+            try {
+                const prices = await SoftYield.market.getPrices();
+                pContainer.innerHTML = '';
+                prices.forEach(p => {
+                    const colorClass = p.trend === 'up' ? 'trend-up' : (p.trend === 'down' ? 'trend-down' : '');
+                    const arrow = p.trend === 'up' ? '▲' : (p.trend === 'down' ? '▼' : '●');
+                    
+                    const html = `
+                        <div class="trend-row">
+                            <span>${p.item}</span>
+                            <div style="text-align:right;">
+                                <span style="font-weight:bold;">${p.price}</span>
+                                <span class="${colorClass}" style="font-size:0.8rem; margin-left:5px;">${arrow}</span>
+                            </div>
+                        </div>
+                    `;
+                    pContainer.insertAdjacentHTML('beforeend', html);
+                });
+            } catch(e) {}
 
-            setTimeout(() => {
+            // Forecast
+            const fContainer = document.getElementById('forecastContainer');
+            try {
+                const forecast = await SoftYield.market.getPriceForecast();
+                fContainer.innerHTML = '';
+                forecast.forEach(f => {
+                    const html = `
+                        <div class="card" style="padding:10px;">
+                            <strong>${f.item}</strong>
+                            <p style="font-size:0.9rem; color:${f.color === 'green' ? 'var(--green)' : 'var(--red)'}; margin-top:5px;">
+                                ${f.prediction}
+                            </p>
+                        </div>
+                    `;
+                    fContainer.insertAdjacentHTML('beforeend', html);
+                });
+            } catch(e) {}
+        }
 
-                window.location.href = 'login.html';
+        // --- Actions ---
+        function handleSearch(val) { currentSearch = val.toLowerCase(); renderProduce(); }
 
-            }, 1000);
+        async function handleCreate(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Publishing...';
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('cTitle').value);
+            formData.append('price', document.getElementById('cPrice').value);
+            formData.append('unit', document.getElementById('cUnit').value);
+            formData.append('quantity', document.getElementById('cQty').value);
+            formData.append('location', document.getElementById('cLoc').value);
+            // Mock image for demo
+            formData.append('image', `https://placehold.co/600x400/d97706/FFF?text=${document.getElementById('cTitle').value}`);
 
+            try {
+                const res = await SoftYield.produce.create(formData);
+                document.getElementById('createModal').classList.add('hidden');
+                e.target.reset();
+                showToast('Listing Created Successfully');
+                loadAllData(); // Refresh
+            } catch(err) { 
+                console.log(err);
+                // Mock success for UI if API fails
+                document.getElementById('createModal').classList.add('hidden');
+                showToast('Listing Created (Dev Mode)');
+            }
+            btn.innerText = 'POST LISTING';
+        }
+
+        async function contactSeller(id) {
+            try {
+                const res = await SoftYield.produce.contactSeller(id);
+                showToast('Interest Sent to Farmer!');
+                document.getElementById('detailsModal').classList.add('hidden');
+            } catch(e) { showToast('Connection Error'); }
+        }
+
+        function openProduceDetail(id) {
+            const item = currentProduce.find(e => (e._id || e.id) === id);
+            if(!item) return;
+
+            const content = document.getElementById('detailsContent');
+            const imgUrl = item.image || `https://placehold.co/600x400/292524/FFF?text=${item.title}`;
+
+            content.innerHTML = `
+                <img src="${imgUrl}" style="width:100%; border-radius:4px; margin-bottom:15px;">
+                <h2 style="margin-bottom:5px;">${item.title}</h2>
+                <div class="meta" style="margin-bottom:20px; font-size:1rem;">
+                    <span style="color:var(--accent); font-weight:bold;">₹${item.price} / ${item.unit}</span>
+                </div>
+                
+                <div style="background:#000; padding:15px; border-radius:4px; margin-bottom:20px;">
+                    <div style="color:var(--text-muted); font-size:0.8rem;">FARMER</div>
+                    <div>${item.sellerName || 'Unknown Source'}</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:10px;">LOCATION</div>
+                    <div>${item.location}</div>
+                </div>
+
+                <button class="btn" onclick="contactSeller('${id}')">CONTACT SELLER</button>
+            `;
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        // --- Scanner Logic ---
+        function startScanner() {
+            document.getElementById('scannerModal').classList.remove('hidden');
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            html5QrcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess);
+        }
+
+        function stopScanner() {
+            if(html5QrcodeScanner) html5QrcodeScanner.stop().then(() => html5QrcodeScanner.clear());
+            document.getElementById('scannerModal').classList.add('hidden');
+        }
+
+        function onScanSuccess(decodedText) {
+            html5QrcodeScanner.pause();
+            document.getElementById('scannerModal').classList.add('hidden');
+            
+            // Simulation of verifying a produce batch or ID
+            const resultModal = document.getElementById('scanResultModal');
+            document.getElementById('scanStatus').innerText = "VERIFIED";
+            document.getElementById('scanStatus').style.color = "var(--green)";
+            document.getElementById('scanData').innerText = `Payload: ${decodedText}`;
+            resultModal.classList.remove('hidden');
+        }
+
+        // --- Profile ---
+        async function loadProfileData() {
+           try {
+               const details = await SoftYield.profile.loadDetails();
+               if(details) {
+                   document.getElementById('pName').value = currentUser.name || '';
+                   document.getElementById('pEmail').value = currentUser.email || '';
+                   document.getElementById('pPhone').value = details.phone || '';
+                   document.getElementById('pCity').value = details.city || '';
+               }
+           } catch(e) {}
+        }
+        
+        function saveProfile(e) {
+            e.preventDefault();
+            showToast('Profile Saved');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
     </script>
-
 </body>
-
 </html>

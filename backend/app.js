@@ -4,14 +4,14 @@ const path = require('path');
 
 const { connectToMongoDB, closeMongoDB, client } = require('./database/mongodb');
 
-
 const authRoutes = require('./auth_path');
-const eventRoutes = require('./crops_path');
+const produceRoutes = require('./crops_path'); // Renamed from eventRoutes
+const marketRoutes = require('./market_path'); // NEW: Handles prices/requests
 
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://independent-irita-clubspot-9e43f2fa.koyeb.app/api'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://independent-irita-clubspot-9e43f2fa.koyeb.app'],
   methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
 }));
 
@@ -20,11 +20,18 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.set('trust proxy', 1); 
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Mount the Feature Routes
-app.use('/api/auth', authRoutes);   // Handles /api/auth/google, /api/auth/me
-app.use('/api/events', eventRoutes); // Handles /api/events, /api/events/join
+// --- MOUNT ROUTES ---
 
-// Catch-all
+// 1. Auth: /api/auth/google, /api/auth/me
+app.use('/api/auth', authRoutes);   
+
+// 2. Produce Feed: /api/produce, /api/produce/interest (Matches api.js)
+app.use('/api/produce', produceRoutes); 
+
+// 3. Market Data: /api/market/prices, /api/market/requests (Matches api.js)
+app.use('/api/market', marketRoutes);
+
+// Catch-all for SPA (Vue/React/Vanilla)
 app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
