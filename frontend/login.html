@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | AgriConnect</title>
 
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -13,51 +23,39 @@
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         display: ['"Outfit"', 'sans-serif'],
-                    },
-                    colors: {
-                        glass: {
-                            100: 'rgba(255, 255, 255, 0.1)',
-                            200: 'rgba(255, 255, 255, 0.2)',
-                            300: 'rgba(255, 255, 255, 0.3)',
-                        }
                     }
                 }
             }
         }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
 
     <style>
+        /* Glassmorphism Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
-        .input-group {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
+        /* Input Styles */
         .input-group input {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            /* slight border */
             transition: all 0.3s ease;
         }
 
         .input-group input:focus {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 1);
             border-color: #10b981;
             /* emerald-500 */
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            outline: none;
         }
 
+        /* Toggle Button */
         .toggle-btn {
             background: transparent;
             color: #64748b;
@@ -66,10 +64,10 @@
         .toggle-btn.active {
             background: #ffffff;
             color: #0f172a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        /* Toast Animation */
+        /* Toast Notification */
         #toast {
             visibility: hidden;
             min-width: 250px;
@@ -77,14 +75,14 @@
             background-color: #0f172a;
             color: #fff;
             text-align: center;
-            border-radius: 50px;
-            padding: 16px;
+            border-radius: 99px;
+            padding: 16px 24px;
             position: fixed;
             z-index: 100;
             left: 50%;
             bottom: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         #toast.show {
@@ -140,7 +138,7 @@
     <div class="absolute inset-0 z-0">
         <img src="https://images.unsplash.com/photo-1625246333195-5848c428ad69?q=80&w=2560&auto=format&fit=crop"
             class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/40 via-slate-900/20 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/60 via-slate-900/30 to-transparent"></div>
     </div>
 
     <!-- Toast Notification -->
@@ -149,215 +147,251 @@
     <!-- Main Card -->
     <div class="relative z-10 w-full max-w-[480px] p-6 animate-up">
 
-        <!-- Glass Container -->
-        <div class="glass-card rounded-[2.5rem] p-8 md:p-10">
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-12">
 
             <!-- Header -->
             <div class="text-center mb-10">
                 <div
-                    class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500 text-white mb-6 shadow-lg shadow-emerald-500/30">
-                    <i class="fa-solid fa-leaf text-2xl"></i>
+                    class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 text-white mb-6 shadow-xl shadow-emerald-500/30">
+                    <i class="fa-solid fa-leaf text-3xl"></i>
                 </div>
                 <h1 class="text-3xl font-display font-bold text-slate-800 mb-2">AgriConnect</h1>
-                <p class="text-slate-500" id="header-subtitle">Welcome back, farmer</p>
+                <p class="text-slate-600 font-medium" id="header-subtitle">Welcome back, farmer</p>
             </div>
 
             <!-- Toggle Switch -->
-            <div class="flex p-1.5 bg-slate-100/50 rounded-2xl mb-8 border border-white/50 backdrop-blur-sm">
+            <div class="flex p-1.5 bg-slate-200/50 rounded-xl mb-8">
                 <button id="toggle-login" onclick="setMode('login')"
-                    class="toggle-btn active flex-1 py-3 rounded-xl text-sm font-bold transition-all">
+                    class="toggle-btn active flex-1 py-3.5 rounded-lg text-sm font-bold transition-all">
                     Log In
                 </button>
                 <button id="toggle-register" onclick="setMode('register')"
-                    class="toggle-btn flex-1 py-3 rounded-xl text-sm font-bold transition-all">
+                    class="toggle-btn flex-1 py-3.5 rounded-lg text-sm font-bold transition-all">
                     Sign Up
                 </button>
             </div>
 
             <!-- Form -->
-            <form id="authForm" onsubmit="handleSubmit(event)" class="space-y-5">
+            <form id="authForm" onsubmit="handleSubmit(event)" class="space-y-4">
 
                 <!-- Role Selection (Register Only) -->
                 <div id="role-selector" class="hidden grid grid-cols-2 gap-3 mb-2">
                     <label class="cursor-pointer">
-                        <input type="radio" name="role" value="farmer" checked class="peer sr-only "
+                        <input type="radio" name="role" value="farmer" checked class="peer sr-only"
                             onchange="toggleLocationField()">
                         <div
-                            class="p-4 rounded-xl border border-transparent bg-white/50 text-slate-500 text-center peer-checked:bg-emerald-50 peer-checked:text-emerald-700 peer-checked:border-emerald-200 transition-all hover:bg-white/80">
-                            <i class="fa-solid fa-tractor mb-1"></i><br><span class="text-xs font-bold">Farmer</span>
+                            class="p-4 rounded-xl border border-transparent bg-white/60 text-slate-500 text-center peer-checked:bg-emerald-50 peer-checked:text-emerald-700 peer-checked:border-emerald-200 transition-all hover:bg-white/80">
+                            <i class="fa-solid fa-tractor mb-2 text-xl"></i><br><span
+                                class="text-xs font-bold uppercase tracking-wider">Farmer</span>
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="role" value="buyer" class="peer sr-only"
                             onchange="toggleLocationField()">
                         <div
-                            class="p-4 rounded-xl border border-transparent bg-white/50 text-slate-500 text-center peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-checked:border-blue-200 transition-all hover:bg-white/80">
-                            <i class="fa-solid fa-shop mb-1"></i><br><span class="text-xs font-bold">Buyer</span>
+                            class="p-4 rounded-xl border border-transparent bg-white/60 text-slate-500 text-center peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-checked:border-blue-200 transition-all hover:bg-white/80">
+                            <i class="fa-solid fa-shop mb-2 text-xl"></i><br><span
+                                class="text-xs font-bold uppercase tracking-wider">Buyer</span>
                         </div>
                     </label>
                 </div>
 
                 <!-- Name Field -->
-                <div id="name-field" class="hidden input-group">
+                <div id="name-field" class="hidden input-group relative">
                     <input type="text" id="name" placeholder="Full Name"
-                        class="w-full pl-12 pr-4 py-4 rounded-2xl outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    <i class="fa-regular fa-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
+                    <i class="fa-regular fa-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
                 </div>
 
                 <!-- Email Field -->
-                <div class="input-group">
+                <div class="input-group relative">
                     <input type="email" id="email" required placeholder="Email Address"
-                        class="w-full pl-12 pr-4 py-4 rounded-2xl outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    <i class="fa-regular fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
+                    <i
+                        class="fa-regular fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
                 </div>
 
                 <!-- Password Field -->
-                <div class="input-group">
+                <div class="input-group relative">
                     <input type="password" id="password" required placeholder="Password"
-                        class="w-full pl-12 pr-4 py-4 rounded-2xl outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    <i class="fa-solid fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
+                    <i class="fa-solid fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
                 </div>
 
                 <!-- Location Field -->
-                <div id="location-field" class="hidden input-group">
-                    <input type="text" id="location" placeholder="City, State"
-                        class="w-full pl-12 pr-4 py-4 rounded-2xl outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    <i class="fa-solid fa-map-pin absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <div id="location-field" class="hidden input-group relative">
+                    <input type="text" id="location" placeholder="City or District"
+                        class="w-full pl-12 pr-4 py-4 rounded-xl font-medium text-slate-800 placeholder:text-slate-400">
+                    <i class="fa-solid fa-map-pin absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
                 </div>
 
-                <button type="submit" id="submit-btn"
-                    class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-900/20 transition-all active:scale-[0.98] mt-4">
-                    Continue
-                </button>
+                <div class="pt-2">
+                    <button type="submit" id="submit-btn"
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-xl shadow-slate-900/20 transition-all active:scale-[0.98] text-base">
+                        Log In
+                    </button>
+                </div>
             </form>
-
-            <!-- Footer -->
-            <div class="mt-8 pt-6 border-t border-slate-200 text-center">
-                <button onclick="showToast('Google Auth coming soon!')"
-                    class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-2 mx-auto">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
-                    Or sign in with Google
-                </button>
-            </div>
 
         </div>
 
         <!-- Bottom Credits -->
-        <p class="text-center text-white/60 text-xs mt-6 font-medium">
+        <p class="text-center text-white/80 text-xs mt-8 font-medium tracking-wide">
             &copy; 2024 AgriConnect Inc.
         </p>
 
     </div>
 
     <script>
+        // State
         let isLogin = true;
-        const apiBase = '/api/auth';
+        // Use ABSOLUTE URL to avoid local file issues
+        const apiBase = 'http://localhost:5000/api/auth';
+
+        // --- Core Functions ---
 
         function setMode(mode) {
-            isLogin = mode === 'login';
+            isLogin = (mode === 'login');
+
+            // UI References
             const title = document.getElementById('header-subtitle');
             const submitBtn = document.getElementById('submit-btn');
+            const btnLogin = document.getElementById('toggle-login');
+            const btnReg = document.getElementById('toggle-register');
 
-            // Buttons
-            document.getElementById('toggle-login').classList.toggle('active', isLogin);
-            document.getElementById('toggle-register').classList.toggle('active', !isLogin);
-
-            // Visibility
-            const fields = ['role-selector', 'name-field'];
-            fields.forEach(id => {
-                const el = document.getElementById(id);
-                if (isLogin) el.classList.add('hidden');
-                else el.classList.remove('hidden');
-            });
-
-            // Special logic for location
-            toggleLocationField();
-
-            // Text
+            // Toggle Logic
             if (isLogin) {
+                btnLogin.classList.add('active');
+                btnReg.classList.remove('active');
+
+                // Hide Register Fields
+                document.getElementById('role-selector').classList.add('hidden');
+                document.getElementById('name-field').classList.add('hidden');
+                document.getElementById('location-field').classList.add('hidden');
+
+                // Text Updates
                 title.innerText = 'Welcome back, farmer';
                 submitBtn.innerText = 'Log In';
             } else {
+                btnReg.classList.add('active');
+                btnLogin.classList.remove('active');
+
+                // Show Register Fields
+                document.getElementById('role-selector').classList.remove('hidden');
+                document.getElementById('name-field').classList.remove('hidden');
+
+                // Check location field explicitly
+                toggleLocationField();
+
+                // Text Updates
                 title.innerText = 'Join the network';
                 submitBtn.innerText = 'Create Account';
             }
         }
 
         function toggleLocationField() {
-            if (isLogin) {
-                document.getElementById('location-field').classList.add('hidden');
-                return;
+            if (isLogin) return; // Don't show in login mode
+
+            const roleInputs = document.querySelectorAll('input[name="role"]');
+            let selectedRole = 'farmer';
+            for (const input of roleInputs) {
+                if (input.checked) {
+                    selectedRole = input.value;
+                    break;
+                }
             }
-            const role = document.querySelector('input[name="role"]:checked').value;
-            // Show location only if Farmer is selected
-            if (role === 'farmer') {
-                document.getElementById('location-field').classList.remove('hidden');
+
+            const locField = document.getElementById('location-field');
+            if (selectedRole === 'farmer') {
+                locField.classList.remove('hidden');
             } else {
-                document.getElementById('location-field').classList.add('hidden');
+                locField.classList.add('hidden');
             }
         }
 
         function showToast(msg, isError = false) {
             const toast = document.getElementById("toast");
             toast.innerText = msg;
-            toast.style.backgroundColor = isError ? '#ef4444' : '#0f172a';
+            toast.style.backgroundColor = isError ? '#ef4444' : '#0f172a'; // Red for error, Dark for success
             toast.className = "show";
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
         async function handleSubmit(e) {
             e.preventDefault();
+
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+
+            // Gather Data
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
 
             try {
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                let endpoint = '';
+                let payload = {};
 
                 if (isLogin) {
-                    const res = await fetch(`${apiBase}/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password })
-                    });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.msg || 'Login failed');
-
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    showToast('Welcome back! Redirecting...');
-                    setTimeout(() => window.location.href = 'index.html', 1000);
+                    // --- LOGIN ---
+                    endpoint = `${apiBase}/login`;
+                    payload = { email, password };
                 } else {
-                    const name = document.getElementById('name').value;
-                    const role = document.querySelector('input[name="role"]:checked').value;
-                    const location = document.getElementById('location').value;
+                    // --- REGISTER ---
+                    const name = document.getElementById('name').value.trim();
+                    const location = document.getElementById('location').value.trim();
 
-                    if (role === 'farmer' && !location) throw new Error('Location required for farmers');
-
-                    const res = await fetch(`${apiBase}/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, email, password, role, location })
+                    // Get Role
+                    let role = 'farmer';
+                    document.querySelectorAll('input[name="role"]').forEach(r => {
+                        if (r.checked) role = r.value;
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.msg || 'Registration failed');
 
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    showToast('Account created! 🚀');
-                    setTimeout(() => window.location.href = 'index.html', 1000);
+                    // Validation
+                    if (!name) throw new Error("Name is required.");
+                    if (role === 'farmer' && !location) throw new Error("Location is required for farmers.");
+
+                    endpoint = `${apiBase}/register`;
+                    payload = { name, email, password, role, location };
                 }
+
+                console.log('Sending request to:', endpoint, payload); // Debug
+
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.msg || data.message || 'Operation failed');
+                }
+
+                // Success!
+                console.log('Success:', data);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                showToast(`Success! Redirecting...`);
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+
             } catch (err) {
+                console.error(err);
                 showToast(err.message, true);
-            } finally {
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
+                submitBtn.innerText = isLogin ? 'Log In' : 'Create Account';
             }
         }
 
-        // Init
-        toggleLocationField();
+        // Initialize Page
+        setMode('login'); // Default to login
     </script>
 </body>
 
