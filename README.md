@@ -22,7 +22,7 @@ Node js, astro,react, mongoDB, API.<br>
 ### Usability and Impact:
 
 
-## Setup Instruction:
+### Setup Instruction:
 
 
-## Presentation/ demo link:
+### Presentation/ demo link:
