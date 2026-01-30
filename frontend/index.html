@@ -327,7 +327,7 @@
                 <div class="lg:col-span-4 flex flex-col gap-6">
                     <!-- Revenue Card -->
                     <div
-                        class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-earth-100 dark:border-slate-800 shadow-card flex-1 flex flex-col justify-center hover:translate-y-[-4px] transition-transform duration-300 relative overflow-hidden group">
+                        class="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 dark:border-slate-800 shadow-card flex-1 flex flex-col justify-center hover:translate-y-[-4px] transition-transform duration-300 relative overflow-hidden group">
                         <div
                             class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50">
                         </div>
@@ -345,13 +345,14 @@
                             class="text-slate-500 dark:text-slate-400 text-xs font-extrabold uppercase tracking-widest mb-1">
                             Total Revenue
                         </p>
-                        <h3 class="text-4xl font-display font-bold text-slate-900 dark:text-white tracking-tight">
+                        <h3
+                            class="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white tracking-tight">
                             ₹48,200</h3>
                     </div>
 
                     <!-- Daily Tasks (New Feature) -->
                     <div
-                        class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-earth-100 dark:border-slate-800 shadow-card flex-1 flex flex-col relative z-0">
+                        class="bg-white dark:bg-slate-900 p-5 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 dark:border-slate-800 shadow-card flex-1 flex flex-col relative z-0">
                         <div class="flex items-center justify-between mb-4">
                             <h4 class="font-bold text-slate-900 dark:text-white text-sm">Farm Tasks</h4>
                             <button
@@ -536,9 +537,9 @@
                 <div class="flex flex-col md:flex-row gap-5">
                     <div class="relative flex-1 group">
                         <i
-                            class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-slate-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors"></i>
-                        <input type="text" id="market-search" placeholder="Search crops, buyers, or locations..."
-                            class="w-full bg-earth-50 dark:bg-slate-800 border-2 border-transparent hover:border-earth-200 dark:hover:border-slate-700 focus:border-brand-500 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-800 dark:text-white outline-none transition-all placeholder:text-slate-400"
+                            class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-slate-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors"></i>
+                        <input type="text" id="market-search" placeholder="Search crops..."
+                            class="w-full bg-earth-50 dark:bg-slate-800 border-2 border-transparent hover:border-earth-200 dark:hover:border-slate-700 focus:border-brand-500 rounded-2xl py-3 pl-12 pr-4 text-sm font-semibold text-slate-800 dark:text-white outline-none transition-all placeholder:text-slate-400"
                             onkeyup="filterMarketplace()">
                     </div>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 md:pb-0">
@@ -576,7 +577,8 @@
         <section id="analytics" class="view-section space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="font-display font-bold text-3xl text-slate-900 dark:text-white">Market Intelligence</h2>
+                    <h2 class="font-display font-bold text-2xl md:text-3xl text-slate-900 dark:text-white">Market
+                        Intelligence</h2>
                     <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Data-driven insights for
                         better pricing.</p>
                 </div>
@@ -941,8 +943,8 @@
                     <p class="text-xs text-slate-500 font-medium mt-1">Connect with 500+ verified buyers</p>
                 </div>
                 <button onclick="closeModal()"
-                    class="w-9 h-9 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors">
-                    <i class="fa-solid fa-xmark text-sm"></i>
+                    class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-400 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
@@ -1014,7 +1016,8 @@
                 </div>
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-white md:rounded-b-[2.5rem]">
+            <div
+                class="p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 md:rounded-b-[2.5rem] pb-8 md:pb-6">
                 <button onclick="submitListing()"
                     class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/20 active:scale-95 transition-all text-sm tracking-wide">
                     Publish Listing
