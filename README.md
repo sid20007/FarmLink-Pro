@@ -45,7 +45,7 @@ We don't buy the crop — we give the farmer the **data** and the **connection**
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-repo/FarmLink-Pro.git
+git clone https://github.com/sid20007/FarmLink-Pro.git
 cd FarmLink-Pro
 npm install
 ```
@@ -68,7 +68,7 @@ Open [http://localhost:5000](http://localhost:5000)
 1. Create a new Web Service on [Render](https://render.com)
 2. Connect your GitHub repository
 3. Add environment variables in Render dashboard
-4. Add `https://your-app.onrender.com` to Google OAuth authorized origins
+4. Add `https://farmbox.onrender.com` to Google OAuth authorized origins
 
 ---
 
