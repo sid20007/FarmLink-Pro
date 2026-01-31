@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <h1 class="text-2xl font-display font-bold text-slate-900 tracking-tight">AgriConnect</h1>
+            <h1 class="text-2xl font-display font-bold text-slate-900 tracking-tight">FarmLink Pro</h1>
             <p class="text-slate-400 text-sm mt-1 mb-10 font-medium">Elevating modern agriculture</p>
 
             <div class="flex justify-center">
@@ -121,7 +121,7 @@
             showToast("Authenticating...");
             try {
                 // Simplified auth logic
-                const res = await fetch('http://localhost:5000/api/auth/google', {
+                const res = await fetch('https://farmbox.onrender.com/api/auth/google', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: response.credential })

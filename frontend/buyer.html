@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>SOFTYIELD | Buyer Portal</title>
-    
+    <title>FarmLink Pro | Buyer Portal</title>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -55,8 +58,14 @@
             overscroll-behavior-y: none;
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         .glass {
             background: rgba(255, 255, 255, 0.95);
@@ -70,23 +79,33 @@
             opacity: 0;
             animation: fadeIn 0.3s ease-out forwards;
         }
+
         .view-section.active {
             display: block;
             opacity: 1;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Product Detail Page Transition */
         #product-page {
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+
         #product-page.open {
             transform: translateX(0);
         }
+
         #product-page.closed {
             transform: translateX(100%);
         }
@@ -97,6 +116,7 @@
             transition: transform 0.5s ease-in-out;
             height: 100%;
         }
+
         .carousel-slide {
             min-width: 100%;
             height: 100%;
@@ -104,43 +124,57 @@
         }
     </style>
 </head>
+
 <body class="text-slate-800 antialiased pb-24 md:pb-0 relative overflow-x-hidden">
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[110] flex items-center gap-3 bg-slate-900/90 backdrop-blur text-white px-5 py-3 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-[-20px] pointer-events-none">
+    <div id="toast"
+        class="fixed top-4 left-1/2 -translate-x-1/2 z-[110] flex items-center gap-3 bg-slate-900/90 backdrop-blur text-white px-5 py-3 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-[-20px] pointer-events-none">
         <i class="fa-solid fa-circle-check text-green-400"></i>
         <p class="text-sm font-medium" id="toast-msg">Action completed</p>
     </div>
 
     <!-- MAIN APP SHELL -->
     <div id="app-shell" class="transition-opacity duration-300">
-        
+
         <!-- Top Header -->
-        <header class="fixed top-0 w-full z-40 glass border-b border-slate-100 h-16 md:h-20 transition-all duration-300" id="main-header">
+        <header class="fixed top-0 w-full z-40 glass border-b border-slate-100 h-16 md:h-20 transition-all duration-300"
+            id="main-header">
             <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="switchTab('market')">
-                    <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand-600 to-brand-400 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                    <div
+                        class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand-600 to-brand-400 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
                         <i class="fa-solid fa-leaf"></i>
                     </div>
                     <div>
-                        <h1 class="font-display font-bold text-lg md:text-xl text-slate-900 tracking-tight leading-none">SOFTYIELD</h1>
+                        <h1
+                            class="font-display font-bold text-lg md:text-xl text-slate-900 tracking-tight leading-none">
+                            FarmLink Pro</h1>
                         <span class="text-[10px] text-brand-600 font-bold uppercase tracking-wider">Buyer Portal</span>
                     </div>
                 </div>
 
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex bg-slate-100/80 p-1 rounded-xl">
-                    <button onclick="switchTab('market')" class="desk-nav px-6 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-brand-600 transition-all active-desk-nav" data-target="market">Market</button>
-                    <button onclick="switchTab('profile')" class="desk-nav px-6 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-brand-600 transition-all" data-target="profile">Profile</button>
+                    <button onclick="switchTab('market')"
+                        class="desk-nav px-6 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-brand-600 transition-all active-desk-nav"
+                        data-target="market">Market</button>
+                    <button onclick="switchTab('profile')"
+                        class="desk-nav px-6 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-brand-600 transition-all"
+                        data-target="profile">Profile</button>
                 </nav>
 
                 <div class="flex items-center gap-3">
-                    <button id="header-login-btn" onclick="openLoginModal()" class="hidden bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-brand-600/20 hover:bg-brand-700 transition-all">
+                    <button id="header-login-btn" onclick="openLoginModal()"
+                        class="hidden bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-brand-600/20 hover:bg-brand-700 transition-all">
                         Log In
                     </button>
 
-                    <div id="header-user-avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-100 to-brand-50 p-0.5 cursor-pointer hover:ring-2 hover:ring-brand-200 transition-all" onclick="switchTab('profile')">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AgriBuyer" class="w-full h-full rounded-full" alt="Profile">
+                    <div id="header-user-avatar"
+                        class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-100 to-brand-50 p-0.5 cursor-pointer hover:ring-2 hover:ring-brand-200 transition-all"
+                        onclick="switchTab('profile')">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AgriBuyer"
+                            class="w-full h-full rounded-full" alt="Profile">
                     </div>
                 </div>
             </div>
@@ -148,55 +182,79 @@
 
         <!-- Main Content -->
         <main class="max-w-7xl mx-auto pt-20 px-4 md:px-6 min-h-screen">
-            
+
             <!-- MARKETPLACE -->
             <section id="market" class="view-section active">
                 <div class="sticky top-16 md:top-20 z-30 bg-[#f8fafc] py-4 transition-all" id="search-container">
                     <div class="relative shadow-sm rounded-2xl">
                         <i class="fa-solid fa-search absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="text" id="market-search" onkeyup="filterMarket()" placeholder="Search onions, wheat, or farmers..." class="w-full bg-white border-none h-12 rounded-2xl pl-12 pr-4 text-sm font-medium shadow-soft focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button class="absolute right-2 top-2 h-8 w-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:bg-brand-100 hover:text-brand-600" onclick="showFilterModal()">
+                        <input type="text" id="market-search" onkeyup="filterMarket()"
+                            placeholder="Search onions, wheat, or farmers..."
+                            class="w-full bg-white border-none h-12 rounded-2xl pl-12 pr-4 text-sm font-medium shadow-soft focus:ring-2 focus:ring-brand-500 outline-none">
+                        <button
+                            class="absolute right-2 top-2 h-8 w-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:bg-brand-100 hover:text-brand-600"
+                            onclick="showFilterModal()">
                             <i class="fa-solid fa-sliders"></i>
                         </button>
                     </div>
                     <div class="flex gap-3 mt-4 overflow-x-auto no-scrollbar pb-1">
-                        <button onclick="filterCategory('all')" class="cat-btn bg-brand-600 text-white px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-lg shadow-brand-600/20 transition-transform active:scale-95">All</button>
-                        <button onclick="filterCategory('vegetables')" class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Vegetables</button>
-                        <button onclick="filterCategory('fruits')" class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Fruits</button>
-                        <button onclick="filterCategory('grains')" class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Grains</button>
+                        <button onclick="filterCategory('all')"
+                            class="cat-btn bg-brand-600 text-white px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-lg shadow-brand-600/20 transition-transform active:scale-95">All</button>
+                        <button onclick="filterCategory('vegetables')"
+                            class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Vegetables</button>
+                        <button onclick="filterCategory('fruits')"
+                            class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Fruits</button>
+                        <button onclick="filterCategory('grains')"
+                            class="cat-btn bg-white text-slate-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border border-slate-200 shadow-sm transition-transform active:scale-95">Grains</button>
                     </div>
                 </div>
 
                 <!-- Sliding Hero Carousel -->
-                <div class="relative w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-lg mb-6 group mt-2 border border-brand-100/50">
+                <div
+                    class="relative w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-lg mb-6 group mt-2 border border-brand-100/50">
                     <div class="carousel-track" id="carousel-track">
                         <!-- Slide 1 -->
                         <div class="carousel-slide">
-                            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-brand-900/80 via-transparent to-transparent flex items-end p-6">
+                            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=1200"
+                                class="w-full h-full object-cover">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-brand-900/80 via-transparent to-transparent flex items-end p-6">
                                 <div>
-                                    <span class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Direct Farm Access</span>
-                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Fresh from <br>Harvest</h2>
+                                    <span
+                                        class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Direct
+                                        Farm Access</span>
+                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Fresh from
+                                        <br>Harvest</h2>
                                 </div>
                             </div>
                         </div>
                         <!-- Slide 2 -->
                         <div class="carousel-slide">
-                            <img src="https://images.unsplash.com/photo-1595855709920-4e297c8d8c2c?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-green-900/80 via-transparent to-transparent flex items-end p-6">
+                            <img src="https://images.unsplash.com/photo-1595855709920-4e297c8d8c2c?auto=format&fit=crop&q=80&w=1200"
+                                class="w-full h-full object-cover">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-green-900/80 via-transparent to-transparent flex items-end p-6">
                                 <div>
-                                    <span class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Best Prices</span>
-                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Bulk Orders <br>Discount</h2>
+                                    <span
+                                        class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Best
+                                        Prices</span>
+                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Bulk Orders
+                                        <br>Discount</h2>
                                 </div>
                             </div>
                         </div>
                         <!-- Slide 3 -->
                         <div class="carousel-slide">
-                            <img src="https://images.unsplash.com/photo-1628522323793-1dd773950b4d?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-orange-900/80 via-transparent to-transparent flex items-end p-6">
+                            <img src="https://images.unsplash.com/photo-1628522323793-1dd773950b4d?auto=format&fit=crop&q=80&w=1200"
+                                class="w-full h-full object-cover">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-orange-900/80 via-transparent to-transparent flex items-end p-6">
                                 <div>
-                                    <span class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Verified Farmers</span>
-                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Trusted <br>Quality</h2>
+                                    <span
+                                        class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-2 inline-block">Verified
+                                        Farmers</span>
+                                    <h2 class="text-white text-2xl font-display font-bold leading-tight">Trusted
+                                        <br>Quality</h2>
                                 </div>
                             </div>
                         </div>
@@ -217,49 +275,64 @@
                     <div class="flex items-center gap-4 mb-8">
                         <div class="relative">
                             <div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-brand-400 to-brand-600">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AgriBuyer" class="w-full h-full rounded-full bg-white p-0.5">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AgriBuyer"
+                                    class="w-full h-full rounded-full bg-white p-0.5">
                             </div>
-                            <button class="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full text-slate-600 shadow-md border border-slate-100 flex items-center justify-center text-xs">
+                            <button
+                                class="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full text-slate-600 shadow-md border border-slate-100 flex items-center justify-center text-xs">
                                 <i class="fa-solid fa-camera"></i>
                             </button>
                         </div>
                         <div>
                             <h2 class="text-2xl font-display font-bold text-slate-900">John Buyer</h2>
                             <p class="text-sm text-slate-500">+91 98765 43210</p>
-                            <p class="text-xs text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded mt-1 inline-block">Verified Buyer</p>
+                            <p
+                                class="text-xs text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded mt-1 inline-block">
+                                Verified Buyer</p>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-                        <button class="w-full flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                        <button
+                            class="w-full flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors">
                             <div class="flex items-center gap-4">
-                                <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
+                                <div
+                                    class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center">
+                                    <i class="fa-solid fa-location-dot"></i></div>
                                 <span class="font-bold text-sm text-slate-700">Delivery Addresses</span>
                             </div>
                             <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
                         </button>
-                        <button class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                        <button
+                            class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
                             <div class="flex items-center gap-4">
-                                <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-headset"></i></div>
+                                <div
+                                    class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center">
+                                    <i class="fa-solid fa-headset"></i></div>
                                 <span class="font-bold text-sm text-slate-700">Help & Support</span>
                             </div>
                             <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
                         </button>
                     </div>
 
-                    <button onclick="handleLogout()" class="w-full py-4 rounded-xl border border-red-100 text-red-500 font-bold text-sm bg-red-50 hover:bg-red-100 transition-colors mb-24">
+                    <button onclick="handleLogout()"
+                        class="w-full py-4 rounded-xl border border-red-100 text-red-500 font-bold text-sm bg-red-50 hover:bg-red-100 transition-colors mb-24">
                         Log Out
                     </button>
                 </div>
 
                 <!-- Logged Out View -->
-                <div id="profile-logged-out" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
-                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-4xl text-slate-300 mb-6">
+                <div id="profile-logged-out"
+                    class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
+                    <div
+                        class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-4xl text-slate-300 mb-6">
                         <i class="fa-solid fa-user-lock"></i>
                     </div>
                     <h2 class="text-2xl font-display font-bold text-slate-900 mb-2">Login Required</h2>
-                    <p class="text-slate-500 text-sm max-w-xs mb-8">Login to verify your identity and contact farmers directly.</p>
-                    <button onclick="openLoginModal()" class="w-full max-w-xs bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-600/30 hover:bg-brand-700 transition-colors">
+                    <p class="text-slate-500 text-sm max-w-xs mb-8">Login to verify your identity and contact farmers
+                        directly.</p>
+                    <button onclick="openLoginModal()"
+                        class="w-full max-w-xs bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-600/30 hover:bg-brand-700 transition-colors">
                         Log In / Sign Up
                     </button>
                 </div>
@@ -267,21 +340,31 @@
         </main>
 
         <!-- Mobile Bottom Nav (2 Items Only) -->
-        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-40 pb-safe shadow-[0_-5px_15px_rgba(0,0,0,0.03)] rounded-t-2xl transition-transform duration-300">
+        <nav id="mobile-nav"
+            class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-40 pb-safe shadow-[0_-5px_15px_rgba(0,0,0,0.03)] rounded-t-2xl transition-transform duration-300">
             <div class="grid grid-cols-2 h-16 px-12">
-                <button onclick="switchTab('market')" class="nav-item active flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors" id="mob-market"><i class="fa-solid fa-store text-xl"></i><span class="text-[10px] font-medium">Market</span></button>
-                <button onclick="switchTab('profile')" class="nav-item flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors" id="mob-profile"><i class="fa-solid fa-user text-xl"></i><span class="text-[10px] font-medium">Profile</span></button>
+                <button onclick="switchTab('market')"
+                    class="nav-item active flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors"
+                    id="mob-market"><i class="fa-solid fa-store text-xl"></i><span
+                        class="text-[10px] font-medium">Market</span></button>
+                <button onclick="switchTab('profile')"
+                    class="nav-item flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors"
+                    id="mob-profile"><i class="fa-solid fa-user text-xl"></i><span
+                        class="text-[10px] font-medium">Profile</span></button>
             </div>
         </nav>
     </div>
 
     <!-- LOGIN MODAL -->
     <div id="loginModal" class="fixed inset-0 z-[120] hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="loginBackdrop" onclick="closeLoginModal()"></div>
-        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[400px] bg-white rounded-t-[2rem] md:rounded-3xl shadow-2xl transform translate-y-full md:translate-y-10 transition-transform duration-300 overflow-hidden" id="loginContent">
-            
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="loginBackdrop"
+            onclick="closeLoginModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[400px] bg-white rounded-t-[2rem] md:rounded-3xl shadow-2xl transform translate-y-full md:translate-y-10 transition-transform duration-300 overflow-hidden"
+            id="loginContent">
+
             <div class="p-8 text-center">
-                <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-600 text-2xl mx-auto mb-6">
+                <div
+                    class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-600 text-2xl mx-auto mb-6">
                     <i class="fa-solid fa-leaf"></i>
                 </div>
                 <h3 class="text-2xl font-display font-bold text-slate-900 mb-2">Welcome Buyer</h3>
@@ -289,16 +372,19 @@
 
                 <div class="relative mb-4">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">+91</span>
-                    <input type="tel" id="login-phone" placeholder="98765 43210" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                    <input type="tel" id="login-phone" placeholder="98765 43210"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-4 pl-12 pr-4 font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
                 </div>
 
-                <button onclick="handleLoginSubmit()" class="w-full bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-600/30 hover:bg-brand-700 transition-colors mb-4">
+                <button onclick="handleLoginSubmit()"
+                    class="w-full bg-brand-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-brand-600/30 hover:bg-brand-700 transition-colors mb-4">
                     Send OTP
                 </button>
             </div>
-            
+
             <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
-                <button onclick="closeLoginModal()" class="text-slate-500 text-sm font-bold hover:text-slate-700">Cancel</button>
+                <button onclick="closeLoginModal()"
+                    class="text-slate-500 text-sm font-bold hover:text-slate-700">Cancel</button>
             </div>
         </div>
     </div>
@@ -306,20 +392,24 @@
     <!-- PRODUCT DETAIL PAGE -->
     <div id="product-page" class="fixed inset-0 z-[100] bg-white h-full w-full overflow-hidden closed flex flex-col">
         <!-- Sticky Header for Product Page -->
-        <div class="absolute top-0 w-full z-20 p-4 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent md:bg-white md:border-b md:border-slate-100 md:shadow-sm">
-            <button onclick="closeProductPage()" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur md:bg-slate-50 flex items-center justify-center text-white md:text-slate-700 hover:bg-white/40 transition-colors border border-white/20 md:border-slate-200">
+        <div
+            class="absolute top-0 w-full z-20 p-4 flex justify-between items-center bg-gradient-to-b from-black/40 to-transparent md:bg-white md:border-b md:border-slate-100 md:shadow-sm">
+            <button onclick="closeProductPage()"
+                class="w-10 h-10 rounded-full bg-white/20 backdrop-blur md:bg-slate-50 flex items-center justify-center text-white md:text-slate-700 hover:bg-white/40 transition-colors border border-white/20 md:border-slate-200">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
             <div class="flex gap-3">
-                <button class="w-10 h-10 rounded-full bg-white/20 backdrop-blur md:bg-slate-50 flex items-center justify-center text-white md:text-slate-700 hover:bg-white/40 transition-colors border border-white/20 md:border-slate-200">
+                <button
+                    class="w-10 h-10 rounded-full bg-white/20 backdrop-blur md:bg-slate-50 flex items-center justify-center text-white md:text-slate-700 hover:bg-white/40 transition-colors border border-white/20 md:border-slate-200">
                     <i class="fa-solid fa-share-nodes"></i>
                 </button>
             </div>
         </div>
 
         <div class="flex-1 overflow-y-auto no-scrollbar bg-slate-50" id="product-page-content">
-            <div class="max-w-2xl mx-auto bg-white min-h-full shadow-2xl md:my-6 md:rounded-3xl overflow-hidden md:min-h-0 md:mb-24">
-                
+            <div
+                class="max-w-2xl mx-auto bg-white min-h-full shadow-2xl md:my-6 md:rounded-3xl overflow-hidden md:min-h-0 md:mb-24">
+
                 <div class="relative h-96 w-full bg-slate-100">
                     <img id="p-img" src="" class="w-full h-full object-cover">
                 </div>
@@ -328,14 +418,18 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-start mb-2">
                             <div>
-                                <span class="bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block border border-brand-100" id="p-category">Category</span>
-                                <h1 class="text-3xl font-display font-bold text-slate-900 leading-tight" id="p-name">Product Name</h1>
+                                <span
+                                    class="bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block border border-brand-100"
+                                    id="p-category">Category</span>
+                                <h1 class="text-3xl font-display font-bold text-slate-900 leading-tight" id="p-name">
+                                    Product Name</h1>
                             </div>
                         </div>
                         <div class="flex justify-between items-end mt-2 pb-6 border-b border-slate-100">
                             <div>
                                 <p class="text-sm text-slate-500 mb-1">Price per unit</p>
-                                <p class="text-4xl font-display font-bold text-brand-600 tracking-tight" id="p-price">₹0</p>
+                                <p class="text-4xl font-display font-bold text-brand-600 tracking-tight" id="p-price">₹0
+                                </p>
                             </div>
                             <div class="text-right">
                                 <div class="flex items-center gap-1 mb-1 justify-end">
@@ -343,7 +437,8 @@
                                     <span class="font-bold text-slate-900" id="p-rating">4.8</span>
                                     <span class="text-slate-400 text-xs">(124 reviews)</span>
                                 </div>
-                                <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md">In Stock</span>
+                                <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md">In
+                                    Stock</span>
                             </div>
                         </div>
                     </div>
@@ -352,10 +447,12 @@
                     <div class="mb-8">
                         <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wide mb-4">Sold By</h3>
                         <div class="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                            <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-xl border-2 border-white" id="p-avatar">R</div>
+                            <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-xl border-2 border-white"
+                                id="p-avatar">R</div>
                             <div class="flex-1">
                                 <h4 class="font-bold text-slate-900" id="p-farmer">Farmer Name</h4>
-                                <p class="text-xs text-slate-500 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> <span id="p-loc">Location</span></p>
+                                <p class="text-xs text-slate-500 flex items-center gap-1"><i
+                                        class="fa-solid fa-location-dot"></i> <span id="p-loc">Location</span></p>
                             </div>
                         </div>
                     </div>
@@ -396,10 +493,13 @@
         </div>
 
         <!-- Sticky Bottom Action Bar -->
-        <div class="absolute bottom-0 w-full bg-white border-t border-slate-100 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-30">
+        <div
+            class="absolute bottom-0 w-full bg-white border-t border-slate-100 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-30">
             <div class="max-w-2xl mx-auto">
-                <a id="p-call-btn" href="#" class="w-full block text-center py-4 rounded-xl bg-brand-600 text-white font-bold text-lg shadow-xl shadow-brand-600/30 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-phone"></i> Call Farmer <span id="p-phone-display" class="text-sm font-normal opacity-90 ml-1"></span>
+                <a id="p-call-btn" href="#"
+                    class="w-full block text-center py-4 rounded-xl bg-brand-600 text-white font-bold text-lg shadow-xl shadow-brand-600/30 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-phone"></i> Call Farmer <span id="p-phone-display"
+                        class="text-sm font-normal opacity-90 ml-1"></span>
                 </a>
             </div>
         </div>
@@ -416,9 +516,9 @@
             { id: 6, name: 'Potatoes', price: 20, unit: 'kg', qty: '1.5 Tons', type: 'vegetables', farmer: 'Kisan Group', phone: '+919876543210', loc: 'Indore, MP', rating: 4.7, img: 'https://images.unsplash.com/photo-1518977676605-691aa1be8c7a?auto=format&fit=crop&q=80&w=600', variety: 'Jyoti', harvest: 'Last Week', moq: '500 kg', desc: 'Medium to large sized Jyoti potatoes. Firm texture, suitable for chips.' },
         ];
 
-        let isLoggedIn = true; 
+        let isLoggedIn = true;
         let currentProduct = null;
-        
+
         // Carousel Logic
         let currentSlide = 0;
         const totalSlides = 3;
@@ -433,11 +533,11 @@
         function startCarousel() {
             const track = document.getElementById('carousel-track');
             const dotsContainer = document.getElementById('carousel-dots');
-            
+
             // Create dots
-            for(let i=0; i<totalSlides; i++) {
+            for (let i = 0; i < totalSlides; i++) {
                 const dot = document.createElement('div');
-                dot.className = `w-2 h-2 rounded-full transition-all ${i===0 ? 'bg-white w-4' : 'bg-white/50'}`;
+                dot.className = `w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-white w-4' : 'bg-white/50'}`;
                 dotsContainer.appendChild(dot);
             }
 
@@ -450,10 +550,10 @@
         function updateCarousel() {
             const track = document.getElementById('carousel-track');
             track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
+
             const dots = document.getElementById('carousel-dots').children;
-            for(let i=0; i<totalSlides; i++) {
-                dots[i].className = `w-2 h-2 rounded-full transition-all ${i===currentSlide ? 'bg-white w-4' : 'bg-white/50'}`;
+            for (let i = 0; i < totalSlides; i++) {
+                dots[i].className = `w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-4' : 'bg-white/50'}`;
             }
         }
 
@@ -467,25 +567,25 @@
             if (isLoggedIn) {
                 loginBtn.classList.add('hidden');
                 avatar.classList.remove('hidden');
-                if(loggedInView) loggedInView.classList.remove('hidden');
-                if(loggedOutView) loggedOutView.classList.add('hidden');
+                if (loggedInView) loggedInView.classList.remove('hidden');
+                if (loggedOutView) loggedOutView.classList.add('hidden');
             } else {
                 loginBtn.classList.remove('hidden');
                 avatar.classList.add('hidden');
-                if(loggedInView) loggedInView.classList.add('hidden');
-                if(loggedOutView) loggedOutView.classList.remove('hidden');
+                if (loggedInView) loggedInView.classList.add('hidden');
+                if (loggedOutView) loggedOutView.classList.remove('hidden');
             }
         }
 
         function handleLoginSubmit() {
             const phone = document.getElementById('login-phone').value;
-            if(phone.length < 10) { alert("Please enter valid phone number"); return; }
+            if (phone.length < 10) { alert("Please enter valid phone number"); return; }
             closeLoginModal();
             setTimeout(() => { isLoggedIn = true; updateLoginState(); showToast("Welcome back! 🌿"); switchTab('profile'); }, 500);
         }
 
         function handleLogout() {
-            if(confirm("Are you sure you want to log out?")) {
+            if (confirm("Are you sure you want to log out?")) {
                 isLoggedIn = false;
                 updateLoginState();
                 showToast("Logged out successfully");
@@ -540,7 +640,7 @@
         // --- Product Page Logic ---
         function openProductPage(id) {
             currentProduct = products.find(x => x.id === id);
-            if(!currentProduct) return;
+            if (!currentProduct) return;
 
             document.getElementById('p-img').src = currentProduct.img;
             document.getElementById('p-name').innerText = currentProduct.name;
@@ -550,7 +650,7 @@
             document.getElementById('p-farmer').innerText = currentProduct.farmer;
             document.getElementById('p-avatar').innerText = currentProduct.farmer.charAt(0);
             document.getElementById('p-loc').innerText = currentProduct.loc;
-            
+
             document.getElementById('p-variety').innerText = currentProduct.variety;
             document.getElementById('p-harvest').innerText = currentProduct.harvest;
             document.getElementById('p-moq').innerText = currentProduct.moq;
@@ -559,15 +659,15 @@
             // Set Call Button
             const callBtn = document.getElementById('p-call-btn');
             const phoneDisplay = document.getElementById('p-phone-display');
-            
-            if(isLoggedIn) {
+
+            if (isLoggedIn) {
                 callBtn.href = `tel:${currentProduct.phone}`;
                 phoneDisplay.innerText = `(${currentProduct.phone})`;
                 callBtn.onclick = null;
             } else {
                 callBtn.href = "#";
                 phoneDisplay.innerText = "(Login to view)";
-                callBtn.onclick = function(e) {
+                callBtn.onclick = function (e) {
                     e.preventDefault();
                     openLoginModal();
                     showToast("Please log in to contact farmer");
@@ -579,7 +679,7 @@
             const page = document.getElementById('product-page');
             page.classList.remove('closed', 'hidden');
             page.classList.add('open');
-            
+
             document.getElementById('mobile-nav').classList.add('translate-y-full');
             document.getElementById('main-header').classList.add('-translate-y-full');
         }
@@ -599,8 +699,8 @@
             const displayItems = similar.length > 0 ? similar : products.filter(p => p.id !== currentId).slice(0, 4);
 
             if (displayItems.length === 0) {
-                 container.innerHTML = '<p class="text-sm text-slate-400 pl-1">No similar products found.</p>';
-                 return;
+                container.innerHTML = '<p class="text-sm text-slate-400 pl-1">No similar products found.</p>';
+                return;
             }
 
             container.innerHTML = displayItems.map(item => `
@@ -621,20 +721,20 @@
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            
+
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'text-brand-600'));
             const mobBtn = document.getElementById(`mob-${tabId}`);
-            if(mobBtn) {
+            if (mobBtn) {
                 mobBtn.classList.add('active', 'text-brand-600');
                 mobBtn.classList.remove('text-slate-400');
             }
 
-             document.querySelectorAll('.desk-nav').forEach(el => {
+            document.querySelectorAll('.desk-nav').forEach(el => {
                 el.classList.remove('bg-white', 'text-brand-600', 'shadow-sm');
-                if(el.dataset.target === tabId) {
+                if (el.dataset.target === tabId) {
                     el.classList.add('bg-white', 'text-brand-600', 'shadow-sm');
                 }
-             });
+            });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -646,7 +746,7 @@
             event.target.classList.remove('bg-white', 'text-slate-600', 'border');
             event.target.classList.add('bg-brand-600', 'text-white', 'shadow-lg');
 
-            if(cat === 'all') {
+            if (cat === 'all') {
                 renderProducts(products);
             } else {
                 renderProducts(products.filter(p => p.type === cat));
@@ -670,4 +770,5 @@
         }
     </script>
 </body>
+
 </html>

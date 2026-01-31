@@ -1,9 +1,9 @@
 /* =========================================
-   AGRIFLOW: API SERVICE (Source of Truth)
+   FARMLINK PRO: API SERVICE
    ========================================= */
 const SoftYield = {
     // URL Configuration
-    BASE_URL: 'http://localhost:5000/api',
+    BASE_URL: 'https://farmbox.onrender.com/api',
 
 
     // Helper: Get Auth Headers
