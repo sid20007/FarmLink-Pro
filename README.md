@@ -101,7 +101,7 @@ npm start
   - 4x Preconnect optimizations
   - Lazy-loaded images (60% bandwidth reduction)
 
-  - Lazy-loaded images (60% bandwidth reduction)
+
 
 ---
 

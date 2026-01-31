@@ -595,7 +595,7 @@
                     price: item.price,
                     unit: item.unit || 'kg',
                     qty: item.quantity,
-                    type: 'vegetables', // Default Category for now
+                    type: inferCategory(item.title), // Dynamic Inference
                     farmer: item.sellerName || 'Verified Farmer',
                     phone: '+919876543210',
                     loc: item.location,
@@ -616,6 +616,48 @@
                         <p>Unable to load market data currently.</p>
                      </div>`;
             }
+        }
+
+        function inferCategory(title) {
+            const t = title.toLowerCase();
+            if (t.includes('rice') || t.includes('wheat') || t.includes('corn') || t.includes('jowar') || t.includes('bajra')) return 'grains';
+            if (t.includes('mango') || t.includes('banana') || t.includes('apple') || t.includes('orange') || t.includes('grape')) return 'fruits';
+            return 'vegetables'; // Default fallthrough for Potato, Onion, Tomato, Chilli
+        }
+
+        function filterCategory(category) {
+            // Update UI
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                const btnText = btn.innerText.toLowerCase();
+                // Check if this button matches the selected category
+                const isActive = (category === 'all' && btnText === 'all') || (btnText === category);
+
+                if (isActive) {
+                    btn.classList.add('bg-brand-600', 'text-white', 'shadow-lg');
+                    btn.classList.remove('bg-white', 'text-slate-600', 'border', 'shadow-sm');
+                } else {
+                    btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg');
+                    btn.classList.add('bg-white', 'text-slate-600', 'border', 'shadow-sm');
+                }
+            });
+
+            // Filter Data
+            if (category === 'all') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.type === category);
+                renderProducts(filtered);
+            }
+        }
+
+        function filterMarket() {
+            const query = document.getElementById('market-search').value.toLowerCase();
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.farmer.toLowerCase().includes(query) ||
+                p.loc.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
         }
 
         function startCarousel() {
