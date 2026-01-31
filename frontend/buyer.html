@@ -92,6 +92,18 @@
             }
         }
 
+        .custom-pattern {
+            background-image: radial-gradient(#166534 0.5px, transparent 0.5px), radial-gradient(#166534 0.5px, #fbfaf8 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.03;
+        }
+
+        /* Safe Area Support */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
         .glass {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
@@ -371,7 +383,7 @@
 
         <!-- Mobile Bottom Nav (2 Items Only) -->
         <nav id="mobile-nav"
-            class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-40 pb-safe shadow-[0_-5px_15px_rgba(0,0,0,0.03)] rounded-t-2xl transition-transform duration-300">
+            class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-50 pb-safe shadow-[0_-5px_15px_rgba(0,0,0,0.03)] rounded-t-2xl transition-transform duration-300">
             <div class="grid grid-cols-2 h-16 px-12">
                 <button onclick="switchTab('market')"
                     class="nav-item active flex flex-col items-center justify-center gap-1 text-slate-400 transition-colors"
