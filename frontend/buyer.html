@@ -558,14 +558,7 @@
 
     <script>
         // --- Data ---
-        const products = [
-            { id: 1, name: 'Fresh Tomatoes', price: 22, unit: 'kg', qty: '500kg', type: 'vegetables', farmer: 'Rajesh K', phone: '+919876543210', loc: 'Pune, MH', rating: 4.8, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=60&w=600', variety: 'Hybrid Red', harvest: 'Today', moq: '100 kg', desc: 'Farm-fresh hybrid tomatoes. Juicy, firm, and perfect for retail or processing.' },
-            { id: 2, name: 'Basmati Rice', price: 65, unit: 'kg', qty: '1 Ton', type: 'grains', farmer: 'Amit Singh', phone: '+919876543210', loc: 'Nashik, MH', rating: 4.5, img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=60&w=600', variety: '1121 Steam', harvest: 'Last Season', moq: '500 kg', desc: 'Extra long grain Basmati rice. Aged for 12 months for superior aroma.' },
-            { id: 3, name: 'Red Onions', price: 18, unit: 'kg', qty: '2 Tons', type: 'vegetables', farmer: 'Suresh P', phone: '+919876543210', loc: 'Nashik, MH', rating: 4.9, img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&q=60&w=600', variety: 'Nashik Red', harvest: 'Yesterday', moq: '200 kg', desc: 'High-quality Nashik Red Onions. Pungent flavor, dry outer skin.' },
-            { id: 4, name: 'Alphanso Mango', price: 120, unit: 'doz', qty: '500 Dz', type: 'fruits', farmer: 'Ratna Farms', phone: '+919876543210', loc: 'Ratnagiri, MH', rating: 5.0, img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&q=60&w=600', variety: 'Hapus', harvest: '2 Days ago', moq: '50 Doz', desc: 'Premium GI-tagged Ratnagiri Alphanso. Naturally ripened.' },
-            { id: 5, name: 'Green Chilli', price: 45, unit: 'kg', qty: '200kg', type: 'spices', farmer: 'Vijay D', phone: '+919876543210', loc: 'Satara, MH', rating: 4.6, img: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&q=60&w=600', variety: 'G4 Hot', harvest: 'Today', moq: '50 kg', desc: 'Fresh, spicy green chillies. Dark green color and high pungency.' },
-            { id: 6, name: 'Potatoes', price: 20, unit: 'kg', qty: '1.5 Tons', type: 'vegetables', farmer: 'Kisan Group', phone: '+919876543210', loc: 'Indore, MP', rating: 4.7, img: 'https://images.unsplash.com/photo-1518977676605-691aa1be8c7a?auto=format&fit=crop&q=60&w=600', variety: 'Jyoti', harvest: 'Last Week', moq: '500 kg', desc: 'Medium to large sized Jyoti potatoes. Firm texture, suitable for chips.' },
-        ];
+        let products = []; // Will be fetched from API
 
         let isLoggedIn = true;
         let currentProduct = null;
@@ -575,11 +568,55 @@
         const totalSlides = 3;
         let slideInterval;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderProducts(products);
-            updateLoginState();
+        // Base URL Logic (Environment Aware)
+        const getBaseUrl = () => {
+            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:5000/api'
+                : 'https://farmbox.onrender.com/api';
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchProducts();
+            checkAuth(); // Replaces updateLoginState and handles redirects
             startCarousel();
         });
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch(`${getBaseUrl()}/produce`);
+                if (!response.ok) throw new Error('Failed to fetch produce');
+
+                const data = await response.json();
+
+                // Map MongoDB data to UI format
+                products = data.map(item => ({
+                    id: item._id, // Keep raw ID for onclick
+                    name: item.title,
+                    price: item.price,
+                    unit: item.unit || 'kg',
+                    qty: item.quantity,
+                    type: 'vegetables', // Default Category for now
+                    farmer: item.sellerName || 'Verified Farmer',
+                    phone: '+919876543210',
+                    loc: item.location,
+                    rating: 4.5,
+                    img: item.image || 'https://placehold.co/600x400?text=Fresh+Produce',
+                    variety: 'Standard',
+                    harvest: 'Recently',
+                    moq: '100 kg',
+                    desc: item.description || 'Fresh farm produce linked directly from the source.'
+                }));
+
+                renderProducts(products);
+            } catch (error) {
+                console.error("Error loading products:", error);
+                document.getElementById('product-grid').innerHTML =
+                    `<div class="col-span-full text-center py-10 text-slate-400">
+                        <i class="fa-solid fa-cloud-rain text-4xl mb-3"></i>
+                        <p>Unable to load market data currently.</p>
+                     </div>`;
+            }
+        }
 
         function startCarousel() {
             const track = document.getElementById('carousel-track');
@@ -609,40 +646,49 @@
         }
 
         // --- Auth Logic ---
-        function updateLoginState() {
+        async function checkAuth() {
+            const token = localStorage.getItem('fida_token');
             const loginBtn = document.getElementById('header-login-btn');
             const avatar = document.getElementById('header-user-avatar');
-            const loggedInView = document.getElementById('profile-logged-in');
-            const loggedOutView = document.getElementById('profile-logged-out');
+            // Assuming logged in view elements exist
 
-            if (isLoggedIn) {
-                loginBtn.classList.add('hidden');
-                avatar.classList.remove('hidden');
-                if (loggedInView) loggedInView.classList.remove('hidden');
-                if (loggedOutView) loggedOutView.classList.add('hidden');
-            } else {
-                loginBtn.classList.remove('hidden');
-                avatar.classList.add('hidden');
-                if (loggedInView) loggedInView.classList.add('hidden');
-                if (loggedOutView) loggedOutView.classList.remove('hidden');
+            if (!token) {
+                // Not logged in? Redirect to login if this is a protected flow, or just show login btn
+                // Per previous plan, strict redirect:
+                window.location.href = 'buyer_login.html';
+                return;
             }
-        }
 
-        function handleLoginSubmit() {
-            const phone = document.getElementById('login-phone').value;
-            if (phone.length < 10) { alert("Please enter valid phone number"); return; }
-            closeLoginModal();
-            setTimeout(() => { isLoggedIn = true; updateLoginState(); showToast("Welcome back! 🌿"); switchTab('profile'); }, 500);
+            // Verify with backend (optional but safer)
+            try {
+                const res = await fetch(`${getBaseUrl()}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const user = await res.json();
+                    // Optional: Strictly block 'farmer' role here too if needed
+                    isLoggedIn = true;
+                    if (loginBtn) loginBtn.classList.add('hidden');
+                    if (avatar) avatar.classList.remove('hidden');
+                } else {
+                    throw new Error("Session Invalid");
+                }
+            } catch (e) {
+                console.warn("Auth check failed:", e);
+                localStorage.removeItem('fida_token');
+                window.location.href = 'buyer_login.html';
+            }
         }
 
         function handleLogout() {
             if (confirm("Are you sure you want to log out?")) {
-                isLoggedIn = false;
-                updateLoginState();
-                showToast("Logged out successfully");
-                switchTab('market');
+                localStorage.removeItem('fida_token');
+                window.location.href = 'buyer_login.html';
             }
         }
+
+        // Removed: handleLoginSubmit, openLoginModal (Use buyer_login.html instead)
 
         function openLoginModal() {
             const modal = document.getElementById('loginModal');
@@ -690,7 +736,8 @@
 
         // --- Product Page Logic ---
         function openProductPage(id) {
-            currentProduct = products.find(x => x.id === id);
+            // Ensure ID comparison works for both numbers and strings
+            currentProduct = products.find(p => p.id == id);
             if (!currentProduct) return;
 
             document.getElementById('p-img').src = currentProduct.img;
