@@ -103,7 +103,31 @@ npm start
 
 
 
+
 ---
+
+## 📸 Visual Tour
+
+### User Experience
+| Buyer Profile | Secure Login |
+|:---:|:---:|
+| ![Buyer Profile](assets/screenshots/buyer_profile.png)<br>_Personalized dashboard for tracking orders._ | ![Buyer Login](assets/screenshots/buyer_login.png)<br>_Secure Google OAuth authentication._ |
+
+| Farmer Portal | Market Insights |
+|:---:|:---:|
+| ![Farmer Login](assets/screenshots/farmer_login.png)<br>_Dedicated portal for farmers._ | ![Market Trends](assets/screenshots/market_trends.png)<br>_Real-time price trends and AI forecasts._ |
+
+### Dashboard & Features
+![Buyer Dashboard](assets/screenshots/buyer_dashboard_full.png)
+*Comprehensive buyer dashboard featuring verified farmers, bulk discounts, and fresh listings.*
+
+| Features | |
+|:---:|:---:|
+| ![Language Selection](assets/screenshots/language_selection.png)<br>_Multilingual support._ | ![Category Filters](assets/screenshots/category_filters.png)<br>_Quick category filtering._ |
+| ![Verified Farmers](assets/screenshots/verified_farmers_banner.png)<br>_Trusted sources guaranteed._ | ![Bulk Orders](assets/screenshots/bulk_orders_banner.png)<br>_Discounts on bulk purchases._ |
+
+---
+
 
 ## 🔮 Future Roadmap (Research Phase)
 ### 4. 🧠 AI & Machine Learning
