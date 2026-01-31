@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <title>SoftYield | Sign In</title>
 
     <!-- Preconnect for faster loading -->
@@ -121,7 +122,9 @@
             showToast("Authenticating...");
             try {
                 // Simplified auth logic
-                const res = await fetch('https://farmbox.onrender.com/api/auth/google', {
+                // Auto-detect environment
+                const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://farmbox.onrender.com/api';
+                const res = await fetch(`${baseUrl}/auth/google`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: response.credential })
