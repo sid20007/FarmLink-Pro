@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgriConnect | Sign In</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -33,18 +36,24 @@
             align-items: center;
             justify-content: center;
         }
+
         .login-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
         }
-        #toast { 
+
+        #toast {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: translateX(-50%) translateY(100px); 
+            transform: translateX(-50%) translateY(100px);
             opacity: 0;
         }
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -52,17 +61,27 @@
 
     <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500/20 via-brand-500 to-brand-500/20"></div>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 z-50 flex items-center gap-3 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-xl min-w-[280px]">
+    <div id="toast"
+        class="fixed bottom-10 left-1/2 z-50 flex items-center gap-3 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-xl min-w-[280px]">
         <div id="toast-icon" class="text-brand-500 text-lg">●</div>
         <p class="text-sm font-medium text-slate-700" id="toast-msg"></p>
     </div>
 
     <main class="w-full max-w-[400px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
         <div class="login-card rounded-[2rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.04)] text-center">
-            
+
             <div class="mb-8 inline-block">
-                <div class="w-14 h-14 bg-brand-500 rounded-2xl flex items-center justify-center text-white rotate-3 shadow-lg shadow-brand-500/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m11 20 2-2 5-5"/><path d="M16 11V7a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5"/><path d="M11 20H7a2 2 0 0 1-2-2V7"/><path d="M7 12h4"/><path d="M15 20h2a2 2 0 0 0 2-2v-2"/><path d="M19 13a2 2 0 0 0-2-2h-2"/></svg>
+                <div
+                    class="w-14 h-14 bg-brand-500 rounded-2xl flex items-center justify-center text-white rotate-3 shadow-lg shadow-brand-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m11 20 2-2 5-5" />
+                        <path d="M16 11V7a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5" />
+                        <path d="M11 20H7a2 2 0 0 1-2-2V7" />
+                        <path d="M7 12h4" />
+                        <path d="M15 20h2a2 2 0 0 0 2-2v-2" />
+                        <path d="M19 13a2 2 0 0 0-2-2h-2" />
+                    </svg>
                 </div>
             </div>
 
@@ -71,21 +90,13 @@
 
             <div class="flex justify-center">
                 <div id="g_id_onload"
-                    data-client_id="611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com"
-                    data-context="signin"
-                    data-ux_mode="popup"
-                    data-callback="handleCredentialResponse"
+                    data-client_id="267198204860-f20gaunl73o5ob3tog36ptkpplkig2m5.apps.googleusercontent.com"
+                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
                     data-auto_prompt="false">
                 </div>
 
-                <div class="g_id_signin"
-                    data-type="standard"
-                    data-shape="pill"
-                    data-theme="outline"
-                    data-text="continue_with"
-                    data-size="large"
-                    data-logo_alignment="left"
-                    data-width="280">
+                <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
+                    data-text="continue_with" data-size="large" data-logo_alignment="left" data-width="280">
                 </div>
             </div>
 
@@ -100,14 +111,14 @@
             showToast("Authenticating...");
             try {
                 // Simplified auth logic
-                const res = await fetch('http://localhost:3000/api/auth/google', {
+                const res = await fetch('http://localhost:5000/api/auth/google', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: response.credential })
                 });
                 const result = await res.json();
 
-                if(result.token) {
+                if (result.token) {
                     localStorage.setItem('fida_token', result.token);
                     showToast("Success! Entering dashboard...");
                     setTimeout(() => window.location.href = 'index.html', 1200);
@@ -127,4 +138,5 @@
         }
     </script>
 </body>
+
 </html>

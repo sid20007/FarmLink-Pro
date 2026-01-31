@@ -3,7 +3,11 @@
    ========================================= */
 const SoftYield = {
     // URL Configuration
+<<<<<<< Updated upstream
     BASE_URL: 'https://farmbox.onrender.com/api',
+=======
+    BASE_URL: 'http://localhost:5000/api',
+>>>>>>> Stashed changes
 
 
     // Helper: Get Auth Headers
@@ -142,7 +146,7 @@ const SoftYield = {
             const res = await fetch(`${SoftYield.BASE_URL}/profile`, {
                 headers: SoftYield.getHeaders()
             });
-            if(!res.ok) return null;
+            if (!res.ok) return null;
             return await res.json();
         },
 

@@ -1,6 +1,6 @@
 const { app, connectToMongoDB } = require('./app');
 
-const port = 3000; // Hardcoded to ensure Google OAuth works
+const port = 5000; // Hardcoded to ensure Google OAuth works
 
 // Start Server only after DB connection
 connectToMongoDB().then(success => {
