@@ -1,6 +1,6 @@
 const { app, connectToMongoDB } = require('./app');
 
-const port = 5000; // Hardcoded to ensure Google OAuth works
+const port = process.env.PORT || 5000; // Use Render's PORT or fallback to 5000
 
 // Start Server only after DB connection
 connectToMongoDB().then(success => {
