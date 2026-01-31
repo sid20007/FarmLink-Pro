@@ -101,6 +101,11 @@ npm start
   - 4x Preconnect optimizations
   - Lazy-loaded images (60% bandwidth reduction)
 
+### 4. 🧠 AI & Machine Learning
+- **Price Prediction Engine:** Included in `ml_model/`.
+- **Dataset:** Historical tomato market data (`tomato (3).csv`).
+- **Algorithm:** Uses regression techniques in `ML_model.ipynb` to forecast future crop prices based on historical trends, aiding farmers in harvest timing decisions.
+
 ---
 
 ## 🎯 Final Question
