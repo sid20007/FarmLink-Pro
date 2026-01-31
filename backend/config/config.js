@@ -1,6 +1,4 @@
 require('dotenv').config();
-console.log("DEBUG: CWD:", process.cwd());
-console.log("DEBUG: Loading Config. CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 
 
 
