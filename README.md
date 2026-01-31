@@ -101,10 +101,15 @@ npm start
   - 4x Preconnect optimizations
   - Lazy-loaded images (60% bandwidth reduction)
 
+  - Lazy-loaded images (60% bandwidth reduction)
+
+---
+
+## 🔮 Future Roadmap (Research Phase)
 ### 4. 🧠 AI & Machine Learning
-- **Price Prediction Engine:** Included in `ml_model/`.
-- **Dataset:** Historical tomato market data (`tomato (3).csv`).
-- **Algorithm:** Uses regression techniques in `ML_model.ipynb` to forecast future crop prices based on historical trends, aiding farmers in harvest timing decisions.
+- **Price Prediction Model:** A trained regression model (`ml_model/ML_model.ipynb`) exists in the repository.
+- **Goal:** To integrate this model into the backend for real-time price forecasting based on the dataset (`tomato (3).csv`).
+- **Current Status:** Model trained and ready for future deployment.
 
 ---
 
