@@ -33,7 +33,7 @@ We don't buy the crop — we give the farmer the **data** and the **connection**
 | Database | **MongoDB (Native Driver)** + **In-Memory Fallback** |
 | Auth | Google OAuth 2.0 + JWT Sessions |
 | Storage | Cloudinary (Image Hosting) |
-| Hosting | Render(no.live right now) |
+| Hosting | Render(right now) |
 
 ---
 
