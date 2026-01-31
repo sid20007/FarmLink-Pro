@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -65,41 +66,50 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
         body {
             background-color: #fbfaf8;
             /* Warm Earth Tone */
             -webkit-tap-highlight-color: transparent;
         }
+
         .glass {
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         }
+
         .glass-dark {
             background: rgba(20, 83, 45, 0.9);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .nav-item {
             position: relative;
             overflow: hidden;
         }
+
         .nav-active {
             background-color: #15803d;
             color: white;
             box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
         }
+
         /* Smooth Fade In */
         .view-section {
             display: none;
@@ -107,15 +117,18 @@
             transform: translateY(10px);
             animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
+
         .view-section.active {
             display: block;
         }
+
         @keyframes fadeIn {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         /* Toast Animation */
         #toast {
             visibility: hidden;
@@ -123,11 +136,13 @@
             transform: translateX(-50%) translateY(20px);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         #toast.show {
             visibility: visible;
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
         .custom-pattern {
             background-image: radial-gradient(#166534 0.5px, transparent 0.5px), radial-gradient(#166534 0.5px, #fbfaf8 0.5px);
             background-size: 20px 20px;
@@ -136,6 +151,7 @@
         }
     </style>
 </head>
+
 <body class="text-slate-800 antialiased pb-28 md:pb-12 relative">
     <!-- Background Texture -->
     <div class="fixed inset-0 custom-pattern pointer-events-none z-[-1]"></div>
@@ -206,18 +222,6 @@
                             English <i
                                 class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
                                 id="check-en"></i>
-                        </button>
-                        <button onclick="changeLanguage('hi')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
-                            हिंदी (Hindi) <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-hi"></i>
-                        </button>
-                        <button onclick="changeLanguage('mr')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
-                            मराठी (Marathi) <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-mr"></i>
                         </button>
                         <button onclick="changeLanguage('kn')"
                             class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors flex justify-between items-center group">
@@ -1055,138 +1059,6 @@
                 completed: "Completed",
                 cancelled: "Cancelled"
             },
-            hi: {
-                app_subtitle: "किसान सुइट",
-                nav_dashboard: "डैशबोर्ड",
-                nav_market: "बाज़ार",
-                nav_orders: "ऑर्डर्स",
-                nav_profile: "प्रोफ़ाइल",
-                mandi_live: "मंडी लाइव",
-                good_afternoon: "शुभ दोपहर",
-                market_insight_text: "आज <span class='font-bold text-white'>हाइब्रिड टमाटर</span> का बाज़ार 12% ऊपर है। बेचने का सही समय।",
-                sunny: "धूप",
-                create_listing: "नई लिस्टिंग",
-                view_orders_btn: "ऑर्डर देखें",
-                total_revenue: "कुल कमाई",
-                live_rates: "ताज़ा भाव",
-                see_orders: "ऑर्डर देखें",
-                direct_requests: "सीधे खरीदार अनुरोध",
-                verified_msg: "आपकी फसल के लिए सत्यापित खरीदार",
-                accept: "स्वीकार करें",
-                decline: "अस्वीकार करें",
-                negotiations: "बातचीत",
-                waiting: "प्रतीक्षा",
-                view_history: "इतिहास देखें",
-                all_stock: "सभी स्टॉक",
-                vegetables: "सब्जियां",
-                grains: "अनाज",
-                fruits: "फल",
-                no_listings: "कोई लिस्टिंग नहीं मिली",
-                order_mgmt: "ऑर्डर प्रबंधन",
-                track_sales: "अपनी बिक्री को कुशलतापूर्वक ट्रैक करें।",
-                export_report: "रिपोर्ट डाउनलोड",
-                total_orders: "कुल ऑर्डर",
-                lifetime_sales: "जीवनकाल बिक्री",
-                pending: "लंबित",
-                requires_action: "कार्रवाई आवश्यक",
-                tab_all: "सभी",
-                tab_pending: "लंबित",
-                tab_completed: "पूर्ण",
-                th_id: "ऑर्डर आईडी",
-                th_product: "उत्पाद और खरीदार",
-                th_date: "दिनांक",
-                th_amount: "राशि",
-                th_status: "स्थिति",
-                th_actions: "कार्रवाई",
-                edit_cover: "कवर बदलें",
-                edit_profile: "प्रोफ़ाइल बदलें",
-                active_listings: "सक्रिय लिस्टिंग",
-                buyer_rating: "खरीदार रेटिंग",
-                membership: "सदस्यता",
-                personal_info: "व्यक्तिगत जानकारी",
-                recent_sales: "हाल के ऑर्डर (बिक्री)",
-                view_all_orders: "सभी ऑर्डर देखें",
-                my_inventory: "मेरे उत्पाद / इन्वेंटरी",
-                new_listing: "नई लिस्टिंग",
-                publish: "लिस्टिंग प्रकाशित करें",
-                avg_quintal: "औसत / क्विंटल",
-                verified: "सत्यापित",
-                my_stock: "मेरा स्टॉक",
-                view_details: "विवरण देखें",
-                no_orders: "कोई ऑर्डर नहीं मिला।",
-                counter_offer: "जवाबी पेशकश",
-                proposal_sent: "प्रस्ताव भेजा गया।",
-                search_placeholder: "ऑर्डर आईडी या खरीदार खोजें...",
-                search_market_placeholder: "फसल या खरीदार खोजें...",
-                completed: "पूर्ण",
-                cancelled: "रद्द"
-            },
-            mr: {
-                app_subtitle: "शेतकरी सुइट",
-                nav_dashboard: "डॅशबोर्ड",
-                nav_market: "बाजार",
-                nav_orders: "ऑर्डर्स",
-                nav_profile: "प्रोफाइल",
-                mandi_live: "मंडी लाइव",
-                good_afternoon: "शुभ दुपार",
-                market_insight_text: "आज <span class='font-bold text-white'>हायब्रिड टोमॅटो</span> मार्केट 12% वर आहे. विक्रीची योग्य वेळ.",
-                sunny: "सूर्यप्रकाश",
-                create_listing: "नवीन लिस्टिंग",
-                view_orders_btn: "ऑर्डर पहा",
-                total_revenue: "एकूण महसूल",
-                live_rates: "बाजार भाव",
-                see_orders: "ऑर्डर पहा",
-                direct_requests: "थेट खरेदीदार विनंत्या",
-                verified_msg: "आपल्या पिकासाठी सत्यापित खरेदीदार",
-                accept: "स्वीकारा",
-                decline: "नकारा",
-                negotiations: "वाटाघाटी",
-                waiting: "प्रतीक्षा",
-                view_history: "इतिहास पहा",
-                all_stock: "सर्व साठा",
-                vegetables: "भाज्या",
-                grains: "धान्य",
-                fruits: "फळे",
-                no_listings: "कोणतीही लिस्टिंग सापडली नाही",
-                order_mgmt: "ऑर्डर व्यवस्थापन",
-                track_sales: "तुमच्या विक्रीचा मागोवा घ्या.",
-                export_report: "अहवाल डाउनलोड",
-                total_orders: "एकूण ऑर्डर",
-                lifetime_sales: "एकूण विक्री",
-                pending: "प्रलंबित",
-                requires_action: "कृती आवश्यक",
-                tab_all: "सर्व",
-                tab_pending: "प्रलंबित",
-                tab_completed: "पूर्ण",
-                th_id: "ऑर्डर आयडी",
-                th_product: "उत्पादन आणि खरेदीदार",
-                th_date: "तारीख",
-                th_amount: "रक्कम",
-                th_status: "स्थिती",
-                th_actions: "कृती",
-                edit_cover: "कव्हर बदला",
-                edit_profile: "प्रोफाइल संपादित करा",
-                active_listings: "सक्रिय लिस्टिंग",
-                buyer_rating: "खरेदीदार रेटिंग",
-                membership: "सदस्यत्व",
-                personal_info: "वैयक्तिक माहिती",
-                recent_sales: "अलीकडील ऑर्डर (विक्री)",
-                view_all_orders: "सर्व ऑर्डर पहा",
-                my_inventory: "माझे उत्पादन / साठा",
-                new_listing: "नवीन लिस्टिंग",
-                publish: "लिस्टिंग प्रकाशित करा",
-                avg_quintal: "सरासरी / क्विंटल",
-                verified: "सत्यापित",
-                my_stock: "माझा साठा",
-                view_details: "तपशील पहा",
-                no_orders: "कोणतेही ऑर्डर सापडले नाहीत.",
-                counter_offer: "प्रति ऑफर",
-                proposal_sent: "प्रस्ताव पाठवला.",
-                search_placeholder: "ऑर्डर आयडी किंवा खरेदीदार शोधा...",
-                search_market_placeholder: "पीक किंवा खरेदीदार शोधा...",
-                completed: "पूर्ण",
-                cancelled: "रद्द"
-            },
             kn: {
                 app_subtitle: "ರೈತ ಮಿತ್ರ",
                 nav_dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
@@ -1744,4 +1616,5 @@
         }
     </script>
 </body>
+
 </html>
