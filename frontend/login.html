@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | AgriConnect</title>
+    <title>AgriConnect | Sign In</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['"Outfit"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { 500: '#10b981', 600: '#059669' }
                     }
                 }
             }
@@ -29,231 +26,105 @@
     </script>
 
     <style>
-        /* Glassmorphism Card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        body {
+            background: radial-gradient(circle at top right, #f0fdf4, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        /* Input Styles */
-        .input-group input {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            /* slight border */
-            transition: all 0.3s ease;
+        .login-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
         }
-
-        .input-group input:focus {
-            background: rgba(255, 255, 255, 1);
-            border-color: #10b981;
-            /* emerald-500 */
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-            outline: none;
+        #toast { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-50%) translateY(100px); 
+            opacity: 0;
         }
-
-        /* Toggle Button */
-        .toggle-btn {
-            background: transparent;
-            color: #64748b;
-        }
-
-        .toggle-btn.active {
-            background: #ffffff;
-            color: #0f172a;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Toast Notification */
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            margin-left: -125px;
-            background-color: #0f172a;
-            color: #fff;
-            text-align: center;
-            border-radius: 99px;
-            padding: 16px 24px;
-            position: fixed;
-            z-index: 100;
-            left: 50%;
-            top: 30px;
-            /* Top */
-            bottom: auto;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-            font-weight: 600;
-        }
-
-        #toast.show {
-            visibility: visible;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        @keyframes fadein {
-            from {
-                top: 0;
-                opacity: 0;
-            }
-
-            to {
-                top: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                top: 30px;
-                opacity: 1;
-            }
-
-            to {
-                top: 0;
-                opacity: 0;
-            }
-        }
-
-        .animate-up {
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center bg-slate-100 relative overflow-hidden font-sans">
+<body class="p-6">
 
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1625246333195-5848c428ad69?q=80&w=2560&auto=format&fit=crop"
-            class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/60 via-slate-900/30 to-transparent"></div>
+    <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500/20 via-brand-500 to-brand-500/20"></div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 z-50 flex items-center gap-3 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-xl min-w-[280px]">
+        <div id="toast-icon" class="text-brand-500 text-lg">●</div>
+        <p class="text-sm font-medium text-slate-700" id="toast-msg"></p>
     </div>
 
-    <div id="toast"></div>
-
-    <div class="relative z-10 w-full max-w-[480px] p-6 animate-up">
-
-        <div class="glass-card rounded-[2.5rem] p-8 md:p-12">
-
-            <div class="text-center mb-10">
-                <div
-                    class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 text-white mb-6 shadow-xl shadow-emerald-500/30">
-                    <i class="fa-solid fa-leaf text-3xl"></i>
+    <main class="w-full max-w-[400px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div class="login-card rounded-[2rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.04)] text-center">
+            
+            <div class="mb-8 inline-block">
+                <div class="w-14 h-14 bg-brand-500 rounded-2xl flex items-center justify-center text-white rotate-3 shadow-lg shadow-brand-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m11 20 2-2 5-5"/><path d="M16 11V7a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5"/><path d="M11 20H7a2 2 0 0 1-2-2V7"/><path d="M7 12h4"/><path d="M15 20h2a2 2 0 0 0 2-2v-2"/><path d="M19 13a2 2 0 0 0-2-2h-2"/></svg>
                 </div>
-                <h1 class="text-3xl font-display font-bold text-slate-800 mb-2">AgriConnect</h1>
-                <p class="text-slate-600 font-medium" id="header-subtitle">Welcome back, farmer</p>
             </div>
 
-            <div class="mb-8">
+            <h1 class="text-2xl font-display font-bold text-slate-900 tracking-tight">AgriConnect</h1>
+            <p class="text-slate-400 text-sm mt-1 mb-10 font-medium">Elevating modern agriculture</p>
+
+            <div class="flex justify-center">
                 <div id="g_id_onload"
-                    data-client_id="267198204860-f20gaunl73o5ob3tog36ptkpplkig2m5.apps.googleusercontent.com"
-                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                    data-client_id="611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="handleCredentialResponse"
                     data-auto_prompt="false">
                 </div>
 
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-                    data-text="signin_with" data-size="large" data-logo_alignment="left" data-width="100%">
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="pill"
+                    data-theme="outline"
+                    data-text="continue_with"
+                    data-size="large"
+                    data-logo_alignment="left"
+                    data-width="280">
                 </div>
             </div>
 
-            <div class="hidden opacity-50 pointer-events-none relative">
-                <div class="absolute inset-0 flex items-center justify-center z-10">
-                    <span
-                        class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200">Deprecated:
-                        Use Google Sign-In</span>
-                </div>
-                <div class="flex p-1.5 bg-slate-200/50 rounded-xl mb-8">
-                    <button id="toggle-login" onclick="setMode('login')"
-                        class="toggle-btn active flex-1 py-3.5 rounded-lg text-sm font-bold transition-all">
-                        Log In
-                    </button>
-                    <button id="toggle-register" onclick="setMode('register')"
-                        class="toggle-btn flex-1 py-3.5 rounded-lg text-sm font-bold transition-all">
-                        Sign Up
-                    </button>
-                </div>
-
-                <form id="authForm" onsubmit="handleSubmit(event)" class="space-y-4">
-                    <div class="pt-2">
-                        <button type="submit" id="submit-btn"
-                            class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-xl shadow-slate-900/20 transition-all active:scale-[0.98] text-base">
-                            Log In
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-
-            <p class="text-center text-white/80 text-xs mt-8 font-medium tracking-wide">
-                &copy; 2026 AgriConnect Inc(demo).
-            </p>
-
+            <footer class="mt-12">
+                <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-[0.2em]">Secure Cloud Gateway</p>
+            </footer>
         </div>
+    </main>
 
-        <script>
-            // State
-            let isLogin = true;
+    <script>
+        async function handleCredentialResponse(response) {
+            showToast("Authenticating...");
+            try {
+                // Simplified auth logic
+                const res = await fetch('http://localhost:3000/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: response.credential })
+                });
+                const result = await res.json();
 
-            // Updated API Base to match the api.js file provided
-            const apiBase = 'http://localhost:5000/api/auth';
-
-            // Google Auth Callback
-            async function handleCredentialResponse(response) {
-                console.log("Encoded JWT ID token: " + response.credential);
-
-                try {
-                    // Send to Backend (Using absolute URL from api.js)
-                    const res = await fetch(`${apiBase}/google`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ token: response.credential })
-                    });
-
-                    const data = await res.json();
-
-                    if (!res.ok) throw new Error(data.error || 'Authentication failed');
-
-                    // Success
-                    console.log('Login Success:', data);
-
-                    // Save Token
-                    localStorage.setItem('token', data.token);
-
-                    // Save User State - data.user contains { _id, name, picture, joinedEvents }
-                    localStorage.setItem('user', JSON.stringify(data.user));
-
-                    showToast(`Welcome ${data.user.name}! Redirecting...`);
-
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-
-                } catch (err) {
-                    console.error(err);
-                    showToast(err.message || 'Login failed', true);
+                if(result.token) {
+                    localStorage.setItem('fida_token', result.token);
+                    showToast("Success! Entering dashboard...");
+                    setTimeout(() => window.location.href = 'index.html', 1200);
+                } else {
+                    throw new Error("Access Denied");
                 }
+            } catch (err) {
+                showToast(err.message || "Connection Error");
             }
+        }
 
-            function showToast(msg, isError = false) {
-                const toast = document.getElementById("toast");
-                toast.innerText = msg;
-                toast.style.backgroundColor = isError ? '#ef4444' : '#0f172a';
-                toast.className = "show";
-                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-            }
-        </script>
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            document.getElementById("toast-msg").innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
 </body>
-
 </html>

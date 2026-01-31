@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AgriConnect | Professional Farmer Suite</title>
+    <title>SoftYield | Professional Farmer Suite</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,7 +72,7 @@
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-600 to-brand-800 text-white mb-8 shadow-glow">
                 <i class="fa-solid fa-wheat-awn text-4xl"></i>
             </div>
-            <h1 class="text-4xl font-display font-bold text-slate-900 mb-2">AgriConnect</h1>
+            <h1 class="text-4xl font-display font-bold text-slate-900 mb-2">SoftYield</h1>
             <p class="text-slate-600 mb-10 font-medium">Professional Farmer Suite</p>
             
             <div id="googleBtnContainer" class="flex justify-center min-h-[50px]"></div>
@@ -98,7 +98,7 @@
                     <i class="fa-solid fa-wheat-awn text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">AgriConnect</h1>
+                    <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">SoftYield</h1>
                     <span class="text-[10px] font-bold text-brand-700 uppercase tracking-[0.2em]" data-translate="app_subtitle">Farmer Suite</span>
                 </div>
             </div>
@@ -115,6 +115,9 @@
                 </button>
                 <button onclick="switchTab('profile')" id="nav-profile" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
                     <i class="fa-solid fa-user-circle mr-2 opacity-70"></i><span data-translate="nav_profile">Farm Profile</span>
+                    <button onclick="logout()" class="hidden md:flex w-10 h-10 rounded-xl bg-white border border-earth-200 text-slate-400 hover:text-red-500 hover:border-red-200 items-center justify-center transition-colors shadow-sm mr-2" title="Log Out">
+    <i class="fa-solid fa-power-off"></i>
+</button>
                 </button>
             </nav>
 
@@ -233,15 +236,15 @@
                         <div class="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-white p-1.5 shadow-xl relative group z-10">
                             <img id="profile-img-lg" src="" class="w-full h-full rounded-[1.5rem] bg-slate-50 object-cover" alt="Profile">
                         </div>
-                        <div class="flex-1 text-center md:text-left mb-2">
-                            <h2 class="text-2xl md:text-3xl font-display font-bold text-slate-900 user-name-display mb-1">...</h2>
-                            <p class="text-xs md:text-sm text-slate-500 font-bold user-location-display flex items-center justify-center md:justify-start gap-2">
-                                <i class="fa-solid fa-location-dot text-brand-500"></i> <span id="display-city">Location Unset</span>
-                            </p>
+                        <div class="flex gap-3">
+                            <button onclick="logout()" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-200 shadow-sm">
+                                <i class="fa-solid fa-power-off md:mr-2"></i> <span class="hidden md:inline">Log Out</span>
+                            </button>
+                            
+                            <button onclick="toggleEditProfile()" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-800 shadow-lg shadow-slate-900/20">
+                                <span data-translate="edit_profile">Edit Details</span>
+                            </button>
                         </div>
-                        <button onclick="toggleEditProfile()" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-800 shadow-lg shadow-slate-900/20">
-                            <span data-translate="edit_profile">Edit Details</span>
-                        </button>
                     </div>
 
                     <div id="edit-profile-form" class="hidden mt-6 p-6 bg-earth-50 rounded-2xl border border-earth-100">
@@ -362,36 +365,22 @@
 
         // --- AUTH & INIT ---
         window.addEventListener('load', () => {
-            if(window.google) {
-                google.accounts.id.initialize({
-                    client_id: "611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com", 
-                    callback: handleGoogleResponse
-                });
-                google.accounts.id.renderButton(document.getElementById("googleBtnContainer"), { theme: "filled_blue", size: "large", shape: "pill" });
-            }
+            // We do NOT need google.accounts.id.initialize here anymore
             checkAuth();
         });
 
-        async function handleGoogleResponse(response) {
-            try {
-                const data = await SoftYield.auth.googleLogin(response.credential);
-                if(data.success) {
-                    localStorage.setItem('fida_token', data.token);
-                    checkAuth();
-                } else showToast('Login Failed', true);
-            } catch(e) { showToast('Auth Error', true); }
-        }
-
         async function checkAuth() {
             const token = localStorage.getItem('fida_token');
+            
+            // REDIRECT LOGIC
             if (!token) {
-                document.getElementById('auth-overlay').classList.remove('hidden');
+                window.location.href = 'login.html';
                 return;
             }
+
             try {
                 const user = await SoftYield.auth.getMe();
                 currentUser = user;
-                document.getElementById('auth-overlay').classList.add('hidden');
                 
                 // Init UI with User Data
                 document.querySelectorAll('.user-name-display').forEach(el => el.innerText = user.name.split(' ')[0]);
@@ -403,10 +392,15 @@
                 // Fetch Data
                 loadProfileData();
                 fetchMarketData();
-            } catch (e) { logout(); }
+            } catch (e) { 
+                // If token is invalid/expired, logout and redirect
+                logout(); 
+            }
         }
-
-        function logout() { localStorage.removeItem('fida_token'); location.reload(); }
+        function logout() { 
+            localStorage.removeItem('fida_token'); 
+            window.location.href = 'login.html'; 
+        }
 
         // --- DATA LOGIC ---
         async function fetchMarketData() {
