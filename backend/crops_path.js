@@ -19,7 +19,7 @@ const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } 
 // Get all produce listings (The Feed)
 router.get('/', async (req, res) => {
     try {
-        const produceCollection = getProduce();
+        const produceCollection = getProduceCollection();
         // Sort by newest first
         const items = await produceCollection.find({}).sort({ createdAt: -1 }).toArray();
         res.status(200).json(items);
@@ -36,8 +36,8 @@ router.get('/', async (req, res) => {
 // Create a new Produce Listing
 router.post('/', authenticateJWT, upload.single('image'), async (req, res) => {
     try {
-        const produceCollection = getProduce();
-        
+        const produceCollection = getProduceCollection();
+        console.log("EEE")
         // New AgriFlow Fields:
         const { title, price, unit, quantity, location, description } = req.body;
 
@@ -85,7 +85,7 @@ router.post('/', authenticateJWT, upload.single('image'), async (req, res) => {
 // Buyer expresses interest (Replaces /join)
 router.post('/interest', authenticateJWT, async (req, res) => {
     try {
-        const produceCollection = getProduce();
+        const produceCollection = getProduceCollection();
         const userId = req.userId; 
         const { produceId } = req.body;
 
@@ -119,8 +119,8 @@ router.post('/interest', authenticateJWT, async (req, res) => {
 // Comments / Q&A on a listing
 router.post('/comment', authenticateJWT, async (req, res) => {
     try {
-        const usersCollection = getUsers();
-        const produceCollection = getProduce();
+        const usersCollection = getUsersCollection();
+        const produceCollection = getProduceCollection();
         const userId = req.userId; 
         const { produceId, text } = req.body;
 
@@ -154,7 +154,7 @@ router.post('/comment', authenticateJWT, async (req, res) => {
 // Delete a listing
 router.delete('/:id', authenticateJWT, async (req, res) => {
     try {
-        const produceCollection = getProduce();
+        const produceCollection = getProduceCollection();
         const produceId = req.params.id;
         const userId = req.userId;
 

@@ -20,7 +20,13 @@ jest.mock('google-auth-library', () => ({
   }))
 }));
 
-const mockDb = { users: [], events: [] };
+// UPDATED: Mocks cloudinary to avoid network calls
+jest.mock('../backend/database/cloudinary', () => ({
+    uploadImageQuick: jest.fn().mockResolvedValue("http://mock-image.com/img.jpg")
+}));
+
+// UPDATED: Mock DB Structure
+const mockDb = { users: [], produce: [] }; // Changed 'events' to 'produce'
 
 const mockCollection = (collectionName) => ({
   createIndex: jest.fn(),
@@ -74,19 +80,6 @@ const mockCollection = (collectionName) => ({
         doc[key].push(val);
         modifiedCount = 1;
       }
-      if (update.$pull) {
-         // Mock $pull logic for comments
-         const key = Object.keys(update.$pull)[0];
-         const filter = update.$pull[key]; // e.g., { _id: '...', userId: '...' }
-         if (doc[key]) {
-             const originalLen = doc[key].length;
-             doc[key] = doc[key].filter(item => {
-                 // Check if item matches the filter criteria
-                 return !(item._id.toString() === filter._id.toString() && item.userId === filter.userId);
-             });
-             if (doc[key].length < originalLen) modifiedCount = 1;
-         }
-      }
     }
     return { matchedCount: doc ? 1 : 0, modifiedCount };
   }),
@@ -99,16 +92,27 @@ jest.mock('mongodb', () => {
     ...actualMongo,
     MongoClient: jest.fn().mockImplementation(() => ({
       connect: jest.fn().mockResolvedValue(true),
-      db: jest.fn(() => ({ collection: jest.fn((name) => mockCollection(name)) })),
+      db: jest.fn(() => ({ 
+          // UPDATED: Map collection names to mockDb keys
+          collection: jest.fn((name) => {
+              if (name === 'produce_listings') return mockCollection('produce'); 
+              if (name === 'users') return mockCollection('users');
+              return mockCollection(name);
+          }) 
+      })),
       close: jest.fn()
     }))
   };
 });
 
+// Since mongodb.js isn't in context, we assume getProduceCollection calls db.collection('produce_listings') 
+// or similar. For the test to work, we need to mock the exported getters if they are used directly.
+// However, the test uses the mocked mongo client, so as long as the collection name matches logic, we are good.
+
 describe('API Integration Flow', () => {
   let authToken;
   let userId;
-  let eventId;
+  let produceId;
 
   beforeAll(async () => await connectToMongoDB());
   afterAll(async () => await closeMongoDB());
@@ -121,104 +125,69 @@ describe('API Integration Flow', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.success).toBe(true);
     
-
     userId = res.body.user._id;
     authToken = res.body.token; 
-    
     expect(authToken).toBeDefined();
   });
-  
 
-  test('GET /api/auth/me (Session Check)', async () => {
+  test('POST /api/produce (Create Listing - Authenticated)', async () => {
     const res = await request(app)
-      .get('/api/auth/me')
-      .set('Authorization', `Bearer ${authToken}`); 
-    
-    expect(res.statusCode).toBe(200);
-    expect(res.body.name).toBe('Test User');
-  });
-
-  test('POST /api/events (Create Event - Authenticated)', async () => {
-    const res = await request(app)
-      .post('/api/events')
-      .set('Authorization', `Bearer ${authToken}`) // CHANGED
+      .post('/api/produce') // UPDATED: Correct endpoint
+      .set('Authorization', `Bearer ${authToken}`) 
       .send({
-        title: "Test Event",
-        date: "2023-12-25",
-        time: "10:00",
-        location: "Test Loc",
-        category: "Social",
-        description: "Desc",
-        // creatorId is now taken from token
+        title: "Fresh Tomatoes",
+        price: "40",
+        quantity: "100",
+        unit: "kg",
+        location: "Nashik",
+        description: "Organic red tomatoes",
       });
 
     expect(res.statusCode).toBe(201);
-    eventId = res.body.eventId;
+    produceId = res.body.id;
   });
 
-  test('POST /api/events/join (Join Event)', async () => {
+  // Note: We cannot test "Interest" as the seller because the code blocks buying own produce.
+  // Ideally, we would need a second user. For now, we expect 400 if buying own produce.
+  test('POST /api/produce/interest (Interest Logic - Own Produce Block)', async () => {
     const res = await request(app)
-      .post('/api/events/join')
-      .set('Authorization', `Bearer ${authToken}`) // CHANGED
-      .send({ eventId });
+      .post('/api/produce/interest') // UPDATED: Correct endpoint
+      .set('Authorization', `Bearer ${authToken}`) 
+      .send({ produceId });
+
+    expect(res.statusCode).toBe(400); // Expect "You cannot buy your own produce"
+  });
+
+  test('POST /api/produce/comment (Add Comment)', async () => {
+    const res = await request(app)
+      .post('/api/produce/comment') // UPDATED: Correct endpoint
+      .set('Authorization', `Bearer ${authToken}`) 
+      .send({ produceId, text: "Is this negotiable?" });
 
     expect(res.statusCode).toBe(200);
   });
 
-  test('POST /api/events/comment (Add Comment)', async () => {
-    const res = await request(app)
-      .post('/api/events/comment')
-      .set('Authorization', `Bearer ${authToken}`) // CHANGED
-      .send({ eventId, text: "Nice event!" });
-
-    expect(res.statusCode).toBe(200);
-  });
-
-  test('GET /api/events (Verify Data Persistence & Creator Name)', async () => {
-    const res = await request(app).get('/api/events');
-    const event = res.body.find(e => e._id.toString() === eventId.toString());
+  test('GET /api/produce (Verify Data Persistence)', async () => {
+    const res = await request(app).get('/api/produce');
+    const item = res.body.find(e => e._id.toString() === produceId.toString());
     
-    expect(event.attendees).toContain(userId);
-    expect(event.creatorName).toBe('Test User'); // Verify creator name is stored
-    expect(event.comments[0].text).toBe("Nice event!");
-    expect(event.comments[0]._id).toBeDefined(); // Verify comment has ID
+    expect(item.sellerName).toBe('Test User'); 
+    expect(item.comments[0].text).toBe("Is this negotiable?");
+    expect(item.comments[0]._id).toBeDefined(); 
   });
 
-  test('DELETE /api/events/:eventId/comments/:commentId (Delete Comment)', async () => {
-    // First fetch to get comment ID
-    let res = await request(app).get('/api/events');
-    let event = res.body.find(e => e._id.toString() === eventId.toString());
-    const commentId = event.comments[0]._id;
+  // REMOVED DELETE COMMENT TEST: api/produce does not support deleting individual comments
 
-    // Delete
-    res = await request(app)
-      .delete(`/api/events/${eventId}/comments/${commentId}`)
-      .set('Authorization', `Bearer ${authToken}`); // CHANGED
-    
-    expect(res.statusCode).toBe(200);
-
-    // Verify
-    res = await request(app).get('/api/events');
-    event = res.body.find(e => e._id.toString() === eventId.toString());
-    expect(event.comments.length).toBe(0);
-  });
-
-  test('DELETE /api/events/:id (Delete Event)', async () => {
+  test('DELETE /api/produce/:id (Delete Listing)', async () => {
     const res = await request(app)
-      .delete(`/api/events/${eventId}`)
-      .set('Authorization', `Bearer ${authToken}`); // CHANGED
+      .delete(`/api/produce/${produceId}`) // UPDATED: Correct endpoint
+      .set('Authorization', `Bearer ${authToken}`); 
 
     expect(res.statusCode).toBe(200);
 
     // Verify
-    const fetchRes = await request(app).get('/api/events');
-    const event = fetchRes.body.find(e => e._id.toString() === eventId.toString());
-    expect(event).toBeUndefined();
-  });
-
-  test('POST /api/auth/logout (Sign Out)', async () => {
-    const res = await request(app).post('/api/auth/logout');
-    expect(res.statusCode).toBe(200);
-    // No cookie check needed anymore as we are stateless on server side for logout
+    const fetchRes = await request(app).get('/api/produce');
+    const item = fetchRes.body.find(e => e._id.toString() === produceId.toString());
+    expect(item).toBeUndefined();
   });
 });

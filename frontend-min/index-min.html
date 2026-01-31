@@ -1,0 +1,589 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoftYield | Agri-Connect</title>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script defer src="api.js"></script>
+
+    <style>
+        :root {
+            /* Theme: Deep Earth (Agri-Dark) */
+            --bg: #0f172a;       /* Deep Slate */
+            --surface: #1e293b;  /* Lighter Slate */
+            --text: #f1f5f9;     /* Off-white */
+            --text-muted: #94a3b8;
+            --accent: #84cc16;   /* Lime Green */
+            --accent-hover: #65a30d;
+            --border: #334155;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            padding-bottom: 80px; /* Space for dock */
+        }
+
+        /* --- Utilities --- */
+        .hidden { display: none !important; }
+        button { cursor: pointer; font-family: inherit; }
+        img { display: block; max-width: 100%; object-fit: cover; }
+
+        /* --- Layout --- */
+        header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(5px);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .brand { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: -0.05em; display: flex; align-items: center; gap: 8px;}
+        .user-badge { font-size: 0.9rem; color: var(--text-muted); }
+
+        main { padding: 20px; max-width: 600px; margin: 0 auto; }
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.2s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- Components --- */
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: transform 0.1s;
+        }
+        .card:active { transform: scale(0.99); }
+        .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: var(--text); }
+        
+        .crop-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            background: #000;
+        }
+
+        .meta { font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
+        .tag { background: rgba(132, 204, 22, 0.15); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+
+        /* Inputs */
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 6px;
+        }
+        input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 700;
+            width: 100%;
+            border-radius: 6px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .btn:hover { background: var(--accent-hover); }
+        .btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn.sm { width: auto; padding: 6px 12px; font-size: 0.8rem; }
+        .btn.danger { border-color: #ef4444; color: #ef4444; }
+
+        /* Search Bar */
+        .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        
+        /* Modals */
+        .modal {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            padding: 20px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 24px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 8px;
+        }
+
+        /* Navigation Dock */
+        .dock {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around;
+            padding: 12px 0;
+            z-index: 50;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+        .dock-btn {
+            background: none; border: none; color: var(--text-muted);
+            font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .dock-btn.active { color: var(--accent); }
+        
+        /* Floating Add Button in Dock */
+        .add-btn {
+            background: var(--accent); color: #000;
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold;
+            transform: translateY(-20px);
+            box-shadow: 0 4px 10px rgba(132, 204, 22, 0.3);
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed; top: 20px; right: 20px;
+            background: var(--accent); color: #0f172a;
+            padding: 12px 24px; font-weight: bold;
+            border-radius: 4px;
+            display: none; z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+
+    <header>
+        <div class="brand">🌱 SoftYield</div>
+        <div class="user-badge" id="headerName">GUEST</div>
+    </header>
+
+    <div id="authScreen" class="modal hidden">
+        <div class="modal-content" style="text-align: center;">
+            <h1 style="color:var(--accent); margin-bottom: 10px;">SOFT YIELD</h1>
+            <p style="margin-bottom: 30px; color: var(--text-muted);">Decentralized Agriculture Market</p>
+            <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
+        </div>
+    </div>
+
+    <main>
+        <section id="viewHome" class="active">
+            <div class="search-row">
+                <input type="text" id="searchInput" placeholder="Search crops, location..." onkeyup="handleSearch(this.value)">
+            </div>
+            <div id="marketContainer">
+                </div>
+        </section>
+
+        <section id="viewInterests">
+            <h2 style="margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">CONTACTED</h2>
+            <div id="interestsContainer"></div>
+        </section>
+
+        <section id="viewFarm">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>MY FARM</h2>
+                <span class="tag">SELLER MODE</span>
+            </div>
+            <div id="farmContainer"></div>
+        </section>
+
+        <section id="viewSettings">
+            <h2 style="margin-bottom: 15px;">FARMER PROFILE</h2>
+            <form onsubmit="saveProfile(event)">
+                <label style="font-size:0.8rem; color:var(--text-muted);">Name</label>
+                <input type="text" id="pName" disabled style="opacity:0.7;">
+                
+                <label style="font-size:0.8rem; color:var(--text-muted);">Phone Number</label>
+                <input type="tel" id="pPhone" placeholder="For buyers to call you">
+                
+                <label style="font-size:0.8rem; color:var(--text-muted);">Base Location (City/District)</label>
+                <input type="text" id="pCity">
+
+                <button type="submit" class="btn" style="margin-top: 10px;">UPDATE DETAILS</button>
+            </form>
+            <button onclick="logout()" class="btn outline danger" style="margin-top: 20px;">LOGOUT</button>
+        </section>
+    </main>
+
+    <div id="createModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--accent); margin-bottom: 15px;">POST HARVEST</h2>
+            <form onsubmit="handleCreate(event)">
+                <input type="text" id="cTitle" placeholder="Crop Name (e.g., Basmati Rice)" required>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="number" id="cPrice" placeholder="Price" required>
+                    <input type="text" id="cUnit" placeholder="Unit (kg/ton)" value="kg" required>
+                </div>
+
+                <input type="number" id="cQty" placeholder="Total Quantity Available" required>
+                <input type="text" id="cLoc" placeholder="Farm Location" required>
+                
+                <textarea id="cDesc" placeholder="Description (Quality, Harvest Date, etc.)" rows="3"></textarea>
+
+                <label style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px; display:block;">Crop Photo</label>
+                <input type="file" id="cImage" accept="image/*">
+
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn outline" onclick="document.getElementById('createModal').classList.add('hidden')">CANCEL</button>
+                    <button type="submit" class="btn">POST TO MARKET</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content">
+            <div id="detailsContent"></div>
+            <button class="btn outline" style="margin-top: 15px;" onclick="document.getElementById('detailsModal').classList.add('hidden')">CLOSE</button>
+        </div>
+    </div>
+
+    <nav class="dock">
+        <button class="dock-btn active" onclick="switchView('home', this)">Feed</button>
+        <button class="dock-btn" onclick="switchView('interests', this)">Orders</button>
+        <button class="add-btn" onclick="document.getElementById('createModal').classList.remove('hidden')">+</button>
+        <button class="dock-btn" onclick="switchView('farm', this)">My Farm</button>
+        <button class="dock-btn" onclick="switchView('settings', this)">Profile</button>
+    </nav>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        let currentUser = null;
+        let marketData = []; 
+        let currentSearch = '';
+
+        // --- INIT ---
+        window.addEventListener('load', () => {
+            if(window.google) {
+                google.accounts.id.initialize({
+                    client_id: "611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com", 
+                    callback: handleGoogleResponse
+                });
+                const btnContainer = document.getElementById("googleBtnContainer");
+                if(btnContainer) {
+                    google.accounts.id.renderButton(btnContainer, { theme: "filled_black", size: "large", width: "250" });
+                }
+            }
+            checkAuth();
+        });
+
+        // --- AUTHENTICATION ---
+        async function handleGoogleResponse(response) {
+            try {
+                // Using SoftYield API from api.js
+                const data = await SoftYield.auth.googleLogin(response.credential);
+                if(data.success) {
+                    localStorage.setItem('fida_token', data.token);
+                    checkAuth();
+                } else showToast('Login Failed');
+            } catch(e) { console.error(e); showToast('Auth Error'); }
+        }
+
+        async function checkAuth() {
+            const token = localStorage.getItem('fida_token');
+            if (!token) {
+                document.getElementById('authScreen').classList.remove('hidden');
+                return;
+            }
+            try {
+                const user = await SoftYield.auth.getMe();
+                currentUser = user;
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('headerName').innerText = currentUser.name.split(' ')[0].toUpperCase();
+                
+                // Load Initial Data
+                fetchMarketData();
+                loadProfileData();
+            } catch (e) {
+                console.log("Session Invalid", e);
+                logout();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('fida_token');
+            location.reload();
+        }
+
+        // --- NAVIGATION ---
+        function switchView(viewName, btnEl) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(el => el.classList.remove('active'));
+            // Reset nav buttons (skip the center add button)
+            document.querySelectorAll('.dock-btn').forEach(el => el.classList.remove('active'));
+            
+            // Activate current
+            if(btnEl) btnEl.classList.add('active');
+            
+            const map = { 'home': 'viewHome', 'interests': 'viewInterests', 'farm': 'viewFarm', 'settings': 'viewSettings' };
+            document.getElementById(map[viewName]).classList.add('active');
+            
+            if(viewName === 'home') fetchMarketData();
+            if(viewName === 'farm') renderMyFarm();
+            if(viewName === 'interests') renderInterests();
+        }
+
+        // --- CORE LOGIC ---
+
+        async function fetchMarketData() {
+            try {
+                marketData = await SoftYield.produce.getAll();
+                renderFeed();
+            } catch (e) { showToast('Connection Error'); }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('marketContainer');
+            container.innerHTML = '';
+            
+            const filtered = marketData.filter(item => 
+                (item.title.toLowerCase().includes(currentSearch) || item.location.toLowerCase().includes(currentSearch))
+            );
+
+            if(filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:40px;">No crops found.</div>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const priceDisplay = `₹${item.price} / ${item.unit}`;
+                const isSeller = (currentUser && item.sellerId === currentUser._id);
+                
+                const html = `
+                    <div class="card" onclick="openDetail('${item._id}')">
+                        <img src="${item.image}" class="crop-image" alt="${item.title}" onerror="this.src='https://placehold.co/600x400/2b332b/white?text=No+Image'">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <h3>${item.title}</h3>
+                                <div class="meta">
+                                    <span>📍 ${item.location}</span>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="color:var(--accent); font-weight:700; font-size:1.1rem;">${priceDisplay}</div>
+                                <span class="tag" style="margin-top:4px; display:inline-block;">${item.quantity} Avail</span>
+                            </div>
+                        </div>
+                        ${isSeller ? '<div style="margin-top:8px; font-size:0.75rem; color:var(--accent);">★ YOUR LISTING</div>' : ''}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderMyFarm() {
+            const container = document.getElementById('farmContainer');
+            container.innerHTML = '';
+            
+            // Filter where I am the seller
+            const myCrops = marketData.filter(x => x.sellerId === currentUser._id);
+
+            if(myCrops.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">You haven\'t posted any crops yet.<br><br>Click + to start selling.</div>';
+                return;
+            }
+
+            myCrops.forEach(item => {
+                // Count interested buyers (if array exists)
+                const leads = item.interestedBuyers ? item.interestedBuyers.length : 0;
+                
+                const html = `
+                    <div class="card" style="border-left: 4px solid var(--accent);">
+                        <h3>${item.title}</h3>
+                        <div class="meta" style="margin-bottom:10px;">${item.location} • ₹${item.price}/${item.unit}</div>
+                        <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:#fff;">Interested Buyers</span>
+                            <span class="tag" style="font-size:1rem;">${leads}</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderInterests() {
+            const container = document.getElementById('interestsContainer');
+            container.innerHTML = '';
+
+            // Logic: Find items where my ID is in 'interestedBuyers'
+            // Note: This relies on the backend returning full objects with interestedBuyers arrays visible
+            const myInterests = marketData.filter(x => x.interestedBuyers && x.interestedBuyers.includes(currentUser._id));
+
+            if(myInterests.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">You haven\'t contacted any farmers yet.</div>';
+                return;
+            }
+
+            myInterests.forEach(item => {
+                const html = `
+                    <div class="card">
+                        <h3>${item.title}</h3>
+                        <div class="meta">Seller: ${item.sellerName || 'Farmer'}</div>
+                        <button class="btn outline sm" style="margin-top:10px; width:100%; border-color:var(--accent); color:var(--accent);">CONTACTED ✓</button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // --- ACTIONS ---
+
+        function handleSearch(val) { 
+            currentSearch = val.toLowerCase(); 
+            renderFeed(); 
+        }
+
+        async function handleCreate(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Publishing...';
+            btn.disabled = true;
+            
+            // Build FormData for Image + Text
+            const formData = new FormData();
+            formData.append('title', document.getElementById('cTitle').value);
+            formData.append('price', document.getElementById('cPrice').value);
+            formData.append('unit', document.getElementById('cUnit').value);
+            formData.append('quantity', document.getElementById('cQty').value);
+            formData.append('location', document.getElementById('cLoc').value);
+            formData.append('description', document.getElementById('cDesc').value);
+            
+            const fileInput = document.getElementById('cImage');
+            if(fileInput.files[0]) {
+                formData.append('image', fileInput.files[0]);
+            }
+
+            try {
+                const res = await SoftYield.produce.create(formData);
+                if(res.success || res.id) {
+                    document.getElementById('createModal').classList.add('hidden');
+                    e.target.reset();
+                    showToast('Crop Posted Successfully');
+                    fetchMarketData();
+                    switchView('home');
+                } else {
+                    showToast('Failed to post');
+                }
+            } catch(err) { 
+                console.error(err); 
+                showToast('Error posting'); 
+            }
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+
+        function openDetail(id) {
+            const item = marketData.find(e => e._id === id);
+            const content = document.getElementById('detailsContent');
+            const isSeller = (currentUser && item.sellerId === currentUser._id);
+            const hasContacted = (item.interestedBuyers && item.interestedBuyers.includes(currentUser._id));
+
+            let actionBtn = '';
+            if (isSeller) {
+                actionBtn = `<button class="btn outline" disabled>THIS IS YOUR LISTING</button>`;
+            } else if (hasContacted) {
+                actionBtn = `<button class="btn outline" style="color:var(--accent); border-color:var(--accent);">REQUEST SENT ✓</button>`;
+            } else {
+                actionBtn = `<button class="btn" onclick="contactSeller('${id}')">CONTACT FARMER</button>`;
+            }
+            
+            content.innerHTML = `
+                <img src="${item.image}" style="width:100%; height:200px; object-fit:cover; border-radius:4px; margin-bottom:15px;">
+                <h2 style="margin-bottom:5px;">${item.title}</h2>
+                <div class="meta" style="margin-bottom:20px; font-size:1rem; color:var(--text);">
+                    ₹${item.price} / ${item.unit} • ${item.quantity} Available
+                </div>
+                
+                <div style="background:#000; padding:15px; border-radius:4px; margin-bottom:20px;">
+                    <div style="color:var(--text-muted); font-size:0.8rem; text-transform:uppercase;">Description</div>
+                    <p>${item.description || 'No description provided.'}</p>
+                    <div style="margin-top:10px; color:var(--text-muted); font-size:0.8rem;">
+                        📍 ${item.location} <br>
+                        👨‍🌾 ${item.sellerName || 'Verified Farmer'}
+                    </div>
+                </div>
+
+                ${actionBtn}
+            `;
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        async function contactSeller(produceId) {
+            try {
+                const res = await SoftYield.produce.contactSeller(produceId);
+                if(res.success) {
+                    showToast('Interest Sent to Farmer!');
+                    document.getElementById('detailsModal').classList.add('hidden');
+                    // Optimistic UI update
+                    const item = marketData.find(i => i._id === produceId);
+                    if(item) {
+                        if(!item.interestedBuyers) item.interestedBuyers = [];
+                        item.interestedBuyers.push(currentUser._id);
+                    }
+                } else {
+                    showToast(res.error || 'Failed');
+                }
+            } catch(e) {
+                showToast('Network Error');
+            }
+        }
+
+        // --- PROFILE ---
+        async function loadProfileData() {
+           try {
+               // Load extended profile details
+               const details = await SoftYield.profile.loadDetails();
+               document.getElementById('pName').value = currentUser.name;
+               if(details) {
+                   document.getElementById('pPhone').value = details.phone || '';
+                   document.getElementById('pCity').value = details.city || '';
+               }
+           } catch(e) {}
+        }
+        
+        async function saveProfile(e) {
+            e.preventDefault();
+            const data = {
+                phone: document.getElementById('pPhone').value,
+                city: document.getElementById('pCity').value
+            };
+            try {
+                await SoftYield.profile.updateDetails(data);
+                showToast('Profile Saved');
+            } catch(e) { showToast('Error saving profile'); }
+        }
+
+        // --- UTILS ---
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; 
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriFlow | Farmer Network</title>
+    <title>SoftYield | Farmer Suite</title>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -13,1907 +15,408 @@
 
     <style>
         :root {
-            /* Theme: Cream Autumn (Dark Earth) */
-            --bg: #1c1917;       /* Warm Black */
-            --surface: #292524;  /* Dark Stone */
-            --text: #ffffff;     /* Cream */
-            --text-muted: #a8a29e;
-            --accent: #d97706;   /* Harvest Gold */
-            --accent-hover: #b45309;
-            --green: #65a30d;    /* Crop Green */
-            --red: #ef4444;      /* Alert Red */
-            --border: #44403c;
-            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --brand-primary: #15803d;
+            --brand-secondary: #166534;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .shadow-depth { box-shadow: 0 20px 40px -10px rgba(21, 128, 61, 0.15); }
+        .custom-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
+        .nav-active { background: white; color: #15803d !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font);
-            line-height: 1.5;
-            padding-bottom: 80px; /* Space for dock */
-        }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Utilities --- */
-        .hidden { display: none !important; }
-        button { cursor: pointer; font-family: inherit; }
-        img { display: block; max-width: 100%; }
-
-        /* --- Layout --- */
-        header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg);
-            position: sticky; top: 0; z-index: 10;
-        }
-        .brand { font-weight: 700; font-size: 1.2rem; color: var(--accent); letter-spacing: -0.05em; text-transform: uppercase; }
-        .user-badge { font-size: 0.9rem; color: var(--text-muted); }
-
-        main { padding: 20px; max-width: 600px; margin: 0 auto; }
-        section { display: none; } 
-        section.active { display: block; animation: fadeIn 0.2s; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- Components --- */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: var(--text); }
-        .meta { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; display: flex; gap: 10px; align-items: center; }
-        .tag { background: var(--border); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; color: var(--text); }
-        .tag.verified { background: rgba(101, 163, 13, 0.2); color: var(--green); border: 1px solid var(--green); }
-
-        /* Inputs */
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: #000;
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 4px;
-        }
-        input:focus { outline: 2px solid var(--accent); border-color: transparent; }
-
-        /* Buttons */
-        .btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            font-weight: 700;
-            width: 100%;
-            border-radius: 2px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-        .btn:hover { background: var(--accent-hover); }
-        .btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn.sm { width: auto; padding: 5px 10px; font-size: 0.8rem; }
-        .btn.green { background: var(--green); color: white; }
-
-        /* Search Bar */
-        .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        
-        /* Modals */
-        .modal {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 100;
-            padding: 20px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .modal-content {
-            background: var(--surface);
-            border: 1px solid var(--accent);
-            padding: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-radius: 4px;
-        }
-
-        /* Navigation Dock */
-        .dock {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around;
-            padding: 15px 0;
-            z-index: 50;
-        }
-        .dock-btn {
-            background: none; border: none; color: var(--text-muted);
-            font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-        }
-        .dock-btn.active { color: var(--accent); }
-
-        /* Images */
-        .crop-img {
-            width: 100%; height: 180px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            background: #000;
-        }
-
-        /* Price Trends */
-        .trend-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 8px 0; }
-        .trend-up { color: var(--green); }
-        .trend-down { color: var(--red); }
-
-        /* Toast */
-        #toast {
-            position: fixed; top: 10px; right: 10px;
-            background: var(--accent); color: #000;
-            padding: 10px 20px; font-weight: bold;
-            display: none; z-index: 9999; border-radius: 4px;
-        }
+        /* Auth Overlay Styles */
+        #auth-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
     </style>
 </head>
-<body>
 
-<<<<<<< HEAD
-    <div id="toast"></div>
-=======
-<body class="text-slate-800 antialiased pb-28 md:pb-12 relative">
-
-
-
-    <!-- Background Texture -->
+<body class="bg-[#fbfaf8] text-slate-800 antialiased pb-28 md:pb-12 relative">
 
     <div class="fixed inset-0 custom-pattern pointer-events-none z-[-1]"></div>
 
-
-
-    <!-- Toast Notification -->
-
-    <div id="toast"
-        class="fixed bottom-24 md:bottom-10 left-1/2 z-[100] flex items-center gap-3 bg-slate-900/95 backdrop-blur text-white px-6 py-4 rounded-2xl shadow-depth min-w-[300px] border border-white/10">
-
-        <div class="w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center text-slate-900 shrink-0">
-
+    <div id="toast" class="fixed bottom-24 md:bottom-10 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 bg-slate-900/95 backdrop-blur text-white px-6 py-4 rounded-2xl shadow-depth min-w-[300px] border border-white/10 hidden">
+        <div id="toast-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-slate-900 shrink-0">
             <i class="fa-solid fa-check"></i>
-
         </div>
-
         <div>
-
-            <h4 class="font-bold text-sm tracking-wide" id="toast-title">Success</h4>
-
-            <p class="text-xs text-slate-400 font-medium" id="toast-msg">Action completed successfully.</p>
-
+            <h4 class="font-bold text-sm tracking-wide" id="toast-title">Notification</h4>
+            <p class="text-xs text-slate-400 font-medium" id="toast-msg">Action completed.</p>
         </div>
-
     </div>
 
+    <div id="auth-overlay" class="fixed inset-0 z-[200] flex items-center justify-center p-6 hidden">
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-md w-full shadow-2xl text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-600 text-white mb-6">
+                <i class="fa-solid fa-leaf text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">SoftYield</h1>
+            <p class="text-slate-600 mb-8">Decentralized Agriculture Market</p>
+            <div id="googleBtnContainer" class="flex justify-center"></div>
+            <p class="text-xs text-slate-400 mt-8 uppercase tracking-widest font-bold">Secure Farmer Access</p>
+        </div>
+    </div>
 
-
-    <!-- Header -->
-
-    <header class="fixed top-0 w-full z-50 glass transition-all duration-300">
-
+    <header class="fixed top-0 w-full z-50 glass border-b border-earth-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-
-            <!-- Logo -->
-
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('dashboard')">
-
-                <div
-                    class="w-11 h-11 bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-900/20 group-hover:scale-105 transition-transform duration-300">
-
+                <div class="w-11 h-11 bg-green-700 rounded-xl flex items-center justify-center text-white shadow-lg">
                     <i class="fa-solid fa-wheat-awn text-xl"></i>
-
                 </div>
-
                 <div>
-
-                    <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">AgriConnect
-                    </h1>
-
-                    <span class="text-[10px] font-bold text-brand-700 uppercase tracking-[0.2em]"
-                        data-translate="app_subtitle">Farmer Suite</span>
-
+                    <h1 class="font-bold text-xl leading-none text-slate-900 tracking-tight">SoftYield</h1>
+                    <span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">Farmer Suite</span>
                 </div>
-
             </div>
 
-
-
-            <!-- Desktop Nav -->
-
-            <nav class="hidden md:flex bg-earth-100/50 p-1.5 rounded-2xl border border-earth-200/60 backdrop-blur-sm">
-
-                <button onclick="switchTab('dashboard')" id="nav-dashboard"
-                    class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800 nav-active">
-
-                    <i class="fa-solid fa-grid-2 mr-2 opacity-70"></i><span
-                        data-translate="nav_dashboard">Dashboard</span>
-
-                </button>
-
-                <button onclick="switchTab('marketplace')" id="nav-marketplace"
-                    class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-
-                    <i class="fa-solid fa-shop mr-2 opacity-70"></i><span data-translate="nav_market">Market</span>
-
-                </button>
-
-                <button onclick="switchTab('analytics')" id="nav-analytics"
-                    class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-
-                    <i class="fa-solid fa-clipboard-list mr-2 opacity-70"></i><span
-                        data-translate="nav_orders">Orders</span>
-
-                </button>
-
-                <button onclick="switchTab('profile')" id="nav-profile"
-                    class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
-
-                    <i class="fa-solid fa-user-circle mr-2 opacity-70"></i><span data-translate="nav_profile">Farm
-                        Profile</span>
-
-                </button>
-
+            <nav class="hidden md:flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all nav-active">Dashboard</button>
+                <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Market</button>
+                <button onclick="switchTab('orders')" id="nav-orders" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Orders</button>
+                <button onclick="switchTab('profile')" id="nav-profile" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Profile</button>
             </nav>
 
-
-
-            <!-- User Actions -->
-
-            <div class="flex items-center gap-2 md:gap-4">
-
-                <!-- Language Selector (Mobile Friendly) -->
-
-                <div class="relative">
-
-                    <button onclick="toggleLangMenu(event)" id="lang-btn"
-                        class="flex items-center gap-1 md:gap-2 bg-white border border-earth-200 text-slate-600 px-2 md:px-3 py-2 rounded-xl text-xs font-bold hover:bg-earth-50 transition-colors focus:outline-none active:bg-earth-100">
-
-                        <i class="fa-solid fa-language text-brand-600 text-base"></i>
-
-                        <span id="current-lang-label" class="hidden md:inline">English</span>
-
-                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"
-                            id="lang-arrow"></i>
-
-                    </button>
-
-                    <!-- Dropdown Menu -->
-
-                    <div id="lang-menu"
-                        class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-earth-100 overflow-hidden hidden z-[100] transform origin-top-right transition-all">
-
-                        <button onclick="changeLanguage('en')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
-
-                            English <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-en"></i>
-
-                        </button>
-
-                        <button onclick="changeLanguage('hi')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
-
-                            हिंदी (Hindi) <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-hi"></i>
-
-                        </button>
-
-                        <button onclick="changeLanguage('mr')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors border-b border-slate-50 flex justify-between items-center group">
-
-                            मराठी (Marathi) <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-mr"></i>
-
-                        </button>
-
-                        <button onclick="changeLanguage('kn')"
-                            class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 hover:text-brand-700 transition-colors flex justify-between items-center group">
-
-                            ಕನ್ನಡ (Kannada) <i
-                                class="fa-solid fa-check text-brand-600 opacity-0 group-[.active-lang]:opacity-100"
-                                id="check-kn"></i>
-
-                        </button>
-
-                    </div>
-
+            <div class="flex items-center gap-4">
+                <div class="hidden lg:flex flex-col items-end">
+                    <span id="header-city" class="text-xs font-bold text-slate-900">...</span>
+                    <span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 rounded">ONLINE</span>
                 </div>
-
-
-
-                <div class="hidden lg:flex flex-col items-end mr-2">
-
-                    <span class="text-xs font-bold text-slate-900">Pune, IN</span>
-
-                    <span
-                        class="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 rounded flex items-center gap-1"><i
-                            class="fa-solid fa-cloud-sun"></i> 28°C</span>
-
+                <div class="w-10 h-10 rounded-xl border-2 border-white shadow-md overflow-hidden">
+                    <img id="header-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Farmer" alt="Profile">
                 </div>
-
-
-
-
-
-
-
-                <div onclick="switchTab('profile')"
-                    class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-tr from-brand-100 to-earth-100 border-2 border-white p-0.5 cursor-pointer shadow-md hover:shadow-lg transition-all group shrink-0">
-
-                    <img id="header-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh"
-                        class="w-full h-full rounded-[9px] group-hover:scale-95 transition-transform" alt="Profile">
-
-                </div>
-
             </div>
-
         </div>
->>>>>>> 8e37a1a6b8824b616f56c5babfb9fa35ab719db6
-
-    <header>
-        <div class="brand">AgriFlow</div>
-        <div class="user-badge" id="headerName">GUEST</div>
     </header>
 
-<<<<<<< HEAD
-    <div id="authScreen" class="modal hidden">
-        <div class="modal-content" style="text-align: center; border-color: var(--border);">
-            <h1 style="color:var(--accent); margin-bottom: 10px;">AGRI FLOW</h1>
-            <p style="margin-bottom: 30px; color: var(--text-muted);">Connect. Trade. Grow.</p>
-            <div id="googleBtnContainer" style="display: flex; justify-content: center;"></div>
-=======
-
-
-    <!-- Main Content -->
-
     <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-28">
-
-
-
-        <!-- ================= DASHBOARD VIEW ================= -->
-
-        <section id="dashboard" class="view-section active space-y-6 md:space-y-8">
-
-
-
-            <!-- Hero Grid -->
-
+        
+        <section id="dashboard" class="view-section active space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-
-
-                <!-- Welcome Card -->
-
-                <div
-                    class="lg:col-span-8 bg-gradient-to-br from-brand-900 to-brand-800 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-depth group min-h-[380px] md:min-h-[420px] flex flex-col justify-between">
-
-                    <!-- Abstract Overlay -->
-
-                    <div
-                        class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10">
-                    </div>
-
-                    <div
-                        class="absolute top-0 right-0 w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-brand-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700">
-                    </div>
-
-                    <div
-                        class="absolute bottom-0 left-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-accent-600 rounded-full mix-blend-overlay filter blur-[80px] opacity-10">
-                    </div>
-
-
-
+                <div class="lg:col-span-8 bg-green-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-depth min-h-[350px] flex flex-col justify-between">
                     <div class="relative z-10">
-
-                        <div class="flex justify-between items-start">
-
-                            <div>
-
-                                <div
-                                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-bold text-brand-100 mb-4 shadow-sm">
-
-                                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-
-                                    <span data-translate="mandi_live">Mandi Live</span>
-
-                                </div>
-
-                                <h2
-                                    class="font-display font-bold text-3xl md:text-5xl mb-3 tracking-tight leading-tight">
-                                    <span data-translate="good_afternoon">Good Afternoon</span>, <br><span
-                                        class="text-brand-300 user-name-display">Farmer</span>!
-                                </h2>
-
-                                <p class="text-brand-100/90 max-w-md text-sm md:text-base leading-relaxed"
-                                    data-translate="market_insight_text">
-
-                                    The market for <span class="font-bold text-white">Hybrid Tomatoes</span> is trending
-                                    up by 12% today. Perfect time to list your stock.
-
-                                </p>
-
-                            </div>
-
-                            <!-- Weather Mini Widget -->
-
-                            <div
-                                class="hidden md:block bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-2xl text-center min-w-[100px]">
-
-                                <i class="fa-solid fa-sun text-3xl text-yellow-400 mb-2 drop-shadow-lg"></i>
-
-                                <div class="text-2xl font-bold font-display">28°</div>
-
-                                <div class="text-[10px] uppercase font-bold text-brand-200 tracking-wider"
-                                    data-translate="sunny">Sunny</div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="relative z-10 mt-8 flex flex-wrap gap-3 md:gap-4">
-
-                        <button onclick="openModal()"
-                            class="bg-white text-brand-900 px-6 md:px-7 py-3 md:py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-black/10 hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center gap-2 group-btn w-full md:w-auto justify-center">
-
-                            <span
-                                class="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 group-hover:bg-brand-600 group-hover:text-white transition-colors"><i
-                                    class="fa-solid fa-plus text-xs"></i></span>
-
-                            <span data-translate="create_listing">Create Listing</span>
-
-                        </button>
-
-                        <button onclick="switchTab('analytics')"
-                            class="bg-brand-950/30 hover:bg-brand-950/50 border border-white/20 text-white px-6 md:px-7 py-3 md:py-3.5 rounded-2xl font-bold text-sm backdrop-blur-md transition-all w-full md:w-auto">
-
-                            <span data-translate="view_orders_btn">View Orders (4)</span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Right Column: Revenue & Market Price Ticker -->
-
-                <div class="lg:col-span-4 flex flex-col gap-6">
-
-                    <!-- Revenue Card -->
-
-                    <div
-                        class="bg-white p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex flex-col justify-center hover:translate-y-[-4px] transition-transform duration-300 relative overflow-hidden h-[160px] shrink-0">
-
-                        <div
-                            class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50">
-                        </div>
-
-                        <div class="flex items-center justify-between mb-4 relative z-10">
-
-                            <div
-                                class="w-12 h-12 bg-earth-50 rounded-2xl flex items-center justify-center text-brand-700 text-xl shadow-sm border border-earth-100">
-
-                                <i class="fa-solid fa-wallet"></i>
-
-                            </div>
-
-                            <span
-                                class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-green-200">
-
-                                <i class="fa-solid fa-arrow-trend-up"></i> +18%
-
-                            </span>
-
-                        </div>
-
-                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1"
-                            data-translate="total_revenue">Total Revenue</p>
-
-                        <h3 class="text-4xl font-display font-bold text-slate-900 tracking-tight">₹48,200</h3>
-
-                    </div>
-
-
-
-                    <!-- Market Ticker (Moved Here) -->
-
-                    <div
-                        class="bg-white p-6 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex-1 flex flex-col relative overflow-hidden h-full min-h-[300px]">
-
-                        <div class="flex items-center justify-between mb-4">
-
-                            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2"><i
-                                    class="fa-solid fa-chart-line text-brand-500"></i> <span
-                                    data-translate="live_rates">Live Rates</span></h4>
-
-                            <button onclick="switchTab('analytics')"
-                                class="text-[10px] font-bold bg-brand-50 text-brand-700 px-2 py-1 rounded-lg hover:bg-brand-100 transition-colors"
-                                data-translate="see_orders">See Orders</button>
-
-                        </div>
-
-                        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3" id="hero-price-ticker">
-
-                            <!-- Injected by JS -->
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- REQUESTS & NEGOTIATIONS -->
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Buyer Requests Feed -->
-
-                <div
-                    class="lg:col-span-2 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card">
-
-                    <div class="flex items-center justify-between mb-8">
-
-                        <div>
-
-                            <h3 class="font-display font-bold text-slate-900 text-xl" data-translate="direct_requests">
-                                Direct Buyer Requests</h3>
-
-                            <p class="text-xs text-slate-500 font-medium mt-1" data-translate="verified_msg">Verified
-                                businesses looking for your crops</p>
-
-                        </div>
-
-                        <span class="flex h-3 w-3 relative">
-
-                            <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
-
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-bold mb-4">
+                            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Mandi Live
                         </span>
-
+                        <h2 class="font-bold text-4xl md:text-5xl mb-3 tracking-tight">Welcome, <br><span id="welcome-name" class="text-green-300">Farmer</span>!</h2>
+                        <p class="text-green-100/90 max-w-md">The market is active today. Manage your listings or browse local buyer requests.</p>
                     </div>
-
-                    <div class="space-y-4" id="requests-container">
-
-                        <!-- Request Item 1 -->
-
-                        <div class="request-item flex flex-col sm:flex-row sm:items-center gap-5 p-5 rounded-[1.5rem] bg-earth-50 border border-earth-100 transition-all hover:bg-white hover:shadow-lg hover:border-brand-200 group"
-                            id="req-1">
-
-                            <div
-                                class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-earth-100 text-2xl shadow-sm shrink-0 group-hover:scale-110 transition-transform">
-
-                                <i class="fa-solid fa-basket-shopping text-brand-600"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <div class="flex justify-between items-start mb-2">
-
-                                    <span class="font-bold text-slate-900 text-base">Reliance Fresh <i
-                                            class="fa-solid fa-circle-check text-blue-500 ml-1 text-xs"></i></span>
-
-                                    <span
-                                        class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-full border border-earth-200">20m
-                                        ago</span>
-
-                                </div>
-
-                                <p class="text-sm text-slate-600 leading-snug">Requires <span
-                                        class="font-bold text-slate-900">2 Tons Tomatoes (Hybrid)</span> delivered to
-                                    Pune Warehouse.</p>
-
-                            </div>
-
-                            <div class="flex sm:flex-col gap-2 shrink-0">
-
-                                <button onclick="handleRequest('req-1', 'accepted')"
-                                    class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95"
-                                    data-translate="accept">Accept</button>
-
-                                <button onclick="handleRequest('req-1', 'declined')"
-                                    class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95"
-                                    data-translate="decline">Decline</button>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- Request Item 2 -->
-
-                        <div class="request-item flex flex-col sm:flex-row sm:items-center gap-5 p-5 rounded-[1.5rem] bg-earth-50 border border-earth-100 transition-all hover:bg-white hover:shadow-lg hover:border-brand-200 group"
-                            id="req-2">
-
-                            <div
-                                class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-earth-100 text-2xl shadow-sm shrink-0 group-hover:scale-110 transition-transform">
-
-                                <i class="fa-solid fa-utensils text-orange-500"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <div class="flex justify-between items-start mb-2">
-
-                                    <span class="font-bold text-slate-900 text-base">Grand Maratha Hotel</span>
-
-                                    <span
-                                        class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-full border border-earth-200">1h
-                                        ago</span>
-
-                                </div>
-
-                                <p class="text-sm text-slate-600 leading-snug">Requires <span
-                                        class="font-bold text-slate-900">500 Kg Red Onions</span> delivered to
-                                    Shivajinagar.</p>
-
-                            </div>
-
-                            <div class="flex sm:flex-col gap-2 shrink-0">
-
-                                <button onclick="handleRequest('req-2', 'accepted')"
-                                    class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95"
-                                    data-translate="accept">Accept</button>
-
-                                <button onclick="handleRequest('req-2', 'declined')"
-                                    class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-red-500 hover:border-red-200 text-xs font-bold rounded-xl transition-all active:scale-95"
-                                    data-translate="decline">Decline</button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Active Negotiations -->
-
-                <div
-                    class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-earth-100 shadow-card flex flex-col">
-
-                    <div class="flex items-center justify-between mb-8">
-
-                        <h3 class="font-display font-bold text-slate-900 text-xl" data-translate="negotiations">
-                            Negotiations</h3>
-
-                        <span
-                            class="text-xs font-bold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-100">2
-                            Active</span>
-
-                    </div>
-
-                    <div class="space-y-4 flex-1 overflow-y-auto max-h-[400px] pr-1 custom-scrollbar">
-
-                        <div
-                            class="p-4 rounded-2xl bg-earth-50 border border-transparent hover:border-brand-200 transition-all cursor-pointer group hover:bg-white hover:shadow-md">
-
-                            <div class="flex justify-between items-start mb-2">
-
-                                <p class="text-sm font-bold text-slate-800">Deal #4029 - Wheat</p>
-
-                                <span
-                                    class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100"
-                                    data-translate="counter_offer">Counter Offer</span>
-
-                            </div>
-
-                            <div class="flex justify-between text-xs text-slate-500 mb-3">
-
-                                <span>Bid: ₹2,400</span>
-
-                                <span>Ask: ₹2,600</span>
-
-                            </div>
-
-                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                                <div
-                                    class="bg-amber-500 h-full rounded-full group-hover:w-[70%] transition-all duration-1000 w-[60%]">
-                                </div>
-                            </div>
-
-                        </div>
-
-
-
-                        <div
-                            class="p-4 rounded-2xl bg-earth-50 border border-transparent hover:border-brand-200 transition-all cursor-pointer group hover:bg-white hover:shadow-md">
-
-                            <div class="flex justify-between items-start mb-2">
-
-                                <p class="text-sm font-bold text-slate-800">Deal #4035 - Corn</p>
-
-                                <span
-                                    class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100"
-                                    data-translate="waiting">Waiting</span>
-
-                            </div>
-
-                            <p class="text-xs text-slate-500 mb-3" data-translate="proposal_sent">Proposal sent to
-                                buyer.</p>
-
-                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                                <div class="bg-blue-500 h-full rounded-full w-[30%]"></div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        class="w-full mt-6 py-4 text-xs font-bold text-slate-600 border border-slate-200 rounded-xl hover:bg-earth-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
-
-                        <span data-translate="view_history">View History</span>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= MARKETPLACE VIEW ================= -->
-
-        <section id="marketplace" class="view-section space-y-8">
-
-            <!-- Search Header -->
-
-            <div
-                class="bg-white p-6 rounded-[2.5rem] shadow-card border border-earth-100 sticky top-24 z-30 transition-all">
-
-                <div class="flex flex-col md:flex-row gap-5">
-
-                    <div class="relative flex-1 group">
-
-                        <i
-                            class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
-
-                        <input type="text" id="market-search" placeholder="Search crops, buyers, or locations..."
-                            class="w-full bg-earth-50 border-2 border-transparent hover:border-earth-200 focus:border-brand-500 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-800 outline-none transition-all placeholder:text-slate-400"
-                            onkeyup="filterMarketplace()" data-translate-placeholder="search_market_placeholder">
-
-                    </div>
-
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 md:pb-0">
-
-                        <button onclick="filterCategory('all')"
-                            class="market-filter active px-6 py-3.5 bg-brand-900 text-white rounded-2xl text-xs font-bold whitespace-nowrap shadow-lg shadow-brand-900/20 transition-all hover:bg-brand-800"
-                            data-translate="all_stock">All Stock</button>
-
-                        <button onclick="filterCategory('vegetable')"
-                            class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all"
-                            data-translate="vegetables">Vegetables</button>
-
-                        <button onclick="filterCategory('grain')"
-                            class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all"
-                            data-translate="grains">Grains</button>
-
-                        <button onclick="filterCategory('fruit')"
-                            class="market-filter px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-earth-50 hover:border-slate-300 transition-all"
-                            data-translate="fruits">Fruits</button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Listings Grid -->
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="marketplace-grid">
-
-                <!-- JS Injected -->
-
-            </div>
-
-
-
-            <!-- Empty State -->
-
-            <div id="no-results" class="hidden flex flex-col items-center justify-center py-20">
-
-                <div
-                    class="w-24 h-24 bg-earth-100 rounded-full flex items-center justify-center text-slate-300 text-4xl mb-6">
-
-                    <i class="fa-solid fa-leaf"></i>
-
-                </div>
-
-                <h3 class="text-xl font-bold text-slate-800" data-translate="no_listings">No listings found</h3>
-
-                <p class="text-sm text-slate-500 mt-2">Try adjusting your filters or search terms.</p>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= ORDERS VIEW (Formerly Analytics) ================= -->
-
-        <section id="analytics" class="view-section space-y-8">
-
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-
-                <div>
-
-                    <h2 class="font-display font-bold text-3xl text-slate-900" data-translate="order_mgmt">Order
-                        Management</h2>
-
-                    <p class="text-slate-500 text-sm font-medium mt-1" data-translate="track_sales">Track and manage
-                        your sales efficiently.</p>
-
-                </div>
-
-                <div class="flex gap-2">
-
-                    <button
-                        class="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-600/20 flex items-center gap-2">
-
-                        <i class="fa-solid fa-download"></i> <span data-translate="export_report">Export Report</span>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- KPI Cards -->
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
-
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl border border-green-100">
-
-                        <i class="fa-solid fa-indian-rupee-sign"></i>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider"
-                            data-translate="total_revenue">Total Revenue</p>
-
-                        <h3 class="text-2xl font-display font-bold text-slate-900">₹41,700</h3>
-
-                        <span
-                            class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">+12%
-                            vs last month</span>
-
-                    </div>
-
-                </div>
-
-                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
-
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl border border-blue-100">
-
-                        <i class="fa-solid fa-basket-shopping"></i>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider"
-                            data-translate="total_orders">Total Orders</p>
-
-                        <h3 class="text-2xl font-display font-bold text-slate-900">142</h3>
-
-                        <p class="text-xs text-slate-500 font-bold" data-translate="lifetime_sales">Lifetime Sales</p>
-
-                    </div>
-
-                </div>
-
-                <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex items-center gap-5">
-
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
-
-                        <i class="fa-solid fa-clock"></i>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-translate="pending">
-                            Pending</p>
-
-                        <h3 class="text-2xl font-display font-bold text-slate-900">3</h3>
-
-                        <p class="text-xs text-slate-500 font-bold" data-translate="requires_action">Requires Action</p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Orders Container -->
-
-            <div class="bg-white rounded-[2.5rem] border border-earth-100 shadow-card overflow-hidden">
-
-                <!-- Filters/Tabs -->
-
-                <div
-                    class="p-6 border-b border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-slate-50/50">
-
-                    <div class="flex p-1 bg-white border border-slate-200 rounded-xl w-full md:w-auto overflow-x-auto">
-
-                        <button onclick="filterOrders('All')"
-                            class="order-tab active px-5 py-2 rounded-lg text-xs font-bold transition-all bg-slate-900 text-white shadow-md whitespace-nowrap"
-                            id="tab-All" data-translate="tab_all">All</button>
-
-                        <button onclick="filterOrders('Pending')"
-                            class="order-tab px-5 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap"
-                            id="tab-Pending" data-translate="tab_pending">Pending</button>
-
-                        <button onclick="filterOrders('Completed')"
-                            class="order-tab px-5 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap"
-                            id="tab-Completed" data-translate="tab_completed">Completed</button>
-
-                    </div>
-
-                    <div class="relative w-full md:w-64 group">
-
-                        <i
-                            class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-slate-400 group-focus-within:text-brand-500 transition-colors text-xs"></i>
-
-                        <input type="text" id="order-search" placeholder="Search Order ID or Buyer..."
-                            class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs font-bold outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                            onkeyup="searchOrders()" data-translate-placeholder="search_placeholder">
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="overflow-x-auto">
-
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-
-                        <thead class="bg-slate-50 text-slate-500">
-
-                            <tr class="text-xs uppercase tracking-wider">
-
-                                <th class="py-4 pl-6 font-bold w-32" data-translate="th_id">Order ID</th>
-
-                                <th class="py-4 font-bold" data-translate="th_product">Product & Buyer</th>
-
-                                <th class="py-4 font-bold" data-translate="th_date">Date</th>
-
-                                <th class="py-4 font-bold" data-translate="th_amount">Amount</th>
-
-                                <th class="py-4 font-bold" data-translate="th_status">Status</th>
-
-                                <th class="py-4 pr-6 font-bold text-right" data-translate="th_actions">Actions</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="full-order-table-body"
-                            class="text-sm font-medium text-slate-700 divide-y divide-slate-100">
-
-                            <!-- JS Injected -->
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-
-                <!-- Pagination (Visual Only) -->
-
-                <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-white">
-
-                    <span class="text-xs text-slate-400 font-bold ml-2">Showing 1-4 of 4 orders</span>
-
-                    <div class="flex gap-2">
-
-                        <button
-                            class="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 flex items-center justify-center hover:bg-slate-50 cursor-not-allowed opacity-50"><i
-                                class="fa-solid fa-chevron-left text-xs"></i></button>
-
-                        <button
-                            class="w-8 h-8 rounded-lg border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-50 hover:text-brand-600"><i
-                                class="fa-solid fa-chevron-right text-xs"></i></button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= PROFILE VIEW ================= -->
-
-        <section id="profile" class="view-section space-y-8 pb-12">
-
-            <!-- Profile Header -->
-
-            <div class="relative bg-white rounded-[2.5rem] shadow-card overflow-hidden border border-earth-100">
-
-                <!-- Cover Image -->
-
-                <div class="h-40 md:h-48 bg-slate-800 relative overflow-hidden">
-
-                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200"
-                        class="w-full h-full object-cover opacity-60">
-
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-
-                    <button
-                        class="absolute top-4 right-4 bg-black/30 backdrop-blur text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-black/50 transition-colors border border-white/20">
-
-                        <i class="fa-solid fa-camera mr-1"></i> <span data-translate="edit_cover">Edit Cover</span>
-
-                    </button>
-
-                </div>
-
-
-
-                <div class="px-6 md:px-8 pb-8 relative">
-
-                    <div
-                        class="flex flex-col md:flex-row items-center md:items-end -mt-12 md:-mt-16 mb-6 gap-4 md:gap-6">
-
-                        <div
-                            class="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-white p-1.5 shadow-xl relative group z-10">
-
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=FarmerRajesh"
-                                class="w-full h-full rounded-[1.5rem] bg-slate-50 object-cover" alt="Profile">
-
-                            <div
-                                class="absolute bottom-1 right-1 w-6 h-6 md:w-8 md:h-8 bg-brand-500 rounded-full border-4 border-white flex items-center justify-center text-white text-[10px] md:text-xs shadow-sm">
-
-                                <i class="fa-solid fa-check"></i>
-
-                            </div>
-
-                        </div>
-
-                        <div class="flex-1 text-center md:text-left mb-2">
-
-                            <h2
-                                class="text-2xl md:text-3xl font-display font-bold text-slate-900 user-name-display mb-1">
-                                Rajesh Kumar</h2>
-
-                            <p
-                                class="text-xs md:text-sm text-slate-500 font-bold user-farm-display flex items-center justify-center md:justify-start gap-2">
-
-                                <i class="fa-solid fa-tractor text-brand-500"></i> Green Valley Farms • Pune, MH
-
-                            </p>
-
-                        </div>
-
-                        <button onclick="toggleEditProfile()"
-                            class="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-800 shadow-lg shadow-slate-900/20">
-
-                            <span data-translate="edit_profile">Edit Profile</span>
-
+                    <div class="relative z-10 flex flex-wrap gap-4">
+                        <button onclick="openModal('createModal')" class="bg-white text-green-900 px-8 py-4 rounded-2xl font-bold text-sm shadow-xl hover:scale-105 transition-transform">
+                            Post New Crop
                         </button>
-
-                        <button onclick="logout()"
-                            class="px-6 py-3 bg-white border-2 border-slate-100 text-slate-500 rounded-xl text-xs font-bold transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-100 shadow-md flex items-center gap-2">
-
-                            <i class="fa-solid fa-power-off"></i> <span>Logout</span>
-
-                        </button>
-
                     </div>
-
-
-
-                    <!-- Stats Row -->
-
-                    <div class="grid grid-cols-3 gap-4 border-t border-earth-100 pt-6">
-
-                        <div class="text-center md:text-left">
-
-                            <span class="block text-xl md:text-2xl font-display font-bold text-slate-900"
-                                id="profile-listings-count">0</span>
-
-                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider"
-                                data-translate="active_listings">Active Listings</span>
-
-                        </div>
-
-                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
-
-                            <span
-                                class="block text-xl md:text-2xl font-display font-bold text-slate-900 flex items-center justify-center md:justify-start gap-1">4.8
-                                <i class="fa-solid fa-star text-sm text-yellow-400"></i></span>
-
-                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider"
-                                data-translate="buyer_rating">Buyer Rating</span>
-
-                        </div>
-
-                        <div class="text-center md:text-left border-l border-earth-100 pl-4">
-
-                            <span class="block text-xl md:text-2xl font-display font-bold text-slate-900">3 <span
-                                    class="text-sm text-slate-400 font-normal">Yrs</span></span>
-
-                            <span class="text-[9px] md:text-[10px] uppercase font-bold text-slate-400 tracking-wider"
-                                data-translate="membership">Membership</span>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Edit Form -->
-
-                    <div id="edit-profile-form" class="hidden mt-6 p-6 bg-earth-50 rounded-2xl border border-earth-100">
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                            <div>
-
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full
-                                    Name</label>
-
-                                <input type="text" id="edit-name"
-                                    class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
-
-                            </div>
-
-                            <div>
-
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Farm
-                                    Name</label>
-
-                                <input type="text" id="edit-farm"
-                                    class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
-
-                            </div>
-
-                            <div>
-
-                                <label
-                                    class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Location</label>
-
-                                <input type="text" id="edit-location"
-                                    class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
-
-                            </div>
-
-                            <div>
-
-                                <label
-                                    class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone</label>
-
-                                <input type="text" id="edit-phone"
-                                    class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
-
-                            </div>
-
-                        </div>
-
-                        <div class="flex justify-end gap-3 mt-6">
-
-                            <button onclick="toggleEditProfile()"
-                                class="px-5 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
-
-                            <button onclick="saveProfile()"
-                                class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/20 hover:bg-brand-700">Save
-                                Changes</button>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-card">
+                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1">Active Listings</p>
+                        <h3 id="stat-listings" class="text-4xl font-bold text-slate-900">0</h3>
+                        <div class="mt-4 flex items-center text-green-600 font-bold text-sm">
+                            <i class="fa-solid fa-leaf mr-1"></i> My Farm Products
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
-
-            <!-- Profile Info Grid -->
-
-            <div class="grid grid-cols-1 gap-6">
-
-                <!-- Personal Details -->
-
-                <div class="bg-white p-6 rounded-[2.5rem] border border-earth-100 shadow-card">
-
-                    <h3 class="font-display font-bold text-slate-900 text-lg mb-4" data-translate="personal_info">
-                        Personal Information</h3>
-
-                    <div class="space-y-4">
-
-                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
-
-                            <div
-                                class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
-
-                                <i class="fa-solid fa-envelope"></i>
-
-                            </div>
-
-                            <div>
-
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address
-                                </p>
-
-                                <p class="font-bold text-slate-800 text-sm user-email-display">farmer@agriconnect.com
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
-
-                            <div
-                                class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
-
-                                <i class="fa-solid fa-phone"></i>
-
-                            </div>
-
-                            <div>
-
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Phone</p>
-
-                                <p class="font-bold text-slate-800 text-sm user-phone-display">+91 98765 43210</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-center gap-4 p-3 bg-earth-50 rounded-2xl">
-
-                            <div
-                                class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
-
-                                <i class="fa-solid fa-map-location-dot"></i>
-
-                            </div>
-
-                            <div>
-
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Address</p>
-
-                                <p class="font-bold text-slate-800 text-sm user-address-display">Plot 45, Indrayani
-                                    Nagar, Pune</p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- My History -->
-
-            <div class="px-2">
-
-                <div class="flex items-center justify-between mb-4">
-
-                    <h3 class="font-display font-bold text-xl text-slate-900" data-translate="my_inventory">My Products
-                        / Inventory</h3>
-
-                    <!-- My Crops Tags -->
-
-                    <div class="flex gap-2">
-
-                        <span
-                            class="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🍅
-                            Tomatoes</span>
-
-                        <span
-                            class="px-3 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-earth-200">🌾
-                            Wheat</span>
-
-                        <button
-                            class="px-3 py-1 border border-dashed border-slate-300 text-slate-400 rounded-lg text-xs font-bold hover:border-brand-500 hover:text-brand-600 transition-colors">+
-                            Add</button>
-
-                    </div>
-
-                </div>
-
-                <div id="profile-history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <!-- Populated by JS -->
-
-                </div>
-
-            </div>
-
         </section>
 
-
-
-    </main>
-
-
-
-    <!-- Mobile Navigation Bottom Bar -->
-
-    <nav
-        class="md:hidden fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-lg border-t border-slate-200 z-50 pb-safe">
-
-        <div class="flex justify-around items-center h-20 px-2 relative">
-
-            <button onclick="switchTab('dashboard')"
-                class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-brand-700 mob-active transition-colors w-16 group"
-                id="mob-dashboard">
-
-                <div
-                    class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
-
-                    <i class="fa-solid fa-grid-2 text-lg"></i>
-
-                </div>
-
-                <span class="text-[10px] font-bold" data-translate="nav_dashboard">Home</span>
-
-            </button>
-
-            <button onclick="switchTab('marketplace')"
-                class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group"
-                id="mob-marketplace">
-
-                <div
-                    class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
-
-                    <i class="fa-solid fa-shop text-lg"></i>
-
-                </div>
-
-                <span class="text-[10px] font-bold" data-translate="nav_market">Market</span>
-
-            </button>
-
-
-
-            <!-- Floating FAB -->
-
-            <div class="relative -top-6">
-
-                <button onclick="openModal()"
-                    class="w-14 h-14 bg-gradient-to-r from-brand-600 to-brand-500 rounded-full flex items-center justify-center text-white shadow-xl shadow-brand-600/40 border-[6px] border-[#fbfaf8] active:scale-95 transition-transform hover:scale-110">
-
-                    <i class="fa-solid fa-plus text-xl"></i>
-
-                </button>
-
+        <section id="marketplace" class="view-section space-y-6">
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-card border border-slate-100">
+                <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="Search crops, location..." class="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-green-500 outline-none">
             </div>
-
-
-
-            <button onclick="switchTab('analytics')"
-                class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group"
-                id="mob-analytics">
-
-                <div
-                    class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
-
-                    <i class="fa-solid fa-clipboard-list text-lg"></i>
-
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="marketplace-grid">
                 </div>
-
-                <span class="text-[10px] font-bold" data-translate="nav_orders">Orders</span>
-
-            </button>
-
-            <button onclick="switchTab('profile')"
-                class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 transition-colors w-16 group"
-                id="mob-profile">
-
-                <div
-                    class="w-8 h-8 rounded-full bg-transparent group-[.mob-active]:bg-brand-50 flex items-center justify-center transition-colors mb-0.5">
-
-                    <i class="fa-solid fa-user-circle text-lg"></i>
-
-                </div>
-
-                <span class="text-[10px] font-bold" data-translate="nav_profile">Farm</span>
-
-            </button>
-
->>>>>>> 8e37a1a6b8824b616f56c5babfb9fa35ab719db6
-        </div>
-    </div>
-
-    <main>
-        <section id="viewProduce" class="active">
-            <div class="search-row">
-                <input type="text" id="searchInput" placeholder="Find crops, location..." onkeyup="handleSearch(this.value)">
-            </div>
-            <div id="produceContainer"></div>
         </section>
 
-        <section id="viewDemand">
-            <h2 style="margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">BUYER REQUESTS</h2>
-            <div id="demandContainer"></div>
-        </section>
-
-        <section id="viewMarket">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h2>MANDI RATES</h2>
-                <button class="btn sm" onclick="startScanner()">SCAN QR</button>
-            </div>
-            
-            <div class="card">
-                <h3 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:10px;">TODAY'S PRICES</h3>
-                <div id="priceContainer">
-                    <div style="padding:10px; text-align:center;">Loading rates...</div>
+        <section id="orders" class="view-section space-y-6">
+            <h2 class="text-2xl font-bold text-slate-800">Interested Buyers / Leads</h2>
+            <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 </div>
-            </div>
-
-            <h2 style="margin-top: 25px; margin-bottom: 15px;">AI FORECAST</h2>
-            <div id="forecastContainer"></div>
         </section>
 
-        <section id="viewSettings">
-            <h2 style="margin-bottom: 15px;">FARMER PROFILE</h2>
-            <form onsubmit="saveProfile(event)">
-                <label style="font-size:0.8rem; color:var(--text-muted);">Name</label>
-                <input type="text" id="pName" required>
-                
-                <label style="font-size:0.8rem; color:var(--text-muted);">Email</label>
-                <input type="email" id="pEmail" disabled style="opacity: 0.5;">
-                
-                <label style="font-size:0.8rem; color:var(--text-muted);">Contact Phone</label>
-                <input type="tel" id="pPhone" placeholder="+91...">
-                
-                <label style="font-size:0.8rem; color:var(--text-muted);">Region / Mandi</label>
-                <input type="text" id="pCity" placeholder="e.g. Nashik">
-
-                <button type="submit" class="btn" style="margin-top: 10px;">SAVE DETAILS</button>
-            </form>
-            <button onclick="logout()" class="btn outline" style="margin-top: 20px; border-color: var(--red); color: var(--red);">LOGOUT</button>
+        <section id="profile" class="view-section">
+            <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-card max-w-2xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6">Farm Profile</h2>
+                <form onsubmit="saveProfile(event)" class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Google Name</label>
+                        <input type="text" id="pName" disabled class="w-full bg-slate-50 p-4 rounded-xl opacity-60">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Contact Phone</label>
+                        <input type="tel" id="pPhone" placeholder="Enter phone for buyers" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Base Location (District/City)</label>
+                        <input type="text" id="pCity" placeholder="e.g., Pune, Maharashtra" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    </div>
+                    <button type="submit" class="w-full bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg">Update Profile</button>
+                </form>
+                <button onclick="logout()" class="w-full mt-4 text-red-500 font-bold py-2 border border-red-100 rounded-xl hover:bg-red-50">Logout Account</button>
+            </div>
         </section>
     </main>
 
-    <div id="createModal" class="modal hidden">
-        <div class="modal-content">
-            <h2 style="color: var(--accent); margin-bottom: 15px;">LIST PRODUCE</h2>
-            <form onsubmit="handleCreate(event)">
-                <input type="text" id="cTitle" placeholder="Crop Name (e.g. Red Onions)" required>
-                
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="number" id="cPrice" placeholder="Price" required>
-                    <select id="cUnit">
-                        <option value="kg">/ kg</option>
-                        <option value="quintal">/ Quintal</option>
-                        <option value="ton">/ Ton</option>
-                    </select>
+    <div id="createModal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 text-green-800">Post New Harvest</h2>
+            <form id="createForm" onsubmit="handleCreate(event)" class="space-y-4">
+                <input type="text" id="cTitle" placeholder="Crop Name (e.g., Alphonso Mangoes)" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="cPrice" placeholder="Price" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <input type="text" id="cUnit" placeholder="Unit (kg/ton)" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
                 </div>
-
-                <input type="number" id="cQty" placeholder="Total Quantity Available" required>
-                <input type="text" id="cLoc" placeholder="Farm Location" required>
+                <input type="text" id="cLoc" placeholder="Farm Location" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <textarea id="cDesc" placeholder="Description (Quality, Organic, etc.)" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200" rows="3"></textarea>
+                <input type="file" id="cImage" accept="image/*" class="w-full text-xs font-bold text-slate-500">
                 
-                <input type="file" id="cImageInput" style="display:none;"> 
-
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button type="button" class="btn outline" onclick="document.getElementById('createModal').classList.add('hidden')">CANCEL</button>
-                    <button type="submit" class="btn">POST LISTING</button>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeModal('createModal')" class="flex-1 py-4 font-bold text-slate-500">Cancel</button>
+                    <button type="submit" id="submitBtn" class="flex-1 bg-green-700 text-white py-4 rounded-2xl font-bold shadow-lg">Post Listing</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="detailsModal" class="modal hidden">
-        <div class="modal-content">
-            <div id="detailsContent"></div>
-            <button class="btn outline" style="margin-top: 15px;" onclick="document.getElementById('detailsModal').classList.add('hidden')">CLOSE</button>
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-lg border-t border-slate-200 z-50 h-20">
+        <div class="flex justify-around items-center h-full px-4">
+            <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-green-700"><i class="fa-solid fa-house text-xl"></i><span class="text-[10px] font-bold">Home</span></button>
+            <button onclick="switchTab('marketplace')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-shop text-xl"></i><span class="text-[10px] font-bold">Market</span></button>
+            <button onclick="openModal('createModal')" class="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center text-white shadow-lg -mt-10 border-4 border-[#fbfaf8]"><i class="fa-solid fa-plus text-xl"></i></button>
+            <button onclick="switchTab('orders')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-clipboard-list text-xl"></i><span class="text-[10px] font-bold">Leads</span></button>
+            <button onclick="switchTab('profile')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-user-circle text-xl"></i><span class="text-[10px] font-bold">Farm</span></button>
         </div>
-    </div>
-
-    <div id="scannerModal" class="modal hidden">
-        <div class="modal-content">
-            <h3 style="text-align:center; margin-bottom:10px;">SCAN PRODUCT/ID</h3>
-            <div id="reader" style="width:100%; background:#000;"></div>
-            <button class="btn outline" style="margin-top:15px;" onclick="stopScanner()">STOP SCAN</button>
-        </div>
-    </div>
-
-    <div id="scanResultModal" class="modal hidden">
-        <div class="modal-content" style="text-align: center;">
-            <h1 id="scanStatus" style="font-size: 2rem;">VERIFIED</h1>
-            <p id="scanData" style="margin-bottom: 20px; font-family: monospace; color: var(--text-muted);">Data</p>
-            <button class="btn" onclick="document.getElementById('scanResultModal').classList.add('hidden'); startScanner();">SCAN NEXT</button>
-            <button class="btn outline" style="margin-top: 10px;" onclick="document.getElementById('scanResultModal').classList.add('hidden')">DONE</button>
-        </div>
-    </div>
-
-    <nav class="dock">
-        <button class="dock-btn active" onclick="switchView('produce', this)">Produce</button>
-        <button class="dock-btn" onclick="switchView('demand', this)">Demand</button>
-        <button class="dock-btn" style="color:var(--accent); font-size: 1.5rem; line-height: 1rem;" onclick="document.getElementById('createModal').classList.remove('hidden')">+</button>
-        <button class="dock-btn" onclick="switchView('market', this)">Market</button>
-        <button class="dock-btn" onclick="switchView('settings', this)">Profile</button>
     </nav>
 
     <script>
+        // --- GLOBAL STATE ---
         let currentUser = null;
-        let currentProduce = []; 
-        let html5QrcodeScanner = null;
+        let marketData = [];
         let currentSearch = '';
 
-        // --- Init ---
+        // --- AUTH LOGIC (The Brains) ---
         window.addEventListener('load', () => {
             if(window.google) {
                 google.accounts.id.initialize({
                     client_id: "611302719944-o19m9h8p25d3pvfifuiu94gg1cl4e8h7.apps.googleusercontent.com", 
                     callback: handleGoogleResponse
                 });
-                const btnContainer = document.getElementById("googleBtnContainer");
-                if(btnContainer) {
-                    google.accounts.id.renderButton(btnContainer, { theme: "filled_black", size: "large", width: "250" });
-                }
+                google.accounts.id.renderButton(document.getElementById("googleBtnContainer"), { theme: "filled_blue", size: "large", shape: "pill" });
             }
             checkAuth();
         });
 
-        // --- Auth ---
         async function handleGoogleResponse(response) {
             try {
-                // Using SoftYield.auth from your API file
+                // Using API from api.js
                 const data = await SoftYield.auth.googleLogin(response.credential);
-                if(data.success || data.token) { // Adjust based on actual API return
-                    localStorage.setItem('softy_token', data.token || 'mock_token');
+                if(data.success) {
+                    localStorage.setItem('fida_token', data.token);
                     checkAuth();
-                } else {
-                    // Fallback for demo if API fails
-                    localStorage.setItem('softy_token', 'demo_token');
-                    checkAuth();
-                }
-            } catch(e) { console.error(e); }
+                } else showToast('Login Failed', true);
+            } catch(e) { showToast('Auth Error', true); }
         }
 
         async function checkAuth() {
-            const token = localStorage.getItem('softy_token');
+            const token = localStorage.getItem('fida_token');
             if (!token) {
-                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('auth-overlay').classList.remove('hidden');
                 return;
             }
             try {
-                // If backend isn't ready, we mock the user to let you test UI
-                try {
-                    currentUser = await SoftYield.auth.getMe();
-                } catch(err) {
-                    currentUser = { name: 'Farmer User', _id: 'u1', email: 'demo@agri.com' };
-                }
+                const user = await SoftYield.auth.getMe();
+                currentUser = user;
+                document.getElementById('auth-overlay').classList.add('hidden');
                 
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('headerName').innerText = currentUser.name;
-                loadAllData();
+                // Update UI with user data
+                document.getElementById('welcome-name').innerText = user.name;
+                document.getElementById('header-avatar').src = user.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+                
                 loadProfileData();
+                fetchMarketData();
             } catch (e) {
                 logout();
             }
         }
 
         function logout() {
-            localStorage.removeItem('softy_token');
+            localStorage.removeItem('fida_token');
             location.reload();
         }
 
-        // --- Views & Routing ---
-        function switchView(viewName, btnEl) {
-            document.querySelectorAll('section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.dock-btn').forEach(el => el.classList.remove('active'));
-            
-            if(btnEl) btnEl.classList.add('active');
-            
-            const map = { 
-                'produce': 'viewProduce', 
-                'demand': 'viewDemand', 
-                'market': 'viewMarket', 
-                'settings': 'viewSettings' 
-            };
-            
-            const targetId = map[viewName];
-            if(targetId) {
-                document.getElementById(targetId).classList.add('active');
-                if(viewName === 'produce') renderProduce();
-                if(viewName === 'demand') renderDemand();
-                if(viewName === 'market') renderMarketData();
-            }
-        }
-
-        async function loadAllData() {
+        // --- DATA LOGIC ---
+        async function fetchMarketData() {
             try {
-                currentProduce = await SoftYield.produce.getAll();
-                renderProduce();
-                renderDemand(); // Pre-load
-                renderMarketData(); // Pre-load
-            } catch (e) { console.log("Data load error", e); }
+                marketData = await SoftYield.produce.getAll();
+                renderMarket();
+                updateStats();
+            } catch (e) { showToast('Server Connection Error', true); }
         }
 
-        // --- 1. Produce Feed ---
-        function renderProduce() {
-            const container = document.getElementById('produceContainer');
-            container.innerHTML = '';
+        function renderMarket() {
+            const grid = document.getElementById('marketplace-grid');
+            grid.innerHTML = '';
             
-            const filtered = currentProduce.filter(item => 
-                (item.title.toLowerCase().includes(currentSearch) || 
-                 item.location.toLowerCase().includes(currentSearch))
+            const filtered = marketData.filter(item => 
+                (item.title.toLowerCase().includes(currentSearch) || item.location.toLowerCase().includes(currentSearch))
             );
 
-            if(filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No crops found.</div>';
-                return;
-            }
-
             filtered.forEach(item => {
-                const id = item._id || item.id;
-                // Default image if missing
-                const imgUrl = item.image || `https://placehold.co/600x400/292524/FFF?text=${item.title.substring(0,3)}`;
-                
+                const isSeller = (currentUser && item.sellerId === currentUser._id);
                 const html = `
-                    <div class="card" onclick="openProduceDetail('${id}')">
-                        <img src="${imgUrl}" class="crop-img" alt="${item.title}">
-                        <div style="display:flex; justify-content:space-between; align-items:start;">
-                            <div>
-                                <h3>${item.title}</h3>
-                                <div class="meta">${item.location} • ${item.sellerName || 'Farmer'}</div>
+                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-slate-100 group transition-all hover:shadow-depth">
+                        <div class="h-48 bg-slate-200 relative overflow-hidden">
+                            <img src="${item.image || 'https://images.unsplash.com/photo-1595009552535-be753447727e?auto=format&fit=crop&w=400'}" class="w-full h-full object-cover">
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-green-700">₹${item.price}/${item.unit}</div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">${item.title}</h3>
+                                ${isSeller ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">MY CROP</span>' : ''}
                             </div>
-                            <div style="text-align:right;">
-                                <div style="color:var(--accent); font-weight:700; font-size:1.1rem;">₹${item.price}</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">per ${item.unit || 'kg'}</div>
-                            </div>
+                            <p class="text-xs text-slate-500 mb-4 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> ${item.location}</p>
+                            <button onclick="showDetails('${item._id}')" class="w-full bg-slate-900 text-white text-sm font-bold py-3 rounded-xl transition-all active:scale-95">View Details</button>
                         </div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', html);
+                grid.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        // --- 2. Demand (Buy Requests) ---
-        async function renderDemand() {
-            const container = document.getElementById('demandContainer');
-            try {
-                const requests = await SoftYield.market.getBuyRequests();
-                container.innerHTML = '';
-                
-                if(!requests || requests.length === 0) {
-                    container.innerHTML = '<div style="color:var(--text-muted);">No active buy requests.</div>';
-                    return;
-                }
-
-                requests.forEach(req => {
-                    const html = `
-                        <div class="card" style="border-left: 3px solid var(--accent);">
-                            <div style="display:flex; justify-content:space-between;">
-                                <h3>${req.crop}</h3>
-                                <span class="tag ${req.verified ? 'verified' : ''}">${req.verified ? 'VERIFIED BUYER' : 'GUEST'}</span>
-                            </div>
-                            <div style="margin: 5px 0; font-size:0.9rem;">
-                                <strong>Qty Needed:</strong> ${req.quantity}
-                            </div>
-                            <div class="meta">
-                                <span>Target: <span style="color:var(--text);">₹${req.maxPrice}/kg</span></span>
-                                <span>• ${req.buyer}</span>
-                            </div>
-                            <button class="btn sm outline" style="margin-top:10px; width:100%;" onclick="showToast('Contact sent to ${req.buyer}')">ACCEPT REQUEST</button>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', html);
-                });
-            } catch(e) { container.innerHTML = 'Error loading requests.'; }
-        }
-
-        // --- 3. Market Data ---
-        async function renderMarketData() {
-            // Prices
-            const pContainer = document.getElementById('priceContainer');
-            try {
-                const prices = await SoftYield.market.getPrices();
-                pContainer.innerHTML = '';
-                prices.forEach(p => {
-                    const colorClass = p.trend === 'up' ? 'trend-up' : (p.trend === 'down' ? 'trend-down' : '');
-                    const arrow = p.trend === 'up' ? '▲' : (p.trend === 'down' ? '▼' : '●');
-                    
-                    const html = `
-                        <div class="trend-row">
-                            <span>${p.item}</span>
-                            <div style="text-align:right;">
-                                <span style="font-weight:bold;">${p.price}</span>
-                                <span class="${colorClass}" style="font-size:0.8rem; margin-left:5px;">${arrow}</span>
-                            </div>
-                        </div>
-                    `;
-                    pContainer.insertAdjacentHTML('beforeend', html);
-                });
-            } catch(e) {}
-
-            // Forecast
-            const fContainer = document.getElementById('forecastContainer');
-            try {
-                const forecast = await SoftYield.market.getPriceForecast();
-                fContainer.innerHTML = '';
-                forecast.forEach(f => {
-                    const html = `
-                        <div class="card" style="padding:10px;">
-                            <strong>${f.item}</strong>
-                            <p style="font-size:0.9rem; color:${f.color === 'green' ? 'var(--green)' : 'var(--red)'}; margin-top:5px;">
-                                ${f.prediction}
-                            </p>
-                        </div>
-                    `;
-                    fContainer.insertAdjacentHTML('beforeend', html);
-                });
-            } catch(e) {}
-        }
-
-        // --- Actions ---
-        function handleSearch(val) { currentSearch = val.toLowerCase(); renderProduce(); }
-
         async function handleCreate(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
             btn.innerText = 'Publishing...';
-            
+
             const formData = new FormData();
+            
+            // Capturing all fields required by the backend
             formData.append('title', document.getElementById('cTitle').value);
             formData.append('price', document.getElementById('cPrice').value);
             formData.append('unit', document.getElementById('cUnit').value);
-            formData.append('quantity', document.getElementById('cQty').value);
+            
+            // CRITICAL: The backend requires 'quantity' to avoid 400 error
+            // If you haven't added the cQty input to your HTML yet, we use a default of "1"
+            const qtyValue = document.getElementById('cQty') ? document.getElementById('cQty').value : "1";
+            formData.append('quantity', qtyValue);
+            
             formData.append('location', document.getElementById('cLoc').value);
-            // Mock image for demo
-            formData.append('image', `https://placehold.co/600x400/d97706/FFF?text=${document.getElementById('cTitle').value}`);
+            formData.append('description', document.getElementById('cDesc').value);
+            
+            const imgFile = document.getElementById('cImage').files[0];
+            if(imgFile) formData.append('image', imgFile);
 
             try {
                 const res = await SoftYield.produce.create(formData);
-                document.getElementById('createModal').classList.add('hidden');
-                e.target.reset();
-                showToast('Listing Created Successfully');
-                loadAllData(); // Refresh
+                if(res.success || res.id) {
+                    showToast('Crop listed successfully!');
+                    closeModal('createModal');
+                    e.target.reset();
+                    fetchMarketData(); // Refresh the UI
+                }
             } catch(err) { 
-                console.log(err);
-                // Mock success for UI if API fails
-                document.getElementById('createModal').classList.add('hidden');
-                showToast('Listing Created (Dev Mode)');
+                console.error("Submission Error:", err);
+                showToast('Failed to post crop: Missing Fields', true); 
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Post Listing';
             }
-            btn.innerText = 'POST LISTING';
         }
 
-        async function contactSeller(id) {
-            try {
-                const res = await SoftYield.produce.contactSeller(id);
-                showToast('Interest Sent to Farmer!');
-                document.getElementById('detailsModal').classList.add('hidden');
-            } catch(e) { showToast('Connection Error'); }
+        function updateStats() {
+            const myCount = marketData.filter(x => x.sellerId === currentUser?._id).length;
+            document.getElementById('stat-listings').innerText = myCount;
         }
 
-        function openProduceDetail(id) {
-            const item = currentProduce.find(e => (e._id || e.id) === id);
-            if(!item) return;
+        // --- UI UTILS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
 
-            const content = document.getElementById('detailsContent');
-            const imgUrl = item.image || `https://placehold.co/600x400/292524/FFF?text=${item.title}`;
-
-            content.innerHTML = `
-                <img src="${imgUrl}" style="width:100%; border-radius:4px; margin-bottom:15px;">
-                <h2 style="margin-bottom:5px;">${item.title}</h2>
-                <div class="meta" style="margin-bottom:20px; font-size:1rem;">
-                    <span style="color:var(--accent); font-weight:bold;">₹${item.price} / ${item.unit}</span>
-                </div>
-                
-                <div style="background:#000; padding:15px; border-radius:4px; margin-bottom:20px;">
-                    <div style="color:var(--text-muted); font-size:0.8rem;">FARMER</div>
-                    <div>${item.sellerName || 'Unknown Source'}</div>
-                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:10px;">LOCATION</div>
-                    <div>${item.location}</div>
-                </div>
-
-                <button class="btn" onclick="contactSeller('${id}')">CONTACT SELLER</button>
-            `;
-            document.getElementById('detailsModal').classList.remove('hidden');
-        }
-
-        // --- Scanner Logic ---
-        function startScanner() {
-            document.getElementById('scannerModal').classList.remove('hidden');
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            html5QrcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess);
-        }
-
-        function stopScanner() {
-            if(html5QrcodeScanner) html5QrcodeScanner.stop().then(() => html5QrcodeScanner.clear());
-            document.getElementById('scannerModal').classList.add('hidden');
-        }
-
-        function onScanSuccess(decodedText) {
-            html5QrcodeScanner.pause();
-            document.getElementById('scannerModal').classList.add('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            const activeNav = document.getElementById('nav-' + tabId);
+            if(activeNav) activeNav.classList.add('nav-active');
             
-            // Simulation of verifying a produce batch or ID
-            const resultModal = document.getElementById('scanResultModal');
-            document.getElementById('scanStatus').innerText = "VERIFIED";
-            document.getElementById('scanStatus').style.color = "var(--green)";
-            document.getElementById('scanData').innerText = `Payload: ${decodedText}`;
-            resultModal.classList.remove('hidden');
+            if(tabId === 'orders') renderLeads();
+            window.scrollTo(0,0);
         }
 
-        // --- Profile ---
+        function renderLeads() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
+            
+            // Show products I own that have interested buyers
+            const myProducts = marketData.filter(x => x.sellerId === currentUser?._id && x.interestedBuyers?.length > 0);
+            
+            if(myProducts.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 italic">No buyer requests yet. List more crops to get leads!</p>';
+                return;
+            }
+
+            myProducts.forEach(prod => {
+                prod.interestedBuyers.forEach(buyerId => {
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <div>
+                                <h4 class="font-bold text-slate-800">${prod.title}</h4>
+                                <p class="text-xs text-green-600 font-bold">New Interest Received</p>
+                            </div>
+                            <button class="bg-green-50 text-green-700 px-4 py-2 rounded-xl text-xs font-bold">Contact Buyer</button>
+                        </div>
+                    `);
+                });
+            });
+        }
+
+        function handleSearch(val) {
+            currentSearch = val.toLowerCase();
+            renderMarket();
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
         async function loadProfileData() {
            try {
                const details = await SoftYield.profile.loadDetails();
+               document.getElementById('pName').value = currentUser.name;
                if(details) {
-                   document.getElementById('pName').value = currentUser.name || '';
-                   document.getElementById('pEmail').value = currentUser.email || '';
                    document.getElementById('pPhone').value = details.phone || '';
                    document.getElementById('pCity').value = details.city || '';
+                   document.getElementById('header-city').innerText = details.city || 'Location unset';
                }
            } catch(e) {}
         }
-        
-        function saveProfile(e) {
+
+        async function saveProfile(e) {
             e.preventDefault();
-            showToast('Profile Saved');
+            const data = { phone: document.getElementById('pPhone').value, city: document.getElementById('pCity').value };
+            try {
+                await SoftYield.profile.updateDetails(data);
+                showToast('Profile updated!');
+                document.getElementById('header-city').innerText = data.city;
+            } catch(e) { showToast('Error saving profile', true); }
         }
 
-        function showToast(msg) {
+        function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-msg').innerText = msg;
+            
+            if(isError) {
+                icon.className = "w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white shrink-0";
+                icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                document.getElementById('toast-title').innerText = "Error";
+            } else {
+                icon.className = "w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-slate-900 shrink-0";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                document.getElementById('toast-title').innerText = "Success";
+            }
 
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
     </script>
 </body>
 </html>
