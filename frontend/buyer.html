@@ -753,7 +753,7 @@
         function renderProducts(data) {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = data.map(item => `
-                <div class="bg-white rounded-2xl p-2 pb-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform flex flex-col h-full" onclick="openProductPage(${item.id})">
+                <div class="bg-white rounded-2xl p-2 pb-4 shadow-sm border border-slate-100 active:scale-[0.98] transition-transform flex flex-col h-full" onclick="openProductPage('${item.id}')">
                     <div class="relative h-32 md:h-40 rounded-xl overflow-hidden mb-3">
                         <img src="${item.img}" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-xs font-bold text-slate-800 shadow-sm">
@@ -844,7 +844,7 @@
             }
 
             container.innerHTML = displayItems.map(item => `
-                <div class="min-w-[160px] w-[160px] bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden active:scale-95 transition-transform cursor-pointer" onclick="openProductPage(${item.id})">
+                <div class="min-w-[160px] w-[160px] bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden active:scale-95 transition-transform cursor-pointer" onclick="openProductPage('${item.id}')">
                     <div class="h-28 w-full relative">
                         <img src="${item.img}" class="w-full h-full object-cover" loading="lazy">
                         <span class="absolute bottom-1 left-1 bg-white/90 px-1.5 py-0.5 rounded text-[10px] font-bold">₹${item.price}</span>

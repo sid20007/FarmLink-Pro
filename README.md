@@ -117,6 +117,10 @@ npm start
 |:---:|:---:|
 | ![Farmer Login](assets/screenshots/farmer_login.png)<br>_Dedicated portal for farmers._ | ![Market Trends](assets/screenshots/market_trends.png)<br>_Real-time price trends and AI forecasts._ |
 
+### Product Details
+![Product Detail](assets/screenshots/product_detail.png)
+*Detailed view of fresh produce with direct farmer contact options.*
+
 ### Dashboard & Features
 ![Buyer Dashboard](assets/screenshots/buyer_dashboard_full.png)
 *Comprehensive buyer dashboard featuring verified farmers, bulk discounts, and fresh listings.*
