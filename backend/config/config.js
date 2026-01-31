@@ -11,8 +11,7 @@ module.exports = {
 
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "Chris's cloud",
 	api_key: process.env.CLOUDINARY_API_KEY || "cloudy and a chance of meatballs",
-	api_secret: process.env.CLOUDINARY_API_SECRET || "jimmy",
-	PORT: 5000
+	api_secret: process.env.CLOUDINARY_API_SECRET || "jimmy"
 
 }
 
