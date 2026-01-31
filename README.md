@@ -45,7 +45,7 @@ We don't buy the crop — we give the farmer the **data** and the **connection**
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/sid20007/FarmLink-Pro.git
+git clone https://github.com/sid20007/SoftYield.git
 cd FarmLink-Pro
 npm install
 ```
