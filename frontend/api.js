@@ -3,7 +3,7 @@
    ========================================= */
 const SoftYield = {
     // URL Configuration
-    BASE_URL: 'https://farmbox.onrender.com/api',
+    BASE_URL: 'https://localhost:5000/api',
 
 
     // Helper: Get Auth Headers
