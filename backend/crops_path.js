@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 router.post('/', authenticateJWT, upload.single('image'), async (req, res) => {
     try {
         const produceCollection = getProduceCollection();
-        console.log("EEE")
+        console.log("New product listed")
         // New AgriFlow Fields:
         const { title, price, unit, quantity, location, description } = req.body;
 

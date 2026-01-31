@@ -2,189 +2,349 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoftYield | Farmer Suite</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgriConnect | Professional Farmer Suite</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script defer src="api.js"></script>
 
-    <style>
-        :root {
-            --brand-primary: #15803d;
-            --brand-secondary: #166534;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d', 950: '#052e16' },
+                        earth: { 50: '#fbfaf8', 100: '#f5f2eb', 200: '#e6e0d4', 800: '#5c5245' },
+                        accent: { 500: '#f59e0b', 600: '#d97706' },
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(34, 197, 94, 0.25)',
+                        'card': '0 10px 30px -5px rgba(0,0,0,0.06)',
+                        'depth': '0 20px 40px -10px rgba(22, 101, 52, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                }
+            }
         }
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
-        .shadow-depth { box-shadow: 0 20px 40px -10px rgba(21, 128, 61, 0.15); }
-        .custom-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
-        .nav-active { background: white; color: #15803d !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </script>
 
-        /* Auth Overlay Styles */
-        #auth-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        body { background-color: #fbfaf8; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+        .nav-item { position: relative; overflow: hidden; }
+        .nav-active { background-color: #15803d; color: white; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25); }
+        
+        .view-section { display: none; opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+        #toast { visibility: hidden; opacity: 0; transform: translateX(-50%) translateY(20px); transition: all 0.4s; }
+        #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .custom-pattern { background-image: radial-gradient(#166534 0.5px, transparent 0.5px), radial-gradient(#166534 0.5px, #fbfaf8 0.5px); background-size: 20px 20px; opacity: 0.03; }
+        
+        /* Auth Overlay Specifics */
+        #auth-overlay { backdrop-filter: blur(12px); }
     </style>
 </head>
-
-<body class="bg-[#fbfaf8] text-slate-800 antialiased pb-28 md:pb-12 relative">
-
+<body class="text-slate-800 antialiased pb-28 md:pb-12 relative">
+    
     <div class="fixed inset-0 custom-pattern pointer-events-none z-[-1]"></div>
 
-    <div id="toast" class="fixed bottom-24 md:bottom-10 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 bg-slate-900/95 backdrop-blur text-white px-6 py-4 rounded-2xl shadow-depth min-w-[300px] border border-white/10 hidden">
-        <div id="toast-icon" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-slate-900 shrink-0">
+    <div id="auth-overlay" class="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-earth-100/80 hidden">
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-md w-full shadow-2xl text-center border border-white">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-600 to-brand-800 text-white mb-8 shadow-glow">
+                <i class="fa-solid fa-wheat-awn text-4xl"></i>
+            </div>
+            <h1 class="text-4xl font-display font-bold text-slate-900 mb-2">AgriConnect</h1>
+            <p class="text-slate-600 mb-10 font-medium">Professional Farmer Suite</p>
+            
+            <div id="googleBtnContainer" class="flex justify-center min-h-[50px]"></div>
+            
+            <p class="text-xs text-slate-400 mt-10 uppercase tracking-widest font-bold">Secure Access</p>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-24 md:bottom-10 left-1/2 z-[100] flex items-center gap-3 bg-slate-900/95 backdrop-blur text-white px-6 py-4 rounded-2xl shadow-depth min-w-[300px] border border-white/10">
+        <div id="toast-icon" class="w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center text-slate-900 shrink-0">
             <i class="fa-solid fa-check"></i>
         </div>
         <div>
-            <h4 class="font-bold text-sm tracking-wide" id="toast-title">Notification</h4>
-            <p class="text-xs text-slate-400 font-medium" id="toast-msg">Action completed.</p>
+            <h4 class="font-bold text-sm tracking-wide" id="toast-title">Success</h4>
+            <p class="text-xs text-slate-400 font-medium" id="toast-msg">Action completed successfully.</p>
         </div>
     </div>
 
-    <div id="auth-overlay" class="fixed inset-0 z-[200] flex items-center justify-center p-6 hidden">
-        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-md w-full shadow-2xl text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-600 text-white mb-6">
-                <i class="fa-solid fa-leaf text-3xl"></i>
-            </div>
-            <h1 class="text-3xl font-bold text-slate-800 mb-2">SoftYield</h1>
-            <p class="text-slate-600 mb-8">Decentralized Agriculture Market</p>
-            <div id="googleBtnContainer" class="flex justify-center"></div>
-            <p class="text-xs text-slate-400 mt-8 uppercase tracking-widest font-bold">Secure Farmer Access</p>
-        </div>
-    </div>
-
-    <header class="fixed top-0 w-full z-50 glass border-b border-earth-100">
+    <header class="fixed top-0 w-full z-50 glass transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('dashboard')">
-                <div class="w-11 h-11 bg-green-700 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <div class="w-11 h-11 bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-900/20 group-hover:scale-105 transition-transform duration-300">
                     <i class="fa-solid fa-wheat-awn text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-xl leading-none text-slate-900 tracking-tight">SoftYield</h1>
-                    <span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">Farmer Suite</span>
+                    <h1 class="font-display font-bold text-xl leading-none text-slate-900 tracking-tight">AgriConnect</h1>
+                    <span class="text-[10px] font-bold text-brand-700 uppercase tracking-[0.2em]" data-translate="app_subtitle">Farmer Suite</span>
                 </div>
             </div>
 
-            <nav class="hidden md:flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all nav-active">Dashboard</button>
-                <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Market</button>
-                <button onclick="switchTab('orders')" id="nav-orders" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Orders</button>
-                <button onclick="switchTab('profile')" id="nav-profile" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all">Profile</button>
+            <nav class="hidden md:flex bg-earth-100/50 p-1.5 rounded-2xl border border-earth-200/60 backdrop-blur-sm">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800 nav-active">
+                    <i class="fa-solid fa-grid-2 mr-2 opacity-70"></i><span data-translate="nav_dashboard">Dashboard</span>
+                </button>
+                <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
+                    <i class="fa-solid fa-shop mr-2 opacity-70"></i><span data-translate="nav_market">Market</span>
+                </button>
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
+                    <i class="fa-solid fa-clipboard-list mr-2 opacity-70"></i><span data-translate="nav_orders">Orders</span>
+                </button>
+                <button onclick="switchTab('profile')" id="nav-profile" class="nav-item px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 transition-all hover:bg-white hover:text-brand-800">
+                    <i class="fa-solid fa-user-circle mr-2 opacity-70"></i><span data-translate="nav_profile">Farm Profile</span>
+                </button>
             </nav>
 
-            <div class="flex items-center gap-4">
-                <div class="hidden lg:flex flex-col items-end">
-                    <span id="header-city" class="text-xs font-bold text-slate-900">...</span>
-                    <span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 rounded">ONLINE</span>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="relative">
+                    <button onclick="toggleLangMenu(event)" id="lang-btn" class="flex items-center gap-1 md:gap-2 bg-white border border-earth-200 text-slate-600 px-2 md:px-3 py-2 rounded-xl text-xs font-bold hover:bg-earth-50 transition-colors focus:outline-none">
+                        <i class="fa-solid fa-language text-brand-600 text-base"></i>
+                        <span id="current-lang-label" class="hidden md:inline">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="lang-arrow"></i>
+                    </button>
+                    <div id="lang-menu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-earth-100 overflow-hidden hidden z-[100]">
+                        <button onclick="changeLanguage('en')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 flex justify-between">English <i class="fa-solid fa-check text-brand-600 opacity-100" id="check-en"></i></button>
+                        <button onclick="changeLanguage('hi')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-50 flex justify-between">हिंदी <i class="fa-solid fa-check text-brand-600 opacity-0" id="check-hi"></i></button>
+                    </div>
                 </div>
-                <div class="w-10 h-10 rounded-xl border-2 border-white shadow-md overflow-hidden">
-                    <img id="header-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Farmer" alt="Profile">
+
+                <div class="hidden lg:flex flex-col items-end mr-2">
+                    <span id="header-city" class="text-xs font-bold text-slate-900">...</span>
+                    <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 rounded flex items-center gap-1">ONLINE</span>
+                </div>
+                <div onclick="switchTab('profile')" class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-tr from-brand-100 to-earth-100 border-2 border-white p-0.5 cursor-pointer shadow-md group shrink-0">
+                    <img id="header-avatar" src="" class="w-full h-full rounded-[9px] group-hover:scale-95 transition-transform" alt="Profile">
                 </div>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-28">
-        
-        <section id="dashboard" class="view-section active space-y-6">
+
+        <section id="dashboard" class="view-section active space-y-6 md:space-y-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div class="lg:col-span-8 bg-green-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-depth min-h-[350px] flex flex-col justify-between">
+                <div class="lg:col-span-8 bg-gradient-to-br from-brand-900 to-brand-800 rounded-[2rem] p-6 md:p-8 text-white relative overflow-hidden shadow-depth group min-h-[380px] flex flex-col justify-between">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-500 rounded-full mix-blend-overlay filter blur-[100px] opacity-20"></div>
+                    
                     <div class="relative z-10">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-bold mb-4">
-                            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Mandi Live
-                        </span>
-                        <h2 class="font-bold text-4xl md:text-5xl mb-3 tracking-tight">Welcome, <br><span id="welcome-name" class="text-green-300">Farmer</span>!</h2>
-                        <p class="text-green-100/90 max-w-md">The market is active today. Manage your listings or browse local buyer requests.</p>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-bold text-brand-100 mb-4 shadow-sm">
+                                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                    <span data-translate="mandi_live">Mandi Live</span>
+                                </div>
+                                <h2 class="font-display font-bold text-3xl md:text-5xl mb-3 tracking-tight leading-tight"><span data-translate="good_afternoon">Good Day</span>, <br><span class="text-brand-300 user-name-display">Farmer</span>!</h2>
+                                <p class="text-brand-100/90 max-w-md text-sm md:text-base leading-relaxed">
+                                    Your digital mandi is active. Track your crops and orders in real-time.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="relative z-10 flex flex-wrap gap-4">
-                        <button onclick="openModal('createModal')" class="bg-white text-green-900 px-8 py-4 rounded-2xl font-bold text-sm shadow-xl hover:scale-105 transition-transform">
-                            Post New Crop
+                        
+                    <div class="relative z-10 mt-8 flex flex-wrap gap-3 md:gap-4">
+                        <button onclick="openModal()" class="bg-white text-brand-900 px-6 py-3.5 rounded-2xl font-bold text-sm shadow-xl hover:scale-[1.02] transition-all flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-700"><i class="fa-solid fa-plus text-xs"></i></span>
+                            <span data-translate="create_listing">Create Listing</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-4 space-y-6">
-                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-card">
-                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1">Active Listings</p>
-                        <h3 id="stat-listings" class="text-4xl font-bold text-slate-900">0</h3>
-                        <div class="mt-4 flex items-center text-green-600 font-bold text-sm">
-                            <i class="fa-solid fa-leaf mr-1"></i> My Farm Products
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex flex-col justify-center h-[160px] shrink-0 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-10 -mt-10 blur-2xl opacity-50"></div>
+                        <div class="flex items-center justify-between mb-4 relative z-10">
+                            <div class="w-12 h-12 bg-earth-50 rounded-2xl flex items-center justify-center text-brand-700 text-xl shadow-sm border border-earth-100">
+                                <i class="fa-solid fa-leaf"></i>
+                            </div>
                         </div>
+                        <p class="text-slate-500 text-xs font-extrabold uppercase tracking-widest mb-1" data-translate="active_listings">Active Listings</p>
+                        <h3 id="stat-listings" class="text-4xl font-display font-bold text-slate-900 tracking-tight">0</h3>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-card flex-1 flex flex-col relative overflow-hidden h-full min-h-[300px]">
+                        <h4 class="font-bold text-slate-900 text-sm mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-brand-500"></i> <span data-translate="live_rates">Market Activity</span></h4>
+                        <div id="activity-ticker" class="text-sm text-slate-500 italic">Connecting to Mandi...</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="marketplace" class="view-section space-y-6">
-            <div class="bg-white p-6 rounded-[2.5rem] shadow-card border border-slate-100">
-                <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="Search crops, location..." class="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-green-500 outline-none">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="marketplace-grid">
+        <section id="marketplace" class="view-section space-y-8">
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-card border border-earth-100 sticky top-24 z-30">
+                <div class="relative group">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-slate-400"></i>
+                    <input type="text" id="market-search" placeholder="Search crops, locations..." class="w-full bg-earth-50 border-2 border-transparent hover:border-earth-200 focus:border-brand-500 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-semibold text-slate-800 outline-none transition-all" onkeyup="filterMarketplace()">
                 </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="marketplace-grid">
+                </div>
+            
+            <div id="no-results" class="hidden flex flex-col items-center justify-center py-20">
+                <div class="w-24 h-24 bg-earth-100 rounded-full flex items-center justify-center text-slate-300 text-4xl mb-6"><i class="fa-solid fa-leaf"></i></div>
+                <h3 class="text-xl font-bold text-slate-800" data-translate="no_listings">No listings found</h3>
+            </div>
         </section>
 
-        <section id="orders" class="view-section space-y-6">
-            <h2 class="text-2xl font-bold text-slate-800">Interested Buyers / Leads</h2>
+        <section id="analytics" class="view-section space-y-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-display font-bold text-3xl text-slate-900">Interested Buyers</h2>
+                    <p class="text-slate-500 text-sm font-medium mt-1">Leads for your listed products.</p>
+                </div>
+            </div>
             <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 </div>
         </section>
 
-        <section id="profile" class="view-section">
-            <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-card max-w-2xl mx-auto">
-                <h2 class="text-2xl font-bold mb-6">Farm Profile</h2>
-                <form onsubmit="saveProfile(event)" class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Google Name</label>
-                        <input type="text" id="pName" disabled class="w-full bg-slate-50 p-4 rounded-xl opacity-60">
+        <section id="profile" class="view-section space-y-8 pb-12">
+            <div class="relative bg-white rounded-[2.5rem] shadow-card overflow-hidden border border-earth-100">
+                <div class="h-40 md:h-48 bg-slate-800 relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover opacity-60">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+                
+                <div class="px-6 md:px-8 pb-8 relative">
+                    <div class="flex flex-col md:flex-row items-center md:items-end -mt-12 md:-mt-16 mb-6 gap-4 md:gap-6">
+                        <div class="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-white p-1.5 shadow-xl relative group z-10">
+                            <img id="profile-img-lg" src="" class="w-full h-full rounded-[1.5rem] bg-slate-50 object-cover" alt="Profile">
+                        </div>
+                        <div class="flex-1 text-center md:text-left mb-2">
+                            <h2 class="text-2xl md:text-3xl font-display font-bold text-slate-900 user-name-display mb-1">...</h2>
+                            <p class="text-xs md:text-sm text-slate-500 font-bold user-location-display flex items-center justify-center md:justify-start gap-2">
+                                <i class="fa-solid fa-location-dot text-brand-500"></i> <span id="display-city">Location Unset</span>
+                            </p>
+                        </div>
+                        <button onclick="toggleEditProfile()" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-800 shadow-lg shadow-slate-900/20">
+                            <span data-translate="edit_profile">Edit Details</span>
+                        </button>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Contact Phone</label>
-                        <input type="tel" id="pPhone" placeholder="Enter phone for buyers" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+
+                    <div id="edit-profile-form" class="hidden mt-6 p-6 bg-earth-50 rounded-2xl border border-earth-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Google Name (Read Only)</label>
+                                <input type="text" id="edit-name" disabled class="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold opacity-70">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Location (City/District)</label>
+                                <input type="text" id="edit-location" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone</label>
+                                <input type="tel" id="edit-phone" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-6">
+                            <button onclick="toggleEditProfile()" class="px-5 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                            <button onclick="saveProfile()" class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/20 hover:bg-brand-700">Save Changes</button>
+                        </div>
+                        <button onclick="logout()" class="mt-4 text-xs font-bold text-red-500 hover:underline">Log Out</button>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Base Location (District/City)</label>
-                        <input type="text" id="pCity" placeholder="e.g., Pune, Maharashtra" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                </div>
+            </div>
+
+            <div class="px-2">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-display font-bold text-xl text-slate-900" data-translate="my_inventory">My Inventory</h3>
+                </div>
+                <div id="profile-history-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     </div>
-                    <button type="submit" class="w-full bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg">Update Profile</button>
-                </form>
-                <button onclick="logout()" class="w-full mt-4 text-red-500 font-bold py-2 border border-red-100 rounded-xl hover:bg-red-50">Logout Account</button>
             </div>
         </section>
     </main>
 
-    <div id="createModal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6 text-green-800">Post New Harvest</h2>
-            <form id="createForm" onsubmit="handleCreate(event)" class="space-y-4">
-                <input type="text" id="cTitle" placeholder="Crop Name (e.g., Alphonso Mangoes)" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="cPrice" placeholder="Price" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <input type="text" id="cUnit" placeholder="Unit (kg/ton)" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+    <div id="listingModal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop" onclick="closeModal()"></div>
+        <div class="absolute bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full md:w-[500px] bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl transform translate-y-full md:translate-y-10 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
+            
+            <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-earth-50/50 rounded-t-[2.5rem]">
+                <div>
+                    <h3 class="text-xl font-display font-bold text-slate-900" data-translate="new_listing">New Listing</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Broadcast to verified buyers</p>
                 </div>
-                <input type="text" id="cLoc" placeholder="Farm Location" required class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <textarea id="cDesc" placeholder="Description (Quality, Organic, etc.)" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200" rows="3"></textarea>
-                <input type="file" id="cImage" accept="image/*" class="w-full text-xs font-bold text-slate-500">
+                <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="p-8 overflow-y-auto space-y-6 custom-scrollbar">
+                <input type="file" id="itemImage" accept="image/*" class="w-full text-xs font-bold text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Item Name</label>
+                    <input type="text" id="itemName" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. Organic Red Tomatoes">
+                </div>
                 
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeModal('createModal')" class="flex-1 py-4 font-bold text-slate-500">Cancel</button>
-                    <button type="submit" id="submitBtn" class="flex-1 bg-green-700 text-white py-4 rounded-2xl font-bold shadow-lg">Post Listing</button>
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Unit</label>
+                        <input type="text" id="itemUnit" placeholder="kg/ton" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Quantity</label>
+                        <input type="number" id="itemQty" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none" value="1">
+                    </div>
                 </div>
-            </form>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Price / Unit</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-4 text-slate-400 font-bold">₹</span>
+                        <input type="number" id="itemPrice" class="w-full bg-white border border-slate-200 rounded-2xl p-4 pl-8 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+                
+                <div>
+                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Location</label>
+                     <input type="text" id="itemLoc" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+
+                <div>
+                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Description</label>
+                     <textarea id="itemDesc" rows="2" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-100 bg-white md:rounded-b-[2.5rem]">
+                <button id="submitBtn" onclick="submitListing()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand-600/20 active:scale-95 transition-all text-sm tracking-wide" data-translate="publish">
+                    Publish Listing
+                </button>
+            </div>
         </div>
     </div>
 
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-lg border-t border-slate-200 z-50 h-20">
-        <div class="flex justify-around items-center h-full px-4">
-            <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-green-700"><i class="fa-solid fa-house text-xl"></i><span class="text-[10px] font-bold">Home</span></button>
-            <button onclick="switchTab('marketplace')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-shop text-xl"></i><span class="text-[10px] font-bold">Market</span></button>
-            <button onclick="openModal('createModal')" class="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center text-white shadow-lg -mt-10 border-4 border-[#fbfaf8]"><i class="fa-solid fa-plus text-xl"></i></button>
-            <button onclick="switchTab('orders')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-clipboard-list text-xl"></i><span class="text-[10px] font-bold">Leads</span></button>
-            <button onclick="switchTab('profile')" class="flex flex-col items-center gap-1 text-slate-400"><i class="fa-solid fa-user-circle text-xl"></i><span class="text-[10px] font-bold">Farm</span></button>
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-lg border-t border-slate-200 z-50 pb-safe h-20">
+        <div class="flex justify-around items-center h-full px-2 relative">
+            <button onclick="switchTab('dashboard')" id="mob-dashboard" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-brand-700 mob-active w-16 group"><div class="w-8 h-8 rounded-full flex items-center justify-center mb-0.5"><i class="fa-solid fa-grid-2 text-lg"></i></div><span class="text-[10px] font-bold">Home</span></button>
+            <button onclick="switchTab('marketplace')" id="mob-marketplace" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 w-16 group"><div class="w-8 h-8 rounded-full flex items-center justify-center mb-0.5"><i class="fa-solid fa-shop text-lg"></i></div><span class="text-[10px] font-bold">Market</span></button>
+            <div class="relative -top-6"><button onclick="openModal()" class="w-14 h-14 bg-gradient-to-r from-brand-600 to-brand-500 rounded-full flex items-center justify-center text-white shadow-xl border-[6px] border-[#fbfaf8] hover:scale-110 transition-transform"><i class="fa-solid fa-plus text-xl"></i></button></div>
+            <button onclick="switchTab('analytics')" id="mob-analytics" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 w-16 group"><div class="w-8 h-8 rounded-full flex items-center justify-center mb-0.5"><i class="fa-solid fa-clipboard-list text-lg"></i></div><span class="text-[10px] font-bold">Leads</span></button>
+            <button onclick="switchTab('profile')" id="mob-profile" class="mob-nav-btn flex flex-col items-center gap-1 p-2 text-slate-400 w-16 group"><div class="w-8 h-8 rounded-full flex items-center justify-center mb-0.5"><i class="fa-solid fa-user-circle text-lg"></i></div><span class="text-[10px] font-bold">Farm</span></button>
         </div>
     </nav>
 
@@ -192,9 +352,15 @@
         // --- GLOBAL STATE ---
         let currentUser = null;
         let marketData = [];
-        let currentSearch = '';
+        let currentLang = 'en';
 
-        // --- AUTH LOGIC (The Brains) ---
+        // --- TRANSLATIONS (Static UI) ---
+        const translations = {
+            en: { app_subtitle: "Farmer Suite", nav_dashboard: "Dashboard", nav_market: "Market", nav_orders: "Orders", nav_profile: "Farm Profile", mandi_live: "Mandi Live", good_afternoon: "Good Day", create_listing: "Create Listing", active_listings: "Active Listings", live_rates: "Market Activity", no_listings: "No listings found", edit_profile: "Edit Details", my_inventory: "My Inventory", new_listing: "New Listing", publish: "Publish Listing" },
+            hi: { app_subtitle: "किसान सुइट", nav_dashboard: "डैशबोर्ड", nav_market: "बाज़ार", nav_orders: "ऑर्डर्स", nav_profile: "प्रोफ़ाइल", mandi_live: "मंडी लाइव", good_afternoon: "नमस्ते", create_listing: "नई लिस्टिंग", active_listings: "सक्रिय लिस्टिंग", live_rates: "बाज़ार हलचल", no_listings: "कोई लिस्टिंग नहीं", edit_profile: "विवरण बदलें", my_inventory: "मेरा स्टॉक", new_listing: "नई लिस्टिंग", publish: "प्रकाशित करें" }
+        };
+
+        // --- AUTH & INIT ---
         window.addEventListener('load', () => {
             if(window.google) {
                 google.accounts.id.initialize({
@@ -208,7 +374,6 @@
 
         async function handleGoogleResponse(response) {
             try {
-                // Using API from api.js
                 const data = await SoftYield.auth.googleLogin(response.credential);
                 if(data.success) {
                     localStorage.setItem('fida_token', data.token);
@@ -228,194 +393,242 @@
                 currentUser = user;
                 document.getElementById('auth-overlay').classList.add('hidden');
                 
-                // Update UI with user data
-                document.getElementById('welcome-name').innerText = user.name;
-                document.getElementById('header-avatar').src = user.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+                // Init UI with User Data
+                document.querySelectorAll('.user-name-display').forEach(el => el.innerText = user.name.split(' ')[0]);
+                const avatar = user.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+                document.getElementById('header-avatar').src = avatar;
+                document.getElementById('profile-img-lg').src = avatar;
+                document.getElementById('edit-name').value = user.name;
                 
+                // Fetch Data
                 loadProfileData();
                 fetchMarketData();
-            } catch (e) {
-                logout();
-            }
+            } catch (e) { logout(); }
         }
 
-        function logout() {
-            localStorage.removeItem('fida_token');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('fida_token'); location.reload(); }
 
         // --- DATA LOGIC ---
         async function fetchMarketData() {
             try {
                 marketData = await SoftYield.produce.getAll();
                 renderMarket();
+                renderProfileHistory();
+                renderOrders();
                 updateStats();
-            } catch (e) { showToast('Server Connection Error', true); }
+                document.getElementById('activity-ticker').innerHTML = `<span class="text-green-600 font-bold">● Live</span> Syncing real-time updates from local mandi...`;
+            } catch (e) { showToast('Connection Error', true); }
         }
 
+        async function loadProfileData() {
+            try {
+                const details = await SoftYield.profile.loadDetails();
+                if(details) {
+                    document.getElementById('edit-phone').value = details.phone || '';
+                    document.getElementById('edit-location').value = details.city || '';
+                    document.getElementById('display-city').innerText = details.city || 'Location Unset';
+                    document.getElementById('header-city').innerText = details.city || '...';
+                }
+            } catch(e) {}
+        }
+
+        // --- RENDERING ---
         function renderMarket() {
+            const searchVal = document.getElementById('market-search').value.toLowerCase();
             const grid = document.getElementById('marketplace-grid');
+            const noRes = document.getElementById('no-results');
             grid.innerHTML = '';
             
             const filtered = marketData.filter(item => 
-                (item.title.toLowerCase().includes(currentSearch) || item.location.toLowerCase().includes(currentSearch))
+                (item.title.toLowerCase().includes(searchVal) || item.location.toLowerCase().includes(searchVal))
             );
 
+            if(filtered.length === 0) noRes.classList.remove('hidden');
+            else noRes.classList.add('hidden');
+
             filtered.forEach(item => {
-                const isSeller = (currentUser && item.sellerId === currentUser._id);
+                const isMine = (currentUser && item.sellerId === currentUser._id);
                 const html = `
-                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-card border border-slate-100 group transition-all hover:shadow-depth">
-                        <div class="h-48 bg-slate-200 relative overflow-hidden">
-                            <img src="${item.image || 'https://images.unsplash.com/photo-1595009552535-be753447727e?auto=format&fit=crop&w=400'}" class="w-full h-full object-cover">
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-green-700">₹${item.price}/${item.unit}</div>
+                    <div class="bg-white rounded-[2rem] overflow-hidden border border-earth-100 shadow-card group hover:translate-y-[-5px] transition-transform duration-300 flex flex-col h-full hover:shadow-depth">
+                        <div class="relative h-56 overflow-hidden bg-slate-200">
+                            <img src="${item.image || 'https://images.unsplash.com/photo-1595009552535-be753447727e?auto=format&fit=crop&w=400'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-bold text-slate-900 shadow-sm">₹${item.price}/${item.unit}</div>
+                            ${isMine ? `<div class="absolute top-4 left-4 bg-brand-600/90 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">MY STOCK</div>` : ''}
                         </div>
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-bold text-lg text-slate-900">${item.title}</h3>
-                                ${isSeller ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">MY CROP</span>' : ''}
+                        <div class="p-6 flex flex-col flex-1">
+                            <div class="mb-4">
+                                <h3 class="font-bold text-slate-900 text-lg leading-tight line-clamp-1 group-hover:text-brand-700 transition-colors">${item.title}</h3>
+                                <p class="text-xs text-slate-500 mt-1 font-medium flex items-center"><i class="fa-solid fa-location-dot mr-1.5 text-brand-500"></i> ${item.location}</p>
                             </div>
-                            <p class="text-xs text-slate-500 mb-4 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> ${item.location}</p>
-                            <button onclick="showDetails('${item._id}')" class="w-full bg-slate-900 text-white text-sm font-bold py-3 rounded-xl transition-all active:scale-95">View Details</button>
+                            <div class="mt-auto pt-4 border-t border-earth-100 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-earth-100 flex items-center justify-center text-xs font-bold text-slate-600 border border-earth-200 shadow-sm"><i class="fa-solid fa-user"></i></div>
+                                    <div><p class="text-xs font-bold text-slate-800">Farmer</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Verified</p></div>
+                                </div>
+                                <button onclick="showToast('Connecting...')" class="bg-earth-50 text-slate-400 border border-earth-200 hover:bg-brand-600 hover:text-white transition-colors w-10 h-10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-phone text-sm"></i></button>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 grid.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        async function handleCreate(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = 'Publishing...';
-
-            const formData = new FormData();
-            
-            // Capturing all fields required by the backend
-            formData.append('title', document.getElementById('cTitle').value);
-            formData.append('price', document.getElementById('cPrice').value);
-            formData.append('unit', document.getElementById('cUnit').value);
-            
-            // CRITICAL: The backend requires 'quantity' to avoid 400 error
-            // If you haven't added the cQty input to your HTML yet, we use a default of "1"
-            const qtyValue = document.getElementById('cQty') ? document.getElementById('cQty').value : "1";
-            formData.append('quantity', qtyValue);
-            
-            formData.append('location', document.getElementById('cLoc').value);
-            formData.append('description', document.getElementById('cDesc').value);
-            
-            const imgFile = document.getElementById('cImage').files[0];
-            if(imgFile) formData.append('image', imgFile);
-
-            try {
-                const res = await SoftYield.produce.create(formData);
-                if(res.success || res.id) {
-                    showToast('Crop listed successfully!');
-                    closeModal('createModal');
-                    e.target.reset();
-                    fetchMarketData(); // Refresh the UI
-                }
-            } catch(err) { 
-                console.error("Submission Error:", err);
-                showToast('Failed to post crop: Missing Fields', true); 
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Post Listing';
+        function renderProfileHistory() {
+            const container = document.getElementById('profile-history-list');
+            const myItems = marketData.filter(x => x.sellerId === currentUser?._id);
+            if(myItems.length === 0) {
+                container.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 italic">No inventory listed yet.</div>';
+                return;
             }
+            container.innerHTML = myItems.map(item => `
+                <div class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-earth-100 shadow-sm">
+                    <img src="${item.image || 'https://via.placeholder.com/100'}" class="w-16 h-16 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-slate-900 text-sm">${item.title}</h4>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-xs text-brand-700 font-bold">₹${item.price}/${item.unit}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function updateStats() {
-            const myCount = marketData.filter(x => x.sellerId === currentUser?._id).length;
-            document.getElementById('stat-listings').innerText = myCount;
-        }
-
-        // --- UI UTILS ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
-            const activeNav = document.getElementById('nav-' + tabId);
-            if(activeNav) activeNav.classList.add('nav-active');
-            
-            if(tabId === 'orders') renderLeads();
-            window.scrollTo(0,0);
-        }
-
-        function renderLeads() {
+        function renderOrders() {
             const container = document.getElementById('orders-container');
-            container.innerHTML = '';
-            
-            // Show products I own that have interested buyers
             const myProducts = marketData.filter(x => x.sellerId === currentUser?._id && x.interestedBuyers?.length > 0);
             
             if(myProducts.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 italic">No buyer requests yet. List more crops to get leads!</p>';
+                container.innerHTML = '<p class="col-span-2 text-slate-400 italic text-center py-10">No interested buyers yet.</p>';
                 return;
             }
 
+            container.innerHTML = '';
             myProducts.forEach(prod => {
                 prod.interestedBuyers.forEach(buyerId => {
                     container.insertAdjacentHTML('beforeend', `
-                        <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                        <div class="bg-white p-6 rounded-[2rem] border border-earth-100 shadow-sm flex justify-between items-center">
                             <div>
                                 <h4 class="font-bold text-slate-800">${prod.title}</h4>
-                                <p class="text-xs text-green-600 font-bold">New Interest Received</p>
+                                <p class="text-xs text-green-600 font-bold mt-1">New Buyer Interest</p>
                             </div>
-                            <button class="bg-green-50 text-green-700 px-4 py-2 rounded-xl text-xs font-bold">Contact Buyer</button>
+                            <button class="bg-brand-50 text-brand-700 px-4 py-2 rounded-xl text-xs font-bold border border-brand-100">View</button>
                         </div>
                     `);
                 });
             });
         }
 
-        function handleSearch(val) {
-            currentSearch = val.toLowerCase();
-            renderMarket();
+        function updateStats() {
+            const count = marketData.filter(x => x.sellerId === currentUser?._id).length;
+            document.getElementById('stat-listings').innerText = count;
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        // --- ACTIONS ---
+        async function submitListing() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = 'Publishing...';
 
-        async function loadProfileData() {
-           try {
-               const details = await SoftYield.profile.loadDetails();
-               document.getElementById('pName').value = currentUser.name;
-               if(details) {
-                   document.getElementById('pPhone').value = details.phone || '';
-                   document.getElementById('pCity').value = details.city || '';
-                   document.getElementById('header-city').innerText = details.city || 'Location unset';
-               }
-           } catch(e) {}
+            const formData = new FormData();
+            formData.append('title', document.getElementById('itemName').value);
+            formData.append('price', document.getElementById('itemPrice').value);
+            formData.append('unit', document.getElementById('itemUnit').value);
+            formData.append('quantity', document.getElementById('itemQty').value);
+            formData.append('location', document.getElementById('itemLoc').value);
+            formData.append('description', document.getElementById('itemDesc').value);
+            
+            const file = document.getElementById('itemImage').files[0];
+            if(file) formData.append('image', file);
+
+            try {
+                const res = await SoftYield.produce.create(formData);
+                if(res.success || res.id) {
+                    showToast('Listing Published!');
+                    closeModal();
+                    fetchMarketData();
+                    // Clear inputs
+                    document.getElementById('itemName').value = '';
+                    document.getElementById('itemPrice').value = '';
+                }
+            } catch(e) { showToast('Failed to post. Check fields.', true); }
+            finally { btn.disabled = false; btn.innerText = 'Publish Listing'; }
         }
 
-        async function saveProfile(e) {
-            e.preventDefault();
-            const data = { phone: document.getElementById('pPhone').value, city: document.getElementById('pCity').value };
+        async function saveProfile() {
+            const data = { 
+                phone: document.getElementById('edit-phone').value, 
+                city: document.getElementById('edit-location').value 
+            };
             try {
                 await SoftYield.profile.updateDetails(data);
-                showToast('Profile updated!');
+                showToast('Profile Updated');
+                toggleEditProfile();
+                document.getElementById('display-city').innerText = data.city;
                 document.getElementById('header-city').innerText = data.city;
             } catch(e) { showToast('Error saving profile', true); }
+        }
+
+        // --- UI UTILS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            // Desktop Nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            const dNav = document.getElementById('nav-' + tabId);
+            if(dNav) dNav.classList.add('nav-active');
+
+            // Mobile Nav
+            document.querySelectorAll('.mob-nav-btn').forEach(n => { n.classList.remove('text-brand-700', 'mob-active'); n.classList.add('text-slate-400'); });
+            const mNav = document.getElementById('mob-' + tabId);
+            if(mNav) { mNav.classList.remove('text-slate-400'); mNav.classList.add('text-brand-700', 'mob-active'); }
+            
+            window.scrollTo(0,0);
+        }
+
+        function filterMarketplace() { renderMarket(); }
+
+        function openModal() {
+            const m = document.getElementById('listingModal');
+            const c = document.getElementById('modalContent');
+            const b = document.getElementById('modalBackdrop');
+            m.classList.remove('hidden');
+            setTimeout(() => { b.classList.remove('opacity-0'); c.classList.remove('opacity-0', 'translate-y-full'); if(window.innerWidth >= 768) c.classList.remove('md:translate-y-10'); }, 10);
+        }
+        function closeModal() {
+            const m = document.getElementById('listingModal');
+            const c = document.getElementById('modalContent');
+            const b = document.getElementById('modalBackdrop');
+            b.classList.add('opacity-0'); c.classList.add('opacity-0', 'translate-y-full'); if(window.innerWidth >= 768) c.classList.add('md:translate-y-10');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+        function toggleEditProfile() { document.getElementById('edit-profile-form').classList.toggle('hidden'); }
+        function toggleLangMenu(e) { e.stopPropagation(); document.getElementById('lang-menu').classList.toggle('hidden'); }
+        window.addEventListener('click', (e) => { 
+            const menu = document.getElementById('lang-menu'); 
+            const btn = document.getElementById('lang-btn');
+            if(menu && !menu.classList.contains('hidden') && !btn.contains(e.target)) menu.classList.add('hidden');
+        });
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const k = el.getAttribute('data-translate');
+                if(translations[lang][k]) el.innerText = translations[lang][k];
+            });
+            document.getElementById('current-lang-label').innerText = lang === 'en' ? 'English' : 'हिंदी';
+            document.getElementById('lang-menu').classList.add('hidden');
         }
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
             document.getElementById('toast-msg').innerText = msg;
-            
-            if(isError) {
-                icon.className = "w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white shrink-0";
-                icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-                document.getElementById('toast-title').innerText = "Error";
-            } else {
-                icon.className = "w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-slate-900 shrink-0";
-                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
-                document.getElementById('toast-title').innerText = "Success";
-            }
-
-            t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 3000);
+            icon.className = isError ? "w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white shrink-0" : "w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center text-slate-900 shrink-0";
+            icon.innerHTML = isError ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-check"></i>';
+            document.getElementById('toast-title').innerText = isError ? "Error" : "Success";
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
     </script>
 </body>
