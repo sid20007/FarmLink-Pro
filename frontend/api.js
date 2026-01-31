@@ -1,5 +1,5 @@
 /* =========================================
-   FARMLINK PRO: API SERVICE
+   SOFTYIELD: API SERVICE
    ========================================= */
 const SoftYield = {
     // URL Configuration
